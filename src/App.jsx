@@ -5,6 +5,7 @@ import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './pages/Dashboard';
 import { SkillAssessment } from './pages/SkillAssessment';
+import { SkillQuizRunner } from './pages/SkillQuizRunner';
 import { BuildBreakAdapt } from './pages/BuildBreakAdapt';
 import { SkillGap } from './pages/SkillGap';
 import { LearningRoadmap } from './pages/LearningRoadmap';
@@ -15,17 +16,26 @@ import { Applications } from './pages/Applications';
 import { IndustryDashboard } from './pages/IndustryDashboard';
 import { CollegeDashboard } from './pages/CollegeDashboard';
 import { Profile } from './pages/Profile';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthModal } from './components/AuthModal';
 
-export const App = () => {
-  const [student, setStudent] = useState(storageService.getStudentData());
+const AppContent = () => {
+  const { user, isAuthenticated, refreshUser } = useAuth();
+  const [localStudent, setLocalStudent] = useState(storageService.getStudentData());
   const [currentRole, setCurrentRole] = useState(storageService.getActiveRole());
   const [opportunities, setOpportunities] = useState(storageService.getOpportunities());
   const [applications, setApplications] = useState(storageService.getApplications());
 
-  const refreshState = () => {
-    setStudent(storageService.getStudentData());
+  // Active student prioritizes authenticated user profile from backend
+  const student = (currentRole === 'STUDENT' && user) ? user : localStudent;
+
+  const refreshState = async () => {
+    setLocalStudent(storageService.getStudentData());
     setOpportunities(storageService.getOpportunities());
     setApplications(storageService.getApplications());
+    if (isAuthenticated) {
+      await refreshUser();
+    }
   };
 
   const handleSwitchRole = (newRole) => {
@@ -45,6 +55,9 @@ export const App = () => {
   return (
     <Router>
       <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col selection:bg-brand-500 selection:text-white">
+        {/* Auth Modal for Sign In / Sign Up */}
+        <AuthModal />
+
         {/* Navigation Bar */}
         <Navbar
           currentRole={currentRole}
@@ -72,7 +85,8 @@ export const App = () => {
                   />
                 }
               />
-              <Route path="/assessment" element={<SkillAssessment />} />
+              <Route path="/assessment" element={<SkillAssessment student={student} />} />
+              <Route path="/quiz" element={<SkillQuizRunner onAssessmentCompleted={refreshState} />} />
               <Route path="/build-break-adapt" element={<BuildBreakAdapt onScoreUpdated={refreshState} />} />
               <Route path="/skill-gap" element={<SkillGap student={student} />} />
               <Route path="/roadmap" element={<LearningRoadmap student={student} />} />
@@ -106,5 +120,13 @@ export const App = () => {
         </div>
       </div>
     </Router>
+  );
+};
+
+export const App = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };

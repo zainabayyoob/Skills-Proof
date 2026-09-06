@@ -19,8 +19,11 @@ import { calculateOpportunityMatch } from '../utils/matchingAlgorithm';
 import { storageService } from '../services/storageService';
 import { Modal } from '../components/Modal';
 import { skillsCatalogue } from '../data/assessmentsData';
+import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
+  const { isAuthenticated } = useAuth();
   const [opportunities, setOpportunities] = useState(storageService.getOpportunities());
   const [applications, setApplications] = useState(storageService.getApplications());
   const [selectedOpp, setSelectedOpp] = useState(null);
@@ -49,9 +52,18 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
     setApplyModalOpen(true);
   };
 
-  const handleConfirmApply = () => {
+  const handleConfirmApply = async () => {
     if (!selectedOpp) return;
     storageService.applyToOpportunity(selectedOpp, student, candidateNote);
+
+    if (isAuthenticated) {
+      try {
+        await api.opportunities.apply(selectedOpp.id, candidateNote);
+      } catch (err) {
+        console.warn('Backend application sync warning:', err);
+      }
+    }
+
     setApplications(storageService.getApplications());
     setAppliedSuccess(true);
     

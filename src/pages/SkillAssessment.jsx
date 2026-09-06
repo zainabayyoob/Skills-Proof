@@ -17,16 +17,26 @@ import {
   Layout,
   Server,
   BarChart2,
+  HelpCircle,
+  Terminal,
 } from 'lucide-react';
 import { assessmentModes, skillsCatalogue } from '../data/assessmentsData';
+import { useAuth } from '../context/AuthContext';
 
-export const SkillAssessment = () => {
+export const SkillAssessment = ({ student: propStudent }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const currentStudent = user || propStudent;
+
   const [selectedSkill, setSelectedSkill] = useState(skillsCatalogue[0]);
   const [selectedMode, setSelectedMode] = useState(assessmentModes[1]);
 
-  const handleLaunchAssessment = () => {
+  const handleLaunchCodeChallenge = () => {
     navigate(`/build-break-adapt?skill=${selectedSkill.id}&mode=${selectedMode.id}`);
+  };
+
+  const handleLaunchDynamicQuiz = () => {
+    navigate(`/quiz?skill=${selectedSkill.id}`);
   };
 
   const getSkillIcon = (iconName) => {
@@ -81,6 +91,11 @@ export const SkillAssessment = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
           {skillsCatalogue.map((skill) => {
             const isSelected = selectedSkill.id === skill.id;
+            const userSkill = currentStudent?.verifiedSkills?.find(
+              (v) => (v.skillId && v.skillId.toLowerCase() === skill.id.toLowerCase()) ||
+                     v.name.toLowerCase() === skill.name.toLowerCase()
+            );
+            const userScore = userSkill ? userSkill.score : 0;
             return (
               <button
                 key={skill.id}
@@ -96,8 +111,8 @@ export const SkillAssessment = () => {
                     <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700">
                       {getSkillIcon(skill.icon)}
                     </div>
-                    <span className="text-xs font-mono font-bold text-emerald-400">
-                      Current: {skill.verifiedScore}%
+                    <span className={`text-xs font-mono font-bold ${userSkill ? 'text-emerald-400' : 'text-slate-500'}`}>
+                      {userSkill ? `Verified: ${userScore}%` : 'Unverified (0%)'}
                     </span>
                   </div>
                   <h3 className="font-bold text-base text-white">{skill.name}</h3>
@@ -221,24 +236,35 @@ export const SkillAssessment = () => {
       </div>
 
       {/* Launch Action Bar */}
-      <div className="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div>
-          <h4 className="text-sm font-bold text-white">
+          <h4 className="text-base font-bold text-white">
             Ready to test: <span className="text-brand-400">{selectedSkill.name}</span> in{' '}
             <span className="text-emerald-400">{selectedMode.title}</span>
           </h4>
           <p className="text-xs text-slate-400 mt-0.5">
-            Challenge: {selectedSkill.taskTitle}
+            Choose between randomized technical knowledge assessment or the live interactive code challenge:
           </p>
         </div>
 
-        <button
-          onClick={handleLaunchAssessment}
-          className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-brand-600/30 flex items-center justify-center gap-2 transition-all"
-        >
-          <span>Start Build → Break → Adapt Challenge</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+          <button
+            onClick={handleLaunchDynamicQuiz}
+            className="flex-1 sm:flex-initial px-6 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm shadow-xl shadow-brand-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>Start Dynamic Knowledge Quiz</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+
+          <button
+            onClick={handleLaunchCodeChallenge}
+            className="flex-1 sm:flex-initial px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs sm:text-sm border border-slate-700 shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
+          >
+            <Terminal className="w-4 h-4 text-brand-400" />
+            <span>Code Challenge</span>
+          </button>
+        </div>
       </div>
     </div>
   );

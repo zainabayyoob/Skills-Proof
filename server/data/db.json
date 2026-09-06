@@ -1,0 +1,1143 @@
+{
+  "users": [
+    {
+      "id": "usr_1788682695242_9jaevs",
+      "name": "Alice Johnson",
+      "email": "alice_1788682694913@university.edu",
+      "passwordHash": "$2b$10$6TM1dpGpVHpC5hixxtr5cenTJCScah1Uww.R5gIwYaHyYSN3OSgHi",
+      "college": "MIT Tech",
+      "degree": "B.Tech CSE",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "Cloud and distributed systems enthusiast.",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Backend Systems Engineer",
+      "careerReadiness": 0,
+      "verifiedSkills": [
+        {
+          "name": "Python",
+          "skillId": "python",
+          "score": 0,
+          "level": "Intermediate",
+          "verifiedAt": "2026-09-06",
+          "badge": "Bronze",
+          "latestAttemptNumber": 1
+        }
+      ],
+      "skillGaps": [
+        {
+          "skill": "Python",
+          "skillId": "python",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove Python Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "Backend (Node.js)",
+          "skillId": "node",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Backend (Node.js) Skill"
+        },
+        {
+          "skill": "Java",
+          "skillId": "java",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Java Skill"
+        },
+        {
+          "skill": "C++",
+          "skillId": "cpp",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove C++ Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 0,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend (React)",
+            "Backend (Node.js)",
+            "SQL",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 0,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Backend (Node.js)",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Frontend (React)",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        }
+      ],
+      "passportHash": "SKP-2026-PYT-MTPJHSRK",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-06T08:18:15.242Z",
+      "updatedAt": "2026-09-06T08:18:15.414Z"
+    },
+    {
+      "id": "usr_1788682695324_hz2tga",
+      "name": "Bob Smith",
+      "email": "bob_1788682695253@university.edu",
+      "passwordHash": "$2b$10$P7bLRjtt7ErzW4dCh6FDpuEoQ3YVq6EDes9vBrEy2HMoirwZLlBye",
+      "college": "Stanford Tech",
+      "degree": "Information Systems",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Data & AI Engineer",
+      "careerReadiness": 0,
+      "verifiedSkills": [],
+      "skillGaps": [
+        {
+          "skill": "Python",
+          "skillId": "python",
+          "currentScore": 0,
+          "requiredScore": 85,
+          "gap": 85,
+          "status": "Critical Gap",
+          "action": "Prove Python Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "Data Analytics",
+          "skillId": "dataanalytics",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove Data Analytics Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 0,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend (React)",
+            "Backend (Node.js)",
+            "SQL",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 0,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Backend (Node.js)",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Frontend (React)",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        }
+      ],
+      "passportHash": null,
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-06T08:18:15.324Z"
+    },
+    {
+      "id": "usr_1788683179208_sbnpjj",
+      "name": "Carol Danvers",
+      "email": "carol_1788683179136@university.edu",
+      "passwordHash": "$2b$10$uH73dBgb.UMIs4fKliobYO7S1H7DlMTbFT55bsflzUnHv3Ie4wO9u",
+      "college": "National Institute of Tech",
+      "degree": "B.Tech CSE",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Full Stack Web Developer",
+      "careerReadiness": 60,
+      "verifiedSkills": [
+        {
+          "name": "Python",
+          "skillId": "python",
+          "score": 60,
+          "level": "Intermediate",
+          "verifiedAt": "2026-09-06",
+          "badge": "Bronze",
+          "latestAttemptNumber": 2
+        }
+      ],
+      "skillGaps": [
+        {
+          "skill": "Frontend (React)",
+          "skillId": "react",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Frontend (React) Skill"
+        },
+        {
+          "skill": "Backend (Node.js)",
+          "skillId": "node",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Backend (Node.js) Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "JavaScript",
+          "skillId": "javascript",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove JavaScript Skill"
+        },
+        {
+          "skill": "HTML & CSS",
+          "skillId": "htmlcss",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove HTML & CSS Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 9,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend (React)",
+            "Backend (Node.js)",
+            "SQL",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 9,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Backend (Node.js)",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 9,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 9,
+          "demand": "High",
+          "topMissing": [
+            "Frontend (React)",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        }
+      ],
+      "passportHash": "SKP-2026-PYT-MTPJS64Y",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-06T08:26:19.208Z",
+      "updatedAt": "2026-09-06T08:26:19.282Z"
+    },
+    {
+      "id": "usr_1788683179377_o5utev",
+      "name": "David Banner",
+      "email": "david_1788683179296@university.edu",
+      "passwordHash": "$2b$10$78uFsjjXiwLN9sOVnfzD4OCgsDgQLcF.0mqkx0uxqZjzfzRZcjt5i",
+      "college": "State Tech University",
+      "degree": "Information Tech",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Data & AI Engineer",
+      "careerReadiness": 0,
+      "verifiedSkills": [],
+      "skillGaps": [
+        {
+          "skill": "Python",
+          "skillId": "python",
+          "currentScore": 0,
+          "requiredScore": 85,
+          "gap": 85,
+          "status": "Critical Gap",
+          "action": "Prove Python Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "Data Analytics",
+          "skillId": "dataanalytics",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove Data Analytics Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 0,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend (React)",
+            "Backend (Node.js)",
+            "SQL",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 0,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Backend (Node.js)",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Frontend (React)",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        }
+      ],
+      "passportHash": null,
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-06T08:26:19.377Z"
+    }
+  ],
+  "testAttempts": [
+    {
+      "id": "att_1788682695349_zzpqrt",
+      "userId": "usr_1788682695242_9jaevs",
+      "skillId": "python",
+      "skillName": "Python",
+      "status": "completed",
+      "startedAt": "2026-09-06T08:18:15.349Z",
+      "questionMappings": [
+        {
+          "questionId": "py-q6",
+          "question": "What role does the Global Interpreter Lock (GIL) play in CPython?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "It compiles Python code directly into machine code before execution"
+            },
+            {
+              "id": "opt_2",
+              "text": "It is a mutex ensuring only one native thread executes Python bytecode at a time, protecting CPython memory management"
+            },
+            {
+              "id": "opt_1",
+              "text": "It prevents all multi-threaded programming in Python completely"
+            },
+            {
+              "id": "opt_3",
+              "text": "It automatically optimizes I/O bound operations by bypassing the operating system"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "CPython uses reference counting which is not thread-safe. The GIL ensures only one thread executes Python bytecode at once, meaning CPU-bound multi-threading requires multiprocessing instead."
+        },
+        {
+          "questionId": "py-q10",
+          "question": "What is the Method Resolution Order (MRO) algorithm used in modern Python 3 multiple inheritance?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Breadth-First Search (BFS)"
+            },
+            {
+              "id": "opt_1",
+              "text": "Depth-First Search (DFS)"
+            },
+            {
+              "id": "opt_4",
+              "text": "Dijkstra Priority Queue"
+            },
+            {
+              "id": "opt_2",
+              "text": "C3 Linearization"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Python uses the C3 Linearization algorithm to determine a deterministic order for resolving method calls in complex multiple inheritance hierarchies."
+        },
+        {
+          "questionId": "py-q4",
+          "question": "What is the average time complexity of checking membership `x in s` for a Python set vs a Python list of length N?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Set: O(log N), List: O(1)"
+            },
+            {
+              "id": "opt_4",
+              "text": "Set: O(N log N), List: O(N)"
+            },
+            {
+              "id": "opt_1",
+              "text": "Set: O(N), List: O(N)"
+            },
+            {
+              "id": "opt_2",
+              "text": "Set: O(1), List: O(N)"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Python sets are implemented as hash tables offering average O(1) key lookup, whereas lists require linear search scanning elements sequentially with O(N) complexity."
+        },
+        {
+          "questionId": "py-q3",
+          "question": "What happens in the following try-except-finally block?",
+          "codeSnippet": "def calculate():\n    try:\n        return 10\n    finally:\n        return 20\n\nprint(calculate())",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "10 is printed"
+            },
+            {
+              "id": "opt_2",
+              "text": "20 is printed"
+            },
+            {
+              "id": "opt_4",
+              "text": "SyntaxError: multiple return statements in same scope"
+            },
+            {
+              "id": "opt_3",
+              "text": "30 is printed"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "The finally block is guaranteed to execute before the function exits. When a return statement is encountered inside finally, it overwrites any previous return value from try or except."
+        },
+        {
+          "questionId": "py-q1",
+          "question": "What is the output of this Python code regarding mutable default arguments?",
+          "codeSnippet": "def append_item(val, items=[]):\n    items.append(val)\n    return items\n\nprint(append_item(1))\nprint(append_item(2))",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "[1] followed by [2]"
+            },
+            {
+              "id": "opt_4",
+              "text": "TypeError: mutable default argument not permitted"
+            },
+            {
+              "id": "opt_3",
+              "text": "[1, 2] followed by [1, 2]"
+            },
+            {
+              "id": "opt_2",
+              "text": "[1] followed by [1, 2]"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "In Python, default arguments are evaluated once when the function definition is executed, meaning the same list instance is reused across invocations unless explicitly re-instantiated."
+        }
+      ],
+      "totalQuestions": 5,
+      "score": 0,
+      "correctCount": 0,
+      "totalCount": 5,
+      "attemptNumber": 1,
+      "userAnswers": {
+        "py-q6": "opt_4",
+        "py-q10": "opt_3",
+        "py-q4": "opt_3",
+        "py-q3": "opt_1",
+        "py-q1": "opt_1"
+      },
+      "completedAt": "2026-09-06T08:18:15.378Z"
+    },
+    {
+      "id": "att_1788682695365_oskcxd",
+      "userId": "usr_1788682695242_9jaevs",
+      "skillId": "python",
+      "skillName": "Python",
+      "status": "in_progress",
+      "startedAt": "2026-09-06T08:18:15.365Z",
+      "questionMappings": [
+        {
+          "questionId": "py-q5",
+          "question": "In Python, what is the purpose of the `copy.deepcopy()` function compared to `copy.copy()`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "deepcopy recursively copies all objects found inside compound objects, preventing mutations in the clone from affecting the original"
+            },
+            {
+              "id": "opt_2",
+              "text": "copy.copy clones nested compound objects recursively, while deepcopy only copies references"
+            },
+            {
+              "id": "opt_4",
+              "text": "deepcopy creates a C-level pointer to the original memory block"
+            },
+            {
+              "id": "opt_1",
+              "text": "deepcopy encrypts the object into byte memory"
+            }
+          ],
+          "correctOptionId": "opt_3",
+          "explanation": "A shallow copy constructs a new compound object but inserts references to the original nested objects. deepcopy recursively duplicates all child objects."
+        },
+        {
+          "questionId": "py-q6",
+          "question": "What role does the Global Interpreter Lock (GIL) play in CPython?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "It prevents all multi-threaded programming in Python completely"
+            },
+            {
+              "id": "opt_3",
+              "text": "It automatically optimizes I/O bound operations by bypassing the operating system"
+            },
+            {
+              "id": "opt_4",
+              "text": "It compiles Python code directly into machine code before execution"
+            },
+            {
+              "id": "opt_2",
+              "text": "It is a mutex ensuring only one native thread executes Python bytecode at a time, protecting CPython memory management"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "CPython uses reference counting which is not thread-safe. The GIL ensures only one thread executes Python bytecode at once, meaning CPU-bound multi-threading requires multiprocessing instead."
+        },
+        {
+          "questionId": "py-q2",
+          "question": "What is the primary difference between a Python generator and a regular function returning a list?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "Generators yield items lazily on demand, saving memory compared to eagerly constructing an entire list in RAM"
+            },
+            {
+              "id": "opt_4",
+              "text": "Generators automatically convert all returned values to JSON strings"
+            },
+            {
+              "id": "opt_3",
+              "text": "Generators cannot accept arguments or maintain local state"
+            },
+            {
+              "id": "opt_1",
+              "text": "Generators execute in a separate operating system thread"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Generators use the yield keyword to produce values lazily one at a time via the iterator protocol, resulting in O(1) space complexity instead of O(N) memory allocation."
+        },
+        {
+          "questionId": "py-q8",
+          "question": "What does the `@classmethod` decorator do in Python?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "Converts a method to a static method that takes no arguments"
+            },
+            {
+              "id": "opt_4",
+              "text": "Automatically instantiates a new class object upon invocation"
+            },
+            {
+              "id": "opt_3",
+              "text": "Makes the method private and accessible only within the defining module"
+            },
+            {
+              "id": "opt_2",
+              "text": "Passes the class itself (cls) as the first argument instead of the instance (self)"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "A @classmethod receives the class object as its first argument (conventionally named cls), allowing factory constructors and class-level state modifications."
+        },
+        {
+          "questionId": "py-q4",
+          "question": "What is the average time complexity of checking membership `x in s` for a Python set vs a Python list of length N?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Set: O(log N), List: O(1)"
+            },
+            {
+              "id": "opt_4",
+              "text": "Set: O(N log N), List: O(N)"
+            },
+            {
+              "id": "opt_2",
+              "text": "Set: O(1), List: O(N)"
+            },
+            {
+              "id": "opt_1",
+              "text": "Set: O(N), List: O(N)"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Python sets are implemented as hash tables offering average O(1) key lookup, whereas lists require linear search scanning elements sequentially with O(N) complexity."
+        }
+      ],
+      "totalQuestions": 5
+    },
+    {
+      "id": "att_1788683179218_z4ggxz",
+      "userId": "usr_1788683179208_sbnpjj",
+      "skillId": "python",
+      "skillName": "Python",
+      "status": "completed",
+      "startedAt": "2026-09-06T08:26:19.218Z",
+      "questionMappings": [
+        {
+          "questionId": "py-q5",
+          "question": "In Python, what is the purpose of the `copy.deepcopy()` function compared to `copy.copy()`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "copy.copy clones nested compound objects recursively, while deepcopy only copies references"
+            },
+            {
+              "id": "opt_3",
+              "text": "deepcopy recursively copies all objects found inside compound objects, preventing mutations in the clone from affecting the original"
+            },
+            {
+              "id": "opt_1",
+              "text": "deepcopy encrypts the object into byte memory"
+            },
+            {
+              "id": "opt_4",
+              "text": "deepcopy creates a C-level pointer to the original memory block"
+            }
+          ],
+          "correctOptionId": "opt_3",
+          "explanation": "A shallow copy constructs a new compound object but inserts references to the original nested objects. deepcopy recursively duplicates all child objects."
+        },
+        {
+          "questionId": "py-q7",
+          "question": "Which method must a Python class implement to be usable with the `with` statement as a Context Manager?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "__init__ and __del__"
+            },
+            {
+              "id": "opt_1",
+              "text": "__open__ and __close__"
+            },
+            {
+              "id": "opt_3",
+              "text": "__enter__ and __exit__"
+            },
+            {
+              "id": "opt_4",
+              "text": "__start__ and __stop__"
+            }
+          ],
+          "correctOptionId": "opt_3",
+          "explanation": "The context management protocol requires __enter__() for acquiring resources and __exit__() for guaranteed cleanup, handling exceptions even if errors occur."
+        },
+        {
+          "questionId": "py-q1",
+          "question": "What is the output of this Python code regarding mutable default arguments?",
+          "codeSnippet": "def append_item(val, items=[]):\n    items.append(val)\n    return items\n\nprint(append_item(1))\nprint(append_item(2))",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "[1] followed by [2]"
+            },
+            {
+              "id": "opt_3",
+              "text": "[1, 2] followed by [1, 2]"
+            },
+            {
+              "id": "opt_2",
+              "text": "[1] followed by [1, 2]"
+            },
+            {
+              "id": "opt_4",
+              "text": "TypeError: mutable default argument not permitted"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "In Python, default arguments are evaluated once when the function definition is executed, meaning the same list instance is reused across invocations unless explicitly re-instantiated."
+        },
+        {
+          "questionId": "py-q9",
+          "question": "What will be the output of `bool([])`, `bool([0])`, and `bool(\"\")` in Python?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "True, True, True"
+            },
+            {
+              "id": "opt_1",
+              "text": "False, False, False"
+            },
+            {
+              "id": "opt_2",
+              "text": "False, True, False"
+            },
+            {
+              "id": "opt_4",
+              "text": "False, True, True"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Empty containers like [] and \"\" are falsy in Python. However, [0] is a non-empty list with one element (0), making it truthy."
+        },
+        {
+          "questionId": "py-q3",
+          "question": "What happens in the following try-except-finally block?",
+          "codeSnippet": "def calculate():\n    try:\n        return 10\n    finally:\n        return 20\n\nprint(calculate())",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "20 is printed"
+            },
+            {
+              "id": "opt_1",
+              "text": "10 is printed"
+            },
+            {
+              "id": "opt_3",
+              "text": "30 is printed"
+            },
+            {
+              "id": "opt_4",
+              "text": "SyntaxError: multiple return statements in same scope"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "The finally block is guaranteed to execute before the function exits. When a return statement is encountered inside finally, it overwrites any previous return value from try or except."
+        }
+      ],
+      "totalQuestions": 5,
+      "score": 20,
+      "correctCount": 1,
+      "totalCount": 5,
+      "attemptNumber": 1,
+      "userAnswers": {
+        "py-q5": "opt_2",
+        "py-q7": "opt_2",
+        "py-q1": "opt_1",
+        "py-q9": "opt_3",
+        "py-q3": "opt_2"
+      },
+      "completedAt": "2026-09-06T08:26:19.229Z"
+    },
+    {
+      "id": "att_1788683179257_fpsc9o",
+      "userId": "usr_1788683179208_sbnpjj",
+      "skillId": "python",
+      "skillName": "Python",
+      "status": "completed",
+      "startedAt": "2026-09-06T08:26:19.257Z",
+      "questionMappings": [
+        {
+          "questionId": "py-q8",
+          "question": "What does the `@classmethod` decorator do in Python?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "Converts a method to a static method that takes no arguments"
+            },
+            {
+              "id": "opt_4",
+              "text": "Automatically instantiates a new class object upon invocation"
+            },
+            {
+              "id": "opt_3",
+              "text": "Makes the method private and accessible only within the defining module"
+            },
+            {
+              "id": "opt_2",
+              "text": "Passes the class itself (cls) as the first argument instead of the instance (self)"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "A @classmethod receives the class object as its first argument (conventionally named cls), allowing factory constructors and class-level state modifications."
+        },
+        {
+          "questionId": "py-q7",
+          "question": "Which method must a Python class implement to be usable with the `with` statement as a Context Manager?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "__init__ and __del__"
+            },
+            {
+              "id": "opt_3",
+              "text": "__enter__ and __exit__"
+            },
+            {
+              "id": "opt_1",
+              "text": "__open__ and __close__"
+            },
+            {
+              "id": "opt_4",
+              "text": "__start__ and __stop__"
+            }
+          ],
+          "correctOptionId": "opt_3",
+          "explanation": "The context management protocol requires __enter__() for acquiring resources and __exit__() for guaranteed cleanup, handling exceptions even if errors occur."
+        },
+        {
+          "questionId": "py-q9",
+          "question": "What will be the output of `bool([])`, `bool([0])`, and `bool(\"\")` in Python?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "False, True, False"
+            },
+            {
+              "id": "opt_3",
+              "text": "True, True, True"
+            },
+            {
+              "id": "opt_1",
+              "text": "False, False, False"
+            },
+            {
+              "id": "opt_4",
+              "text": "False, True, True"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Empty containers like [] and \"\" are falsy in Python. However, [0] is a non-empty list with one element (0), making it truthy."
+        },
+        {
+          "questionId": "py-q10",
+          "question": "What is the Method Resolution Order (MRO) algorithm used in modern Python 3 multiple inheritance?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "Dijkstra Priority Queue"
+            },
+            {
+              "id": "opt_2",
+              "text": "C3 Linearization"
+            },
+            {
+              "id": "opt_1",
+              "text": "Depth-First Search (DFS)"
+            },
+            {
+              "id": "opt_3",
+              "text": "Breadth-First Search (BFS)"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Python uses the C3 Linearization algorithm to determine a deterministic order for resolving method calls in complex multiple inheritance hierarchies."
+        },
+        {
+          "questionId": "py-q5",
+          "question": "In Python, what is the purpose of the `copy.deepcopy()` function compared to `copy.copy()`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "copy.copy clones nested compound objects recursively, while deepcopy only copies references"
+            },
+            {
+              "id": "opt_3",
+              "text": "deepcopy recursively copies all objects found inside compound objects, preventing mutations in the clone from affecting the original"
+            },
+            {
+              "id": "opt_1",
+              "text": "deepcopy encrypts the object into byte memory"
+            },
+            {
+              "id": "opt_4",
+              "text": "deepcopy creates a C-level pointer to the original memory block"
+            }
+          ],
+          "correctOptionId": "opt_3",
+          "explanation": "A shallow copy constructs a new compound object but inserts references to the original nested objects. deepcopy recursively duplicates all child objects."
+        }
+      ],
+      "totalQuestions": 5,
+      "score": 60,
+      "correctCount": 3,
+      "totalCount": 5,
+      "attemptNumber": 2,
+      "userAnswers": {
+        "py-q8": "opt_4",
+        "py-q7": "opt_3",
+        "py-q9": "opt_3",
+        "py-q10": "opt_2",
+        "py-q5": "opt_3"
+      },
+      "completedAt": "2026-09-06T08:26:19.271Z"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "opp-1",
+      "title": "Full Stack Engineer Intern",
+      "company": "Apex Data Systems",
+      "location": "Bangalore, India (Hybrid)",
+      "stipend": "₹35,000 - ₹45,000 / month",
+      "type": "Internship (6 Months) with PPO",
+      "postedDate": "2 days ago",
+      "openings": 3,
+      "description": "Build robust REST APIs and responsive dashboards under high event volume.",
+      "requiredSkills": [
+        {
+          "name": "Frontend (React)",
+          "minScore": 75
+        },
+        {
+          "name": "Backend (Node.js)",
+          "minScore": 75
+        },
+        {
+          "name": "SQL",
+          "minScore": 70
+        }
+      ]
+    },
+    {
+      "id": "opp-2",
+      "title": "Python Data Systems Engineer",
+      "company": "CloudScale Infrastructure",
+      "location": "Remote (India)",
+      "stipend": "₹40,000 - ₹50,000 / month",
+      "type": "Full-Time Placement",
+      "postedDate": "3 days ago",
+      "openings": 2,
+      "description": "Architect high-throughput data pipelines, telemetry aggregators, and defensive API endpoints.",
+      "requiredSkills": [
+        {
+          "name": "Python",
+          "minScore": 80
+        },
+        {
+          "name": "SQL",
+          "minScore": 75
+        },
+        {
+          "name": "Data Analytics",
+          "minScore": 70
+        }
+      ]
+    },
+    {
+      "id": "opp-3",
+      "title": "Frontend UI/UX Engineer",
+      "company": "Nexus Design Systems",
+      "location": "Pune, India (On-Site)",
+      "stipend": "₹30,000 - ₹40,000 / month",
+      "type": "Internship (4 Months)",
+      "postedDate": "1 day ago",
+      "openings": 4,
+      "description": "Implement accessible, high-performance web applications using React and Tailwind CSS.",
+      "requiredSkills": [
+        {
+          "name": "Frontend (React)",
+          "minScore": 80
+        },
+        {
+          "name": "JavaScript",
+          "minScore": 80
+        },
+        {
+          "name": "HTML & CSS",
+          "minScore": 75
+        }
+      ]
+    },
+    {
+      "id": "opp-4",
+      "title": "Core Java Systems Developer",
+      "company": "FinTech Quantum Labs",
+      "location": "Hyderabad, India (Hybrid)",
+      "stipend": "₹50,000 / month",
+      "type": "Full-Time Placement",
+      "postedDate": "5 days ago",
+      "openings": 2,
+      "description": "Develop low-latency transactional microservices and resilient message queuing workers.",
+      "requiredSkills": [
+        {
+          "name": "Java",
+          "minScore": 80
+        },
+        {
+          "name": "SQL",
+          "minScore": 75
+        }
+      ]
+    }
+  ],
+  "applications": [
+    {
+      "id": "app_1788683179400_4dahh",
+      "userId": "usr_1788683179208_sbnpjj",
+      "candidateName": "Carol Danvers",
+      "candidateEmail": "carol_1788683179136@university.edu",
+      "opportunityId": "opp-1",
+      "opportunityTitle": "Full Stack Engineer Intern",
+      "company": "Apex Data Systems",
+      "location": "Bangalore, India (Hybrid)",
+      "stipend": "₹35,000 - ₹45,000 / month",
+      "matchScore": 65,
+      "status": "Applied",
+      "appliedDate": "2026-09-06",
+      "matchingSkills": [],
+      "missingSkills": [
+        "Frontend (React) (Unverified)",
+        "Backend (Node.js) (Unverified)",
+        "SQL (Unverified)"
+      ],
+      "passportHash": "SKP-2026-PYT-MTPJS64Y",
+      "notes": "Excited to apply with my SkillProof verified scorecard!",
+      "createdAt": "2026-09-06T08:26:19.400Z"
+    }
+  ]
+}

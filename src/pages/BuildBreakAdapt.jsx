@@ -20,8 +20,11 @@ import confetti from 'canvas-confetti';
 import { skillsCatalogue, assessmentModes } from '../data/assessmentsData';
 import { CodeEditor } from '../components/CodeEditor';
 import { storageService } from '../services/storageService';
+import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export const BuildBreakAdapt = ({ onScoreUpdated }) => {
+  const { isAuthenticated, refreshUser } = useAuth();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -290,7 +293,7 @@ Click 'Next Step: Submit for Multi-Vector Audit →' to compute your official ve
   };
 
   // 6. FINALIZE VERIFICATION & UPDATE PROFILE
-  const finalizeVerification = () => {
+  const finalizeVerification = async () => {
     const resultScores = {
       overallScore: 88,
       technicalApplication: 90,
@@ -304,8 +307,25 @@ Click 'Next Step: Submit for Multi-Vector Audit →' to compute your official ve
     setEvaluation(resultScores);
     setCurrentStep('VERIFIED');
 
-    // Update storage with verified skill and career readiness
+    // Update local storage with verified skill and career readiness
     storageService.recordAssessmentResult(skillData.name, modeData.id, resultScores);
+
+    // If authenticated, persist verified code challenge to backend database
+    if (isAuthenticated) {
+      try {
+        await api.tests.verifyCode({
+          skillId: skillData.id,
+          skillName: skillData.name,
+          overallScore: resultScores.overallScore,
+          evidence: resultScores,
+        });
+        if (refreshUser) {
+          await refreshUser();
+        }
+      } catch (err) {
+        console.warn('Backend code challenge persistence error:', err);
+      }
+    }
 
     // Notify parent App to refresh navbar, dashboard, and internships
     if (onScoreUpdated) {

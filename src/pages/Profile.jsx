@@ -30,11 +30,16 @@ import {
 import { storageService } from '../services/storageService';
 import { roleTracks } from '../data/mockData';
 import { CandidateProfileModal } from '../components/CandidateProfileModal';
+import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export const Profile = ({ student, onResetData, onProfileUpdated }) => {
+  const { isAuthenticated, setUser, loadDemoPreset } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditingInline, setIsEditingInline] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [testHistory, setTestHistory] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
 
   // Editable form state
   const [formData, setFormData] = useState({
@@ -70,12 +75,34 @@ export const Profile = ({ student, onResetData, onProfileUpdated }) => {
     }
   }, [student]);
 
+  // Fetch chronological assessment history from backend
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (isAuthenticated) {
+        setLoadingHistory(true);
+        try {
+          const res = await api.tests.getHistory();
+          if (res && res.history) {
+            setTestHistory(res.history);
+          }
+        } catch (err) {
+          console.warn('Failed to load test history:', err);
+        } finally {
+          setLoadingHistory(false);
+        }
+      } else {
+        setTestHistory([]);
+      }
+    };
+    fetchHistory();
+  }, [isAuthenticated, student]);
+
   const isVerified = student?.verifiedSkills && student.verifiedSkills.length > 0;
   const currentTrack = roleTracks.find((r) => r.title === (student?.targetRole || formData.targetRole)) || roleTracks[0];
 
-  const handleSaveInline = (e) => {
+  const handleSaveInline = async (e) => {
     e.preventDefault();
-    const updated = storageService.updateStudentProfile({
+    const payload = {
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
@@ -87,27 +114,57 @@ export const Profile = ({ student, onResetData, onProfileUpdated }) => {
       github: formData.github.trim(),
       linkedin: formData.linkedin.trim(),
       targetRole: formData.targetRole.trim(),
-    });
+    };
+
+    const updatedLocal = storageService.updateStudentProfile(payload);
+
+    if (isAuthenticated) {
+      try {
+        const updatedApi = await api.profile.update(payload);
+        if (updatedApi?.user && setUser) {
+          setUser(updatedApi.user);
+        }
+      } catch (err) {
+        console.warn('Backend profile update error:', err);
+      }
+    }
 
     if (onProfileUpdated) {
-      onProfileUpdated(updated);
+      onProfileUpdated(updatedLocal);
     }
     setIsEditingInline(false);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3500);
   };
 
-  const handleTrackChange = (newTrackTitle) => {
+  const handleTrackChange = async (newTrackTitle) => {
     setFormData((prev) => ({ ...prev, targetRole: newTrackTitle }));
     const updated = storageService.updateStudentProfile({
       targetRole: newTrackTitle,
     });
+    if (isAuthenticated) {
+      try {
+        const updatedApi = await api.profile.update({ targetRole: newTrackTitle });
+        if (updatedApi?.user && setUser) {
+          setUser(updatedApi.user);
+        }
+      } catch (err) {
+        console.warn('Backend role update error:', err);
+      }
+    }
     if (onProfileUpdated) {
       onProfileUpdated(updated);
     }
   };
 
-  const handleLoadAaravPreset = () => {
+  const handleLoadAaravPreset = async () => {
+    if (isAuthenticated) {
+      try {
+        await loadDemoPreset();
+      } catch (e) {
+        // fallback
+      }
+    }
     storageService.loadDemoPreset();
     if (onProfileUpdated) onProfileUpdated(storageService.getStudentData());
   };
@@ -585,6 +642,75 @@ export const Profile = ({ student, onResetData, onProfileUpdated }) => {
               <Cpu className="w-4 h-4" />
               <span>Choose Language Assessment</span>
             </Link>
+          </div>
+        )}
+      </div>
+
+      {/* =======================================================
+          CHRONOLOGICAL MULTI-ATTEMPT TEST HISTORY (BACKEND TRACKED)
+      ======================================================= */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-indigo-400" />
+            <h3 className="text-lg font-bold text-white">
+              Candidate Test Attempts & Retakes History ({testHistory.length})
+            </h3>
+          </div>
+          <span className="text-xs text-slate-400 font-mono">
+            {isAuthenticated ? 'Persistent Database Logs' : 'Local Session'}
+          </span>
+        </div>
+
+        {testHistory.length > 0 ? (
+          <div className="space-y-2.5">
+            {testHistory.map((item) => (
+              <div
+                key={item.id}
+                className="p-4 bg-slate-950 rounded-2xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">
+                      Attempt #{item.attemptNumber}
+                    </span>
+                    <span className="font-bold text-white text-sm">{item.skillName}</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 px-2 py-0.5 rounded bg-slate-800">
+                      {item.type === 'code_challenge' ? 'Code Challenge' : 'Knowledge Quiz'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    {item.totalCount ? `${item.correctCount} / ${item.totalCount} correct answers • ` : ''}
+                    Completed: {item.completedAt ? new Date(item.completedAt).toLocaleString() : 'Recently'}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 self-end sm:self-center">
+                  <span
+                    className={`text-xl font-black ${
+                      item.score >= 85 ? 'text-emerald-400' : item.score >= 70 ? 'text-blue-400' : 'text-amber-400'
+                    }`}
+                  >
+                    {item.score}%
+                  </span>
+                  <span
+                    className={`text-[10px] font-mono px-2 py-0.5 rounded uppercase font-bold ${
+                      item.score >= 85
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                        : item.score >= 70
+                        ? 'bg-slate-700 text-slate-200 border border-slate-600'
+                        : 'bg-orange-500/20 text-orange-300 border border-orange-500/30'
+                    }`}
+                  >
+                    {item.score >= 85 ? 'Gold' : item.score >= 70 ? 'Silver' : 'Bronze'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-slate-950/60 p-6 rounded-2xl border border-slate-800/80 text-center text-xs text-slate-400">
+            No test attempt logs recorded yet. Complete any knowledge quiz or code challenge to generate an attempt log.
           </div>
         )}
       </div>
