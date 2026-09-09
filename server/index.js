@@ -9,6 +9,9 @@ import testRoutes from './routes/testRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import opportunityRoutes from './routes/opportunityRoutes.js';
 import compilerRoutes from './routes/compilerRoutes.js';
+import applicationRoutes from './routes/applicationRoutes.js';
+import industryRoutes from './routes/industryRoutes.js';
+import collegeRoutes from './routes/collegeRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +29,9 @@ app.use('/api/tests', testRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/opportunities', opportunityRoutes);
 app.use('/api/compiler', compilerRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api/industry', industryRoutes);
+app.use('/api/college', collegeRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

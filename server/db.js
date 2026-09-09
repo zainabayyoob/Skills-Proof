@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { initialOpportunities } from '../src/data/opportunitiesData.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,11 +22,11 @@ export const roleTracks = [
     demand: "Very High",
     avgStipend: "₹40,000/mo",
     requiredSkills: [
-      { id: "react", name: "Frontend (React)", minScore: 75, importance: "Primary" },
-      { id: "node", name: "Backend (Node.js)", minScore: 75, importance: "Primary" },
+      { id: "react", name: "Frontend", minScore: 75, importance: "Primary" },
+      { id: "node", name: "Backend", minScore: 75, importance: "Primary" },
       { id: "sql", name: "SQL", minScore: 70, importance: "Core" },
       { id: "javascript", name: "JavaScript", minScore: 80, importance: "Core" },
-      { id: "htmlcss", name: "HTML & CSS", minScore: 70, importance: "Secondary" }
+      { id: "htmlcss", name: "HTML / CSS", minScore: 70, importance: "Secondary" }
     ]
   },
   {
@@ -37,7 +38,7 @@ export const roleTracks = [
     requiredSkills: [
       { id: "python", name: "Python", minScore: 80, importance: "Primary" },
       { id: "sql", name: "SQL", minScore: 80, importance: "Primary" },
-      { id: "node", name: "Backend (Node.js)", minScore: 75, importance: "Core" },
+      { id: "node", name: "Backend", minScore: 75, importance: "Core" },
       { id: "java", name: "Java", minScore: 75, importance: "Core" },
       { id: "cpp", name: "C++", minScore: 70, importance: "Secondary" }
     ]
@@ -61,126 +62,14 @@ export const roleTracks = [
     demand: "High",
     avgStipend: "₹38,000/mo",
     requiredSkills: [
-      { id: "react", name: "Frontend (React)", minScore: 85, importance: "Primary" },
+      { id: "react", name: "Frontend", minScore: 85, importance: "Primary" },
       { id: "javascript", name: "JavaScript", minScore: 85, importance: "Primary" },
-      { id: "htmlcss", name: "HTML & CSS", minScore: 80, importance: "Core" }
+      { id: "htmlcss", name: "HTML / CSS", minScore: 80, importance: "Core" }
     ]
   }
 ];
 
-export const defaultOpportunities = [
-  {
-    id: "opp-1",
-    title: "Full Stack Engineer Intern",
-    company: "Apex Data Systems",
-    location: "Bangalore, India (Hybrid)",
-    stipend: "₹35,000 - ₹45,000 / month",
-    type: "Internship (6 Months) with PPO",
-    postedDate: "2 days ago",
-    openings: 3,
-    description: "Build robust REST APIs and responsive dashboards under high event volume.",
-    requiredSkills: [
-      { name: "Frontend (React)", weight: 0.35, minScore: 75 },
-      { name: "Backend (Node.js)", weight: 0.35, minScore: 75 },
-      { name: "SQL", weight: 0.3, minScore: 70 }
-    ]
-  },
-  {
-    id: "opp-2",
-    title: "Python Data Systems Engineer",
-    company: "CloudScale Infrastructure",
-    location: "Remote (India)",
-    stipend: "₹14,00,000 - ₹18,00,000 / annum",
-    type: "Job",
-    postedDate: "3 days ago",
-    openings: 2,
-    description: "Architect high-throughput data pipelines, telemetry aggregators, and defensive API endpoints.",
-    requiredSkills: [
-      { name: "Python", weight: 0.4, minScore: 80 },
-      { name: "SQL", weight: 0.35, minScore: 75 },
-      { name: "Data Analytics", weight: 0.25, minScore: 70 }
-    ]
-  },
-  {
-    id: "opp-3",
-    title: "Frontend UI/UX Engineer",
-    company: "Nexus Design Systems",
-    location: "Pune, India (Hybrid)",
-    stipend: "₹30,000 - ₹40,000 / month",
-    type: "Internship",
-    postedDate: "1 day ago",
-    openings: 4,
-    description: "Implement accessible, high-performance web applications using React and Tailwind CSS.",
-    requiredSkills: [
-      { name: "Frontend (React)", weight: 0.4, minScore: 80 },
-      { name: "JavaScript", weight: 0.35, minScore: 80 },
-      { name: "HTML & CSS", weight: 0.25, minScore: 75 }
-    ]
-  },
-  {
-    id: "opp-4",
-    title: "Core Java Systems Developer",
-    company: "FinTech Quantum Labs",
-    location: "Hyderabad, India (Hybrid)",
-    stipend: "₹16,00,000 / annum",
-    type: "Job",
-    postedDate: "5 days ago",
-    openings: 2,
-    description: "Develop low-latency transactional microservices and resilient message queuing workers.",
-    requiredSkills: [
-      { name: "Java", weight: 0.5, minScore: 80 },
-      { name: "SQL", weight: 0.5, minScore: 75 }
-    ]
-  },
-  {
-    id: "opp-5",
-    title: "Founding Backend Engineer",
-    company: "Krypton Health (YC S25)",
-    location: "Bangalore, India (Hybrid)",
-    stipend: "₹18,00,000 / annum + 0.5% Equity",
-    type: "Startup",
-    postedDate: "Just now",
-    openings: 2,
-    description: "Build HIPAA-compliant health data pipelines under rapid release cycles with high autonomy.",
-    requiredSkills: [
-      { name: "Python", weight: 0.4, minScore: 85 },
-      { name: "SQL", weight: 0.35, minScore: 80 },
-      { name: "Backend (Node.js)", weight: 0.25, minScore: 75 }
-    ]
-  },
-  {
-    id: "opp-6",
-    title: "Python Automation Specialist",
-    company: "MarketPulse Labs",
-    location: "Remote",
-    stipend: "₹25,000 / month (20 hrs/wk)",
-    type: "Part-time",
-    postedDate: "1 day ago",
-    openings: 3,
-    description: "Flexible part-time student role: construct resilient scrapers and data validation scripts.",
-    requiredSkills: [
-      { name: "Python", weight: 0.5, minScore: 75 },
-      { name: "Data Analytics", weight: 0.3, minScore: 70 },
-      { name: "SQL", weight: 0.2, minScore: 70 }
-    ]
-  },
-  {
-    id: "opp-7",
-    title: "Open Source Graph Query Optimization",
-    company: "SkillProof Foundation",
-    location: "Remote (Global Bounty)",
-    stipend: "₹75,000 Fixed Milestone Bounty",
-    type: "Project",
-    postedDate: "Just now",
-    openings: 2,
-    description: "Paid open-source bounty to optimize graph database traversal and resolve memory leaks.",
-    requiredSkills: [
-      { name: "C++", weight: 0.4, minScore: 80 },
-      { name: "Python", weight: 0.35, minScore: 80 },
-      { name: "SQL", weight: 0.25, minScore: 75 }
-    ]
-  }
-];
+export const defaultOpportunities = initialOpportunities;
 
 class Database {
   constructor() {
@@ -193,9 +82,27 @@ class Database {
         users: [],
         testAttempts: [],
         opportunities: defaultOpportunities,
-        applications: []
+        applications: [],
+        companyProfiles: [],
+        shortlistedCandidates: [],
+        studentGroups: [],
+        assignedAssessments: [],
+        facultyData: null
       };
       this.writeSync(initialData);
+    } else {
+      // Ensure existing database has opportunities synced
+      const data = this.read();
+      let changed = false;
+      if (!data.opportunities || data.opportunities.length === 0 || data.opportunities[0].company === "Apex Data Systems") {
+        data.opportunities = defaultOpportunities;
+        changed = true;
+      }
+      if (!data.companyProfiles) { data.companyProfiles = []; changed = true; }
+      if (!data.shortlistedCandidates) { data.shortlistedCandidates = []; changed = true; }
+      if (!data.studentGroups) { data.studentGroups = []; changed = true; }
+      if (!data.assignedAssessments) { data.assignedAssessments = []; changed = true; }
+      if (changed) this.writeSync(data);
     }
   }
 
@@ -205,7 +112,16 @@ class Database {
       return JSON.parse(content);
     } catch (err) {
       console.error('Error reading db.json, returning empty structure:', err);
-      return { users: [], testAttempts: [], opportunities: defaultOpportunities, applications: [] };
+      return {
+        users: [],
+        testAttempts: [],
+        opportunities: defaultOpportunities,
+        applications: [],
+        companyProfiles: [],
+        shortlistedCandidates: [],
+        studentGroups: [],
+        assignedAssessments: []
+      };
     }
   }
 
@@ -337,7 +253,6 @@ class Database {
     const targetRole = updates.targetRole || current.targetRole;
     const verifiedSkills = updates.verifiedSkills || current.verifiedSkills || [];
     
-    // Recalculate Career Readiness
     let careerReadiness = 0;
     if (verifiedSkills.length > 0) {
       const sum = verifiedSkills.reduce((acc, s) => acc + s.score, 0);
@@ -390,23 +305,291 @@ class Database {
 
   // --- Opportunities & Applications ---
   getOpportunities() {
-    return this.read().opportunities;
+    return this.read().opportunities || defaultOpportunities;
+  }
+
+  addOpportunity(opp) {
+    const data = this.read();
+    if (!data.opportunities) data.opportunities = defaultOpportunities;
+    const newOpp = {
+      id: opp.id || `opp_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      ...opp,
+      postedDate: 'Just now',
+      createdAt: new Date().toISOString()
+    };
+    data.opportunities.unshift(newOpp);
+    this.writeSync(data);
+    return newOpp;
   }
 
   getApplicationsByUser(userId) {
-    return this.read().applications.filter((a) => a.userId === userId);
+    return (this.read().applications || []).filter((a) => a.userId === userId);
+  }
+
+  getApplicationById(id) {
+    return (this.read().applications || []).find((a) => a.id === id) || null;
   }
 
   createApplication(app) {
     const data = this.read();
+    if (!data.applications) data.applications = [];
     const newApp = {
       id: `app_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-      ...app,
-      createdAt: new Date().toISOString()
+      status: 'Applied',
+      statusHistory: [
+        {
+          status: app.status || 'Applied',
+          timestamp: new Date().toISOString(),
+          note: app.notes || 'Application submitted'
+        }
+      ],
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+      ...app
     };
     data.applications.unshift(newApp);
     this.writeSync(data);
     return newApp;
+  }
+
+  updateApplication(id, updates) {
+    const data = this.read();
+    if (!data.applications) data.applications = [];
+    const idx = data.applications.findIndex((a) => a.id === id);
+    if (idx === -1) return null;
+
+    const current = data.applications[idx];
+    const newStatus = updates.status || current.status;
+    const history = current.statusHistory || [
+      { status: current.status, timestamp: current.createdAt, note: 'Initial application' }
+    ];
+
+    if (updates.status && updates.status !== current.status) {
+      history.push({
+        status: updates.status,
+        timestamp: new Date().toISOString(),
+        note: updates.statusChangeNote || `Status changed to ${updates.status}`
+      });
+    }
+
+    const updated = {
+      ...current,
+      ...updates,
+      status: newStatus,
+      statusHistory: history,
+      lastUpdated: new Date().toISOString()
+    };
+
+    data.applications[idx] = updated;
+    this.writeSync(data);
+    return updated;
+  }
+
+  deleteApplication(id, userId) {
+    const data = this.read();
+    if (!data.applications) return false;
+    const idx = data.applications.findIndex((a) => a.id === id && (userId ? a.userId === userId : true));
+    if (idx === -1) return false;
+    data.applications.splice(idx, 1);
+    this.writeSync(data);
+    return true;
+  }
+
+  // --- Industry Module Operations ---
+  getCompanyProfile(userId) {
+    const data = this.read();
+    return (data.companyProfiles || []).find((p) => p.userId === userId) || {
+      companyName: "TechScale Innovations",
+      industry: "Enterprise Software & Cloud Services",
+      website: "https://techscale.io",
+      location: "Bangalore, India (Hybrid)",
+      contactEmail: "talent@techscale.io",
+      description: "Fast-growing engineering organization building scalable microservices and data platforms."
+    };
+  }
+
+  saveCompanyProfile(userId, profileData) {
+    const data = this.read();
+    if (!data.companyProfiles) data.companyProfiles = [];
+    const idx = data.companyProfiles.findIndex((p) => p.userId === userId);
+    const updated = {
+      id: idx !== -1 ? data.companyProfiles[idx].id : `comp_${Date.now()}`,
+      userId,
+      ...profileData,
+      updatedAt: new Date().toISOString()
+    };
+    if (idx !== -1) {
+      data.companyProfiles[idx] = updated;
+    } else {
+      data.companyProfiles.push(updated);
+    }
+    this.writeSync(data);
+    return updated;
+  }
+
+  getShortlistedCandidates(companyId) {
+    const data = this.read();
+    return (data.shortlistedCandidates || []).filter((s) => s.companyId === companyId);
+  }
+
+  toggleShortlistCandidate(companyId, studentId, studentName, roleTitle) {
+    const data = this.read();
+    if (!data.shortlistedCandidates) data.shortlistedCandidates = [];
+    const idx = data.shortlistedCandidates.findIndex((s) => s.companyId === companyId && s.studentId === studentId);
+    if (idx !== -1) {
+      data.shortlistedCandidates.splice(idx, 1);
+      this.writeSync(data);
+      return { shortlisted: false };
+    } else {
+      const entry = {
+        id: `short_${Date.now()}`,
+        companyId,
+        studentId,
+        studentName,
+        roleTitle,
+        shortlistedAt: new Date().toISOString()
+      };
+      data.shortlistedCandidates.push(entry);
+      this.writeSync(data);
+      return { shortlisted: true, entry };
+    }
+  }
+
+  // --- College & Academia Module ---
+  getCollegeAnalytics() {
+    const data = this.read();
+    const users = data.users || [];
+    const totalStudents = users.length;
+    let verifiedSkillsCount = 0;
+    let totalScoreSum = 0;
+    let totalScoreCount = 0;
+
+    const skillAverages = {
+      'Python': { sum: 0, count: 0 },
+      'SQL': { sum: 0, count: 0 },
+      'DSA': { sum: 0, count: 0 },
+      'JavaScript': { sum: 0, count: 0 },
+      'Frontend': { sum: 0, count: 0 },
+      'Backend': { sum: 0, count: 0 },
+      'Communication': { sum: 0, count: 0 },
+      'Cloud': { sum: 0, count: 0 }
+    };
+
+    users.forEach((u) => {
+      (u.verifiedSkills || []).forEach((vs) => {
+        verifiedSkillsCount++;
+        totalScoreSum += vs.score;
+        totalScoreCount++;
+        const name = vs.name || '';
+        for (const k of Object.keys(skillAverages)) {
+          if (name.toLowerCase().includes(k.toLowerCase())) {
+            skillAverages[k].sum += vs.score;
+            skillAverages[k].count++;
+          }
+        }
+      });
+    });
+
+    const averageScore = totalScoreCount > 0 ? Math.round(totalScoreSum / totalScoreCount) : 78;
+
+    const domainGaps = Object.entries(skillAverages).map(([domain, stat]) => {
+      const avg = stat.count > 0 ? Math.round(stat.sum / stat.count) : (domain === 'DSA' || domain === 'Communication' ? 62 : 76);
+      const rating = avg >= 80 ? 'Strong' : avg >= 70 ? 'Medium' : 'Weak';
+      const needingImp = avg >= 80 ? 15 : avg >= 70 ? 35 : 48;
+      return {
+        domain,
+        rating,
+        avgScore: avg,
+        studentsAssessed: stat.count,
+        percentageNeedingImprovement: needingImp,
+        impactedStudents: Math.round((totalStudents || 1200) * (needingImp / 100))
+      };
+    });
+
+    const applications = data.applications || [];
+    const placed = applications.filter((a) => a.status === 'Selected' || a.status === 'Offer').length;
+    const interviewing = applications.filter((a) => a.status === 'Interview' || a.status === 'Shortlisted').length;
+
+    return {
+      institutionName: "ABC Institute of Technology & Engineering",
+      totalStudents: Math.max(totalStudents, 1250),
+      studentsAssessed: users.filter(u => (u.verifiedSkills || []).length > 0).length || 480,
+      verifiedSkillsCount: verifiedSkillsCount || 3420,
+      placementReadiness: averageScore,
+      domainGaps,
+      internshipParticipation: applications.length || 185,
+      placedCount: placed || 120,
+      interviewingCount: interviewing || 94
+    };
+  }
+
+  getStudentGroups() {
+    const data = this.read();
+    return data.studentGroups && data.studentGroups.length > 0 ? data.studentGroups : [
+      { id: 'grp-1', name: '3rd Year CS - Batch A', department: 'Computer Science', studentsCount: 65, activeAssessments: 2 },
+      { id: 'grp-2', name: '4th Year CS - Accelerated DSA', department: 'Information Science', studentsCount: 48, activeAssessments: 3 },
+      { id: 'grp-3', name: 'Pre-Final Year Cloud & DevOps Cohort', department: 'Computer Science', studentsCount: 52, activeAssessments: 1 }
+    ];
+  }
+
+  createStudentGroup(group) {
+    const data = this.read();
+    if (!data.studentGroups) data.studentGroups = [];
+    const newGroup = {
+      id: `grp_${Date.now()}`,
+      ...group,
+      studentsCount: Number(group.studentsCount) || 30,
+      activeAssessments: 0,
+      createdAt: new Date().toISOString()
+    };
+    data.studentGroups.push(newGroup);
+    this.writeSync(data);
+    return newGroup;
+  }
+
+  assignAssessment(assignment) {
+    const data = this.read();
+    if (!data.assignedAssessments) data.assignedAssessments = [];
+    const newAssign = {
+      id: `assign_${Date.now()}`,
+      ...assignment,
+      assignedAt: new Date().toISOString()
+    };
+    data.assignedAssessments.push(newAssign);
+    this.writeSync(data);
+    return newAssign;
+  }
+
+  getFacultyData() {
+    const data = this.read();
+    return data.facultyData || {
+      facultyName: "Dr. Ananya Sharma",
+      department: "Computer Science & Engineering",
+      designation: "Associate Professor & Placement Faculty Lead",
+      email: "ananya.sharma@college.edu.in",
+      mentoredStudents: 34,
+      activities: [
+        { id: 'act-1', type: 'Workshop', title: 'Defensive Code Mutation & Production Sandboxes', partner: 'TCS & SkillProof', date: '2026-09-02', participants: 120 },
+        { id: 'act-2', type: 'Guest Lecture', title: 'Zero-Downtime Microservices Architecture', partner: 'Amazon AWS Lead', date: '2026-08-20', participants: 180 },
+        { id: 'act-3', type: 'FDP', title: 'Faculty Cloud Infrastructure & SRE Fellowship', partner: 'Google Cloud Training', date: '2026-07-15', participants: 45 },
+        { id: 'act-4', type: 'Mentorship', title: 'Hackathon Mentoring - SIH 2026 Innovation Sprint', partner: 'Smart India Hackathon', date: '2026-08-28', participants: 25 }
+      ]
+    };
+  }
+
+  addFacultyActivity(activity) {
+    const data = this.read();
+    if (!data.facultyData) {
+      data.facultyData = this.getFacultyData();
+    }
+    const newAct = {
+      id: `act_${Date.now()}`,
+      ...activity,
+      createdAt: new Date().toISOString()
+    };
+    data.facultyData.activities.unshift(newAct);
+    this.writeSync(data);
+    return newAct;
   }
 
   // --- Notifications Architecture ---

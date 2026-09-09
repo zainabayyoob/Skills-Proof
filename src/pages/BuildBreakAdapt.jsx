@@ -212,7 +212,7 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
         status: r.passed ? 'PASSED' : 'FAILED',
         expected: typeof r.expected === 'object' ? JSON.stringify(r.expected) : String(r.expected),
         actual: r.actual === null ? 'None / Undefined' : typeof r.actual === 'object' ? JSON.stringify(r.actual) : String(r.actual),
-        note: r.elapsedMs !== undefined ? `Execution time: ${r.elapsedMs}ms` : (r.error || '')
+        note: r.error ? `Error: ${r.error}` : (r.elapsedMs !== undefined ? `Execution time: ${r.elapsedMs}ms` : '')
       }));
 
       setTestCaseResults(cases);
@@ -360,7 +360,7 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
       console.warn('Submission compiler error:', err);
     }
 
-    const calculatedScore = compilerReport?.score !== undefined ? compilerReport.score : 88;
+    const calculatedScore = compilerReport?.score !== undefined ? compilerReport.score : 0;
     const isPassing = calculatedScore >= 85;
 
     const steps = [
@@ -391,7 +391,7 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
   };
 
   // 6. FINALIZE VERIFICATION & UPDATE PROFILE
-  const finalizeVerification = async (finalScore = 88, isPassing = true) => {
+  const finalizeVerification = async (finalScore = 0, isPassing = false) => {
     const resultScores = {
       overallScore: finalScore,
       isPassing,
@@ -733,12 +733,12 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
                   {!isRunning && !testCaseResults && <span className="text-slate-500">Ready to test</span>}
                   {!isRunning && testCaseResults && buildDone && (
                     <span className="text-emerald-400 font-bold flex items-center gap-1">
-                      <CheckCircle2 className="w-4 h-4" /> 3/3 Tests Passed
+                      <CheckCircle2 className="w-4 h-4" /> {testCaseResults.filter((t) => t.status === 'PASSED').length}/{testCaseResults.length} Tests Passed
                     </span>
                   )}
                   {!isRunning && testCaseResults && !buildDone && (
                     <span className="text-rose-400 font-bold flex items-center gap-1">
-                      <XCircle className="w-4 h-4" /> Tests Failed (0/3 passed)
+                      <XCircle className="w-4 h-4" /> Tests Failed ({testCaseResults.filter((t) => t.status === 'PASSED').length}/{testCaseResults.length} passed)
                     </span>
                   )}
                 </div>

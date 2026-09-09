@@ -33,7 +33,9 @@ router.put('/', requireAuth, (req, res) => {
       github,
       linkedin,
       targetRole,
-      avatarUrl
+      avatarUrl,
+      verifiedSkills,
+      careerReadiness
     } = req.body;
 
     const updates = {};
@@ -47,6 +49,8 @@ router.put('/', requireAuth, (req, res) => {
     if (linkedin !== undefined) updates.linkedin = linkedin.trim();
     if (targetRole !== undefined) updates.targetRole = targetRole.trim();
     if (avatarUrl !== undefined) updates.avatarUrl = avatarUrl.trim();
+    if (verifiedSkills !== undefined && Array.isArray(verifiedSkills)) updates.verifiedSkills = verifiedSkills;
+    if (careerReadiness !== undefined) updates.careerReadiness = Number(careerReadiness);
 
     const updatedUser = db.updateUser(req.user.id, updates);
     if (!updatedUser) {

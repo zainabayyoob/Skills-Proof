@@ -68,24 +68,48 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
 
   const handleOpenApplyModal = (opp) => {
     setSelectedOpp(opp);
-    setCandidateNote(`Excited to apply for the ${opp.title} role! My SkillProof Passport contains verified capability evidence withstanding production mutations.`);
+    setCandidateNote(`Applied via ${opp.source || 'Official Career Portal'}. Tracking verified SkillProof benchmark evidence.`);
     setAppliedSuccess(false);
     setApplyModalOpen(true);
   };
 
   const handleConfirmApply = async () => {
     if (!selectedOpp) return;
-    storageService.applyToOpportunity(selectedOpp, student, candidateNote);
 
-    if (isAuthenticated) {
-      try {
-        await api.opportunities.apply(selectedOpp.id, candidateNote);
-      } catch (err) {
-        console.warn('Backend application sync warning:', err);
-      }
+    // Automatically open the official career portal in a new tab
+    if (selectedOpp.officialUrl) {
+      window.open(selectedOpp.officialUrl, '_blank', 'noopener,noreferrer');
     }
 
-    setApplications(storageService.getApplications());
+    const isExternal = selectedOpp.applicationType === 'External Application';
+
+    // Track in database
+    if (isAuthenticated) {
+      try {
+        await api.applications.create({
+          opportunityId: selectedOpp.id,
+          company: selectedOpp.company,
+          role: selectedOpp.title,
+          opportunityType: selectedOpp.type || 'Internship',
+          source: selectedOpp.source || 'Official Career Portal',
+          applicationUrl: selectedOpp.officialUrl || '',
+          location: selectedOpp.location,
+          stipend: selectedOpp.stipend,
+          status: 'Applied',
+          notes: isExternal ? 'Application submitted on external platform.' : candidateNote,
+          isExternal
+        });
+        const res = await api.applications.list();
+        setApplications(res.applications || []);
+      } catch (err) {
+        storageService.applyToOpportunity(selectedOpp, student, candidateNote);
+        setApplications(storageService.getApplications());
+      }
+    } else {
+      storageService.applyToOpportunity(selectedOpp, student, candidateNote);
+      setApplications(storageService.getApplications());
+    }
+
     setAppliedSuccess(true);
     
     confetti({
@@ -354,10 +378,9 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
               <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h4 className="text-lg font-bold text-white">Application Successfully Submitted!</h4>
+              <h4 className="text-lg font-bold text-white">Application Pipeline Updated!</h4>
               <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-                Your verified SkillProof Passport hash <strong className="text-emerald-400">{student.passportHash}</strong> has been transmitted. The recruiter at{' '}
-                <strong>{selectedOpp.company}</strong> can now inspect your code diffs, capability evidence, and mutation audit trail.
+                The official career application portal for <strong>{selectedOpp.company}</strong> has been opened in a new tab. This opportunity is now tracked in your personal <strong>Application Tracker</strong> under "Applied" with the status: <em>"Application submitted on external platform."</em>
               </p>
               <div className="pt-3 flex justify-center gap-3">
                 <Link
@@ -376,32 +399,36 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
             </div>
           ) : (
             <div className="space-y-4 text-xs">
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-white text-sm">{selectedOpp.title}</span>
-                  <span className="font-bold text-emerald-400 text-sm">{selectedOpp.matchScore}% Match</span>
+                  <span className="px-2.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-bold border border-indigo-500/30">
+                    {selectedOpp.applicationType || 'External Application'}
+                  </span>
                 </div>
                 <p className="text-slate-400">{selectedOpp.company} • {selectedOpp.stipend} • {selectedOpp.location}</p>
+                {selectedOpp.officialUrl && (
+                  <div className="text-[11px] text-brand-400 font-mono pt-1 truncate">
+                    Official Portal: {selectedOpp.officialUrl}
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-2">
-                <p className="font-bold text-slate-200">Attached SkillProof Credentials:</p>
-                <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-1.5 font-mono text-[11px] text-slate-300">
-                  <p>✓ Candidate: {student.name} ({student.college})</p>
-                  <p>✓ Career Readiness Index: {student.careerReadiness}%</p>
-                  <p>✓ Verified Evidence: BUILD ✓ BREAK ✓ ADAPT ✓</p>
-                  <p>✓ Cryptographic Hash: {student.passportHash || 'SKP-2026-VERIFIED-HASH'}</p>
-                </div>
+              <div className="p-3 bg-blue-950/30 border border-blue-500/30 rounded-xl space-y-1 text-slate-300 text-[11px]">
+                <strong className="text-blue-300 block font-semibold">Official Application Workflow:</strong>
+                <p>
+                  Clicking <strong>"Open Official Portal & Track"</strong> will launch the genuine career application page for {selectedOpp.company}. SkillProof will log this application in your personal Application Tracker so you can track interviews, notes, and follow-up deadlines.
+                </p>
               </div>
 
               <div className="space-y-1.5">
                 <label className="font-bold text-slate-300 uppercase tracking-wider text-[10px]">
-                  Candidate Introduction Note (Optional):
+                  Application Notes / Tracking Note (Optional):
                 </label>
                 <textarea
                   value={candidateNote}
                   onChange={(e) => setCandidateNote(e.target.value)}
-                  rows={3}
+                  rows={2}
                   className="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-brand-500 leading-relaxed"
                 />
               </div>
@@ -417,8 +444,8 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
                   onClick={handleConfirmApply}
                   className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold shadow-lg shadow-brand-600/30 flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Confirm & Submit with Passport</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open Official Portal & Track</span>
                 </button>
               </div>
             </div>

@@ -163,8 +163,153 @@ export const api = {
     },
 
     getApplications: async () => {
-      const res = await fetch(`${API_BASE}/opportunities/applications`, {
+      const res = await fetch(`${API_BASE}/applications`, {
         headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+  },
+
+  // Full-Featured Application Tracker API
+  applications: {
+    list: async () => {
+      const res = await fetch(`${API_BASE}/applications`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    create: async (appData) => {
+      const res = await fetch(`${API_BASE}/applications`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(appData),
+      });
+      return handleResponse(res);
+    },
+
+    update: async (id, updates) => {
+      const res = await fetch(`${API_BASE}/applications/${id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updates),
+      });
+      return handleResponse(res);
+    },
+
+    delete: async (id) => {
+      const res = await fetch(`${API_BASE}/applications/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+  },
+
+  // Industry Recruiter API
+  industry: {
+    getProfile: async () => {
+      const res = await fetch(`${API_BASE}/industry/profile`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    updateProfile: async (profileData) => {
+      const res = await fetch(`${API_BASE}/industry/profile`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(profileData),
+      });
+      return handleResponse(res);
+    },
+
+    getOpportunities: async () => {
+      const res = await fetch(`${API_BASE}/industry/opportunities`);
+      return handleResponse(res);
+    },
+
+    postOpportunity: async (oppData) => {
+      const res = await fetch(`${API_BASE}/industry/opportunities`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(oppData),
+      });
+      return handleResponse(res);
+    },
+
+    getCandidates: async (filters = {}) => {
+      const params = new URLSearchParams(filters).toString();
+      const res = await fetch(`${API_BASE}/industry/candidates?${params}`);
+      return handleResponse(res);
+    },
+
+    shortlistCandidate: async (studentId, studentName, roleTitle) => {
+      const res = await fetch(`${API_BASE}/industry/shortlist`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ studentId, studentName, roleTitle }),
+      });
+      return handleResponse(res);
+    },
+
+    getApplications: async () => {
+      const res = await fetch(`${API_BASE}/industry/applications`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    updateApplicationStatus: async (id, status, note = '') => {
+      const res = await fetch(`${API_BASE}/industry/applications/${id}/status`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ status, note }),
+      });
+      return handleResponse(res);
+    },
+  },
+
+  // College & Academia API
+  college: {
+    getAnalytics: async () => {
+      const res = await fetch(`${API_BASE}/college/analytics`);
+      return handleResponse(res);
+    },
+
+    getGroups: async () => {
+      const res = await fetch(`${API_BASE}/college/groups`);
+      return handleResponse(res);
+    },
+
+    createGroup: async (groupData) => {
+      const res = await fetch(`${API_BASE}/college/groups`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(groupData),
+      });
+      return handleResponse(res);
+    },
+
+    assignAssessment: async (assignmentData) => {
+      const res = await fetch(`${API_BASE}/college/assign`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(assignmentData),
+      });
+      return handleResponse(res);
+    },
+
+    getFaculty: async () => {
+      const res = await fetch(`${API_BASE}/college/faculty`);
+      return handleResponse(res);
+    },
+
+    addFacultyActivity: async (activityData) => {
+      const res = await fetch(`${API_BASE}/college/faculty/activity`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(activityData),
       });
       return handleResponse(res);
     },

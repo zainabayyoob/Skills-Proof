@@ -447,7 +447,7 @@
       "github": "",
       "linkedin": "",
       "targetRole": "Full Stack Web Developer",
-      "careerReadiness": 40,
+      "careerReadiness": 70,
       "verifiedSkills": [
         {
           "name": "HTML & CSS",
@@ -457,6 +457,16 @@
           "verifiedAt": "2026-09-09",
           "badge": "Bronze",
           "latestAttemptNumber": 3
+        },
+        {
+          "name": "C",
+          "skillId": "c",
+          "score": 100,
+          "level": "Advanced",
+          "quizPassed": true,
+          "verifiedAt": "2026-09-09",
+          "badge": "Gold",
+          "latestAttemptNumber": 2
         }
       ],
       "skillGaps": [
@@ -509,7 +519,7 @@
       "recommendedRoles": [
         {
           "role": "Full Stack Web Developer",
-          "match": 6,
+          "match": 11,
           "demand": "Very High",
           "topMissing": [
             "Frontend (React)",
@@ -521,7 +531,7 @@
         },
         {
           "role": "Backend Systems Engineer",
-          "match": 6,
+          "match": 11,
           "demand": "Critical",
           "topMissing": [
             "Python",
@@ -533,7 +543,7 @@
         },
         {
           "role": "Data & AI Engineer",
-          "match": 6,
+          "match": 11,
           "demand": "High",
           "topMissing": [
             "Python",
@@ -543,7 +553,7 @@
         },
         {
           "role": "Frontend Specialist",
-          "match": 6,
+          "match": 11,
           "demand": "High",
           "topMissing": [
             "Frontend (React)",
@@ -552,10 +562,28 @@
           ]
         }
       ],
-      "passportHash": "SKP-2026-HTM-MTU255LQ",
+      "passportHash": "SKP-2026-C-MTUM98H4",
       "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
       "createdAt": "2026-09-06T08:53:45.057Z",
-      "updatedAt": "2026-09-09T12:11:22.915Z"
+      "updatedAt": "2026-09-09T21:34:25.590Z",
+      "unlockedCodingSkills": {
+        "c": {
+          "unlocked": true,
+          "quizScore": 100,
+          "unlockedAt": "2026-09-09T21:34:25.570Z"
+        }
+      },
+      "notifications": [
+        {
+          "id": "notif_1788989665572_j39n",
+          "title": "Coding Assessment Unlocked!",
+          "message": "Congratulations! You scored 100% on the C quiz. You have unlocked the Build-Break-Adapt coding challenge.",
+          "type": "ASSESSMENT_UNLOCKED",
+          "skillId": "c",
+          "createdAt": "2026-09-09T21:34:25.572Z",
+          "read": false
+        }
+      ]
     },
     {
       "id": "usr_1788988557120_209sb2",
@@ -828,6 +856,415 @@
       "passportHash": null,
       "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
       "createdAt": "2026-09-09T21:16:08.378Z"
+    },
+    {
+      "id": "usr_1788988658925_i44ko9",
+      "name": "Test Candidate",
+      "email": "cand_1788988658923@example.com",
+      "phone": "+919876543210",
+      "passwordHash": "hash123",
+      "college": "Institute of Technology",
+      "degree": "Computer Science & Engineering",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Full Stack Web Developer",
+      "careerReadiness": 0,
+      "verifiedSkills": [],
+      "skillGaps": [
+        {
+          "skill": "Frontend (React)",
+          "skillId": "react",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Frontend (React) Skill"
+        },
+        {
+          "skill": "Backend (Node.js)",
+          "skillId": "node",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Backend (Node.js) Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "JavaScript",
+          "skillId": "javascript",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove JavaScript Skill"
+        },
+        {
+          "skill": "HTML & CSS",
+          "skillId": "htmlcss",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove HTML & CSS Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 0,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend (React)",
+            "Backend (Node.js)",
+            "SQL",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 0,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Backend (Node.js)",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Frontend (React)",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        }
+      ],
+      "notifications": [
+        {
+          "id": "notif_1788988658954_6wc0",
+          "type": "INFO",
+          "title": "Assessment Unlocked",
+          "message": "Your coding challenge is ready",
+          "channel": "SMS_READY",
+          "deliveryStatus": "QUEUED_FOR_SMS_GATEWAY",
+          "channelNote": "Ready for SMS dispatch to +919876543210",
+          "metadata": {},
+          "createdAt": "2026-09-09T21:17:38.954Z",
+          "read": false
+        },
+        {
+          "id": "notif_1788988658940_7pe5",
+          "type": "INFO",
+          "title": "Assessment Unlocked",
+          "message": "Your coding challenge is ready",
+          "channel": "IN_APP",
+          "deliveryStatus": "DELIVERED",
+          "channelNote": null,
+          "metadata": {},
+          "createdAt": "2026-09-09T21:17:38.940Z",
+          "read": false
+        },
+        {
+          "id": "notif_1788988658925_welcome",
+          "type": "WELCOME",
+          "title": "Welcome to SkillProof!",
+          "message": "Your candidate profile is ready. Select a skill to take the qualifying quiz and unlock coding challenges.",
+          "channel": "IN_APP",
+          "createdAt": "2026-09-09T21:17:38.925Z",
+          "read": false
+        }
+      ],
+      "passportHash": null,
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-09T21:17:38.926Z"
+    },
+    {
+      "id": "usr_1788991833205_ohp1az",
+      "name": "Priya Sharma",
+      "email": "priya.1788991833010@university.edu",
+      "phone": "+91 98111 22233",
+      "passwordHash": "$2b$10$E04aaxky2pqiyv/D..SOXu7o6zInxFn6EGvXZ0Ylj0Zp7Zso3tIPu",
+      "college": "IIT Delhi",
+      "degree": "B.Tech Computer Science",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Data Platform Engineer",
+      "careerReadiness": 92,
+      "verifiedSkills": [
+        {
+          "name": "Python",
+          "score": 92,
+          "level": "Advanced",
+          "verifiedAt": "2026-09-10",
+          "badge": "Gold"
+        }
+      ],
+      "skillGaps": [
+        {
+          "skill": "Frontend",
+          "skillId": "react",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Frontend Skill"
+        },
+        {
+          "skill": "Backend",
+          "skillId": "node",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Backend Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "JavaScript",
+          "skillId": "javascript",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove JavaScript Skill"
+        },
+        {
+          "skill": "HTML / CSS",
+          "skillId": "htmlcss",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove HTML / CSS Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 14,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend",
+            "Backend",
+            "SQL",
+            "JavaScript",
+            "HTML / CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 31,
+          "demand": "Critical",
+          "topMissing": [
+            "SQL",
+            "Backend",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 42,
+          "demand": "High",
+          "topMissing": [
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 14,
+          "demand": "High",
+          "topMissing": [
+            "Frontend",
+            "JavaScript",
+            "HTML / CSS"
+          ]
+        }
+      ],
+      "notifications": [
+        {
+          "id": "notif_1788991833205_welcome",
+          "type": "WELCOME",
+          "title": "Welcome to SkillProof!",
+          "message": "Your candidate profile is ready. Select a skill to take the qualifying quiz and unlock coding challenges.",
+          "channel": "IN_APP",
+          "createdAt": "2026-09-09T22:10:33.205Z",
+          "read": false
+        }
+      ],
+      "passportHash": null,
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-09T22:10:33.206Z",
+      "updatedAt": "2026-09-09T22:10:33.323Z"
+    },
+    {
+      "id": "usr_1788991833306_pr73m7",
+      "name": "Rohan Verma",
+      "email": "rohan.1788991833010@university.edu",
+      "phone": "+91 98444 55566",
+      "passwordHash": "$2b$10$kkfGvHP1cGmkiYW.jonruOZpyhY/mt8hJ4LOoBUP6f4A7Gpy4AaS2",
+      "college": "BITS Pilani",
+      "degree": "B.E. Computer Engineering",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Full Stack Web Developer",
+      "careerReadiness": 84,
+      "verifiedSkills": [
+        {
+          "name": "SQL",
+          "score": 84,
+          "level": "Proficient",
+          "verifiedAt": "2026-09-10",
+          "badge": "Silver"
+        }
+      ],
+      "skillGaps": [
+        {
+          "skill": "Frontend",
+          "skillId": "react",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Frontend Skill"
+        },
+        {
+          "skill": "Backend",
+          "skillId": "node",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Backend Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 84,
+          "requiredScore": 70,
+          "gap": 0,
+          "status": "Verified",
+          "action": "Skill Verified"
+        },
+        {
+          "skill": "JavaScript",
+          "skillId": "javascript",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove JavaScript Skill"
+        },
+        {
+          "skill": "HTML / CSS",
+          "skillId": "htmlcss",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove HTML / CSS Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 30,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend",
+            "Backend",
+            "JavaScript",
+            "HTML / CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 30,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "Backend",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 41,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 13,
+          "demand": "High",
+          "topMissing": [
+            "Frontend",
+            "JavaScript",
+            "HTML / CSS"
+          ]
+        }
+      ],
+      "notifications": [
+        {
+          "id": "notif_1788991833306_welcome",
+          "type": "WELCOME",
+          "title": "Welcome to SkillProof!",
+          "message": "Your candidate profile is ready. Select a skill to take the qualifying quiz and unlock coding challenges.",
+          "channel": "IN_APP",
+          "createdAt": "2026-09-09T22:10:33.306Z",
+          "read": false
+        }
+      ],
+      "passportHash": null,
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-09T22:10:33.306Z",
+      "updatedAt": "2026-09-09T22:10:33.340Z"
     }
   ],
   "testAttempts": [
@@ -1851,107 +2288,2401 @@
         "hc-q4": "opt_3"
       },
       "completedAt": "2026-09-09T12:11:22.852Z"
+    },
+    {
+      "id": "att_1788989019712_kfk22a",
+      "userId": "usr_1788684825056_b3kgge",
+      "skillId": "c",
+      "skillName": "C",
+      "status": "completed",
+      "startedAt": "2026-09-09T21:23:39.712Z",
+      "questionMappings": [
+        {
+          "questionId": "c-q13",
+          "difficulty": "basic",
+          "question": "Which header file must be included to use malloc() and free() in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "<stdio.h>"
+            },
+            {
+              "id": "opt_2",
+              "text": "<stdlib.h>"
+            },
+            {
+              "id": "opt_4",
+              "text": "<memory.h>"
+            },
+            {
+              "id": "opt_3",
+              "text": "<string.h>"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "<stdlib.h> contains the function prototypes for dynamic memory allocation functions malloc, calloc, realloc, and free."
+        },
+        {
+          "questionId": "c-q2",
+          "difficulty": "basic",
+          "question": "What happens if you allocate dynamic memory with `malloc()` but never call `free()` before program exit?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "A segmentation fault occurs immediately"
+            },
+            {
+              "id": "opt_4",
+              "text": "The memory is automatically freed by the C runtime garbage collector"
+            },
+            {
+              "id": "opt_2",
+              "text": "A memory leak occurs during execution; operating systems reclaim the virtual address space upon process termination"
+            },
+            {
+              "id": "opt_3",
+              "text": "The compiler issues a fatal syntax error"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Failing to free heap memory causes a memory leak that consumes RAM during program runtime. While modern OSes clean up process memory on exit, long-running services will exhaust system memory."
+        },
+        {
+          "questionId": "c-q3",
+          "difficulty": "basic",
+          "question": "What is a \"dangling pointer\" in C programming?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "A pointer that has not yet been declared"
+            },
+            {
+              "id": "opt_2",
+              "text": "A pointer that points to a memory location that has already been deallocated"
+            },
+            {
+              "id": "opt_1",
+              "text": "A pointer initialized to NULL"
+            },
+            {
+              "id": "opt_3",
+              "text": "A pointer stored in read-only code segment"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "A dangling pointer references memory that has been freed. Dereferencing it leads to undefined behavior or security vulnerabilities."
+        },
+        {
+          "questionId": "c-q11",
+          "difficulty": "basic",
+          "question": "What is the correct format specifier for printing an unsigned integer using printf?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "%u"
+            },
+            {
+              "id": "opt_1",
+              "text": "%d"
+            },
+            {
+              "id": "opt_3",
+              "text": "%i"
+            },
+            {
+              "id": "opt_4",
+              "text": "%f"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "%u is specifically designated for printing unsigned decimal integers in C."
+        },
+        {
+          "questionId": "c-q14",
+          "difficulty": "basic",
+          "question": "What character is automatically appended to string literals to indicate their end in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "'\\0'"
+            },
+            {
+              "id": "opt_3",
+              "text": "'EOF'"
+            },
+            {
+              "id": "opt_1",
+              "text": "'\\n'"
+            },
+            {
+              "id": "opt_4",
+              "text": "';'"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "C strings are null-terminated character arrays ending with the null terminator character '\\0' (ASCII 0)."
+        },
+        {
+          "questionId": "c-q12",
+          "difficulty": "basic",
+          "question": "What does the sizeof operator return in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "Size in bytes as a size_t"
+            },
+            {
+              "id": "opt_3",
+              "text": "Number of memory addresses allocated"
+            },
+            {
+              "id": "opt_4",
+              "text": "Length of string excluding null character"
+            },
+            {
+              "id": "opt_1",
+              "text": "Size in bits"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "sizeof returns the memory size of an expression or type in bytes, represented as size_t."
+        },
+        {
+          "questionId": "c-q1",
+          "difficulty": "basic",
+          "question": "What is the output of pointer arithmetic when incrementing `ptr++` where `int *ptr = 1000;` on a 64-bit system where `sizeof(int) == 4`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "1004"
+            },
+            {
+              "id": "opt_3",
+              "text": "1008"
+            },
+            {
+              "id": "opt_4",
+              "text": "Undefined behavior"
+            },
+            {
+              "id": "opt_1",
+              "text": "1001"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "In C, incrementing a typed pointer increases its address by sizeof(T) bytes. Since sizeof(int) is 4, 1000 + 4 = 1004."
+        },
+        {
+          "questionId": "c-q6",
+          "difficulty": "intermediate",
+          "question": "What does the `static` keyword mean when applied to a global variable in a C source file (.c)?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "The variable cannot be modified (constant)"
+            },
+            {
+              "id": "opt_3",
+              "text": "The variable is stored on the stack frame"
+            },
+            {
+              "id": "opt_4",
+              "text": "The variable is dynamically allocated at runtime"
+            },
+            {
+              "id": "opt_2",
+              "text": "The variable has internal linkage, meaning it is only visible within that compilation unit"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "When used at file scope, static gives the symbol internal linkage, preventing other translation units from linking or referencing it directly."
+        },
+        {
+          "questionId": "c-q16",
+          "difficulty": "intermediate",
+          "question": "What is a \"dangling pointer\" in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "An uninitialized pointer pointing to arbitrary memory"
+            },
+            {
+              "id": "opt_2",
+              "text": "A pointer pointing to a memory location that has already been deallocated"
+            },
+            {
+              "id": "opt_1",
+              "text": "A pointer that points to NULL"
+            },
+            {
+              "id": "opt_4",
+              "text": "A pointer declared inside a recursive function"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "A dangling pointer arises when memory pointed to by a pointer has been freed, but the pointer was not reset to NULL."
+        },
+        {
+          "questionId": "c-q20",
+          "difficulty": "intermediate",
+          "question": "What is structure padding in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "Adding empty string fields to structs"
+            },
+            {
+              "id": "opt_2",
+              "text": "Compiler insertion of unused bytes between structure members to satisfy hardware memory alignment requirements"
+            },
+            {
+              "id": "opt_3",
+              "text": "Encrypting structure data in memory"
+            },
+            {
+              "id": "opt_4",
+              "text": "Reserving memory for future struct expansion"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Processors access memory more efficiently in 4-byte or 8-byte aligned words; compilers pad structures to align member offsets."
+        },
+        {
+          "questionId": "c-q5",
+          "difficulty": "intermediate",
+          "question": "Why do C compilers add padding bytes between struct members?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "To leave space for object-oriented virtual method tables"
+            },
+            {
+              "id": "opt_2",
+              "text": "To satisfy hardware memory alignment requirements for efficient CPU bus access"
+            },
+            {
+              "id": "opt_4",
+              "text": "To prevent buffer overflow exploits"
+            },
+            {
+              "id": "opt_1",
+              "text": "To encrypt struct data in memory"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Modern CPU architectures access memory faster when multi-byte data types are aligned to addresses that are multiples of their size. Compilers insert padding to ensure proper data alignment."
+        },
+        {
+          "questionId": "c-q4",
+          "difficulty": "intermediate",
+          "question": "What character marks the end of a valid C-string in memory?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "Null character '\\0' (ASCII 0)"
+            },
+            {
+              "id": "opt_1",
+              "text": "Character '/n'"
+            },
+            {
+              "id": "opt_4",
+              "text": "Character '$'"
+            },
+            {
+              "id": "opt_3",
+              "text": "EOF marker"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "C strings are null-terminated byte sequences where the character '\\0' denotes the end of the string. Functions like strlen() scan until reaching this byte."
+        },
+        {
+          "questionId": "c-q19",
+          "difficulty": "intermediate",
+          "question": "What happens when you pass an array to a function in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "The function receives the array length automatically as a hidden argument"
+            },
+            {
+              "id": "opt_4",
+              "text": "Compilation fails unless passed by reference using the & operator"
+            },
+            {
+              "id": "opt_2",
+              "text": "The array decays into a pointer to its first element"
+            },
+            {
+              "id": "opt_1",
+              "text": "A complete deep copy of the array elements is created on the call stack"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "In C, array names decay into a pointer to the type of their first element when passed as function arguments."
+        },
+        {
+          "questionId": "c-q7",
+          "difficulty": "intermediate",
+          "question": "What is the difference between `malloc()` and `calloc()`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "calloc() initializes the allocated memory to all zero bits; malloc() leaves memory uninitialized"
+            },
+            {
+              "id": "opt_1",
+              "text": "calloc() allocates stack memory; malloc() allocates heap memory"
+            },
+            {
+              "id": "opt_3",
+              "text": "malloc() automatically frees memory when out of scope"
+            },
+            {
+              "id": "opt_4",
+              "text": "calloc() can only allocate memory for char pointers"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "calloc(num, size) zeroes out all allocated memory bytes and checks for integer overflow in the size calculation. malloc(size) leaves the memory contents indeterminate."
+        },
+        {
+          "questionId": "c-q24",
+          "difficulty": "advanced",
+          "question": "What does realloc(ptr, 0) do in standard compliant modern C (C23)?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Allocates a zero-length array"
+            },
+            {
+              "id": "opt_1",
+              "text": "Doubles the allocated buffer"
+            },
+            {
+              "id": "opt_2",
+              "text": "Has undefined or deallocating behavior; modern C standard deprecates or treats zero size as freeing ptr or returning NULL"
+            },
+            {
+              "id": "opt_4",
+              "text": "Throws a BadAllocException"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Calling realloc with size 0 is historically undefined/inconsistent and in modern standards frees the memory or returns NULL."
+        },
+        {
+          "questionId": "c-q21",
+          "difficulty": "advanced",
+          "question": "What does the `volatile` type qualifier tell the C compiler?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "The variable can be modified by hardware or concurrent threads, disabling compiler caching/optimization into CPU registers"
+            },
+            {
+              "id": "opt_3",
+              "text": "The variable must be cleared when a function returns"
+            },
+            {
+              "id": "opt_4",
+              "text": "The variable is thread-safe and atomic"
+            },
+            {
+              "id": "opt_1",
+              "text": "The variable will be stored on external persistent storage"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "`volatile` tells the compiler never to optimize away reads or writes to the variable, ensuring every read/write hits actual memory."
+        },
+        {
+          "questionId": "c-q8",
+          "difficulty": "advanced",
+          "question": "What is the bitwise result of `5 & 3` in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "7"
+            },
+            {
+              "id": "opt_4",
+              "text": "8"
+            },
+            {
+              "id": "opt_3",
+              "text": "0"
+            },
+            {
+              "id": "opt_2",
+              "text": "1"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "5 in binary is 0101; 3 in binary is 0011. Performing bitwise AND (0101 & 0011) results in 0001, which is 1."
+        },
+        {
+          "questionId": "c-q23",
+          "difficulty": "advanced",
+          "question": "What is Undefined Behavior (UB) in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "Code execution for which the ISO C standard imposes no requirements, allowing crashes, corrupted data, or erratic behavior"
+            },
+            {
+              "id": "opt_4",
+              "text": "Platform-dependent behavior with documented implementation choices"
+            },
+            {
+              "id": "opt_1",
+              "text": "An error reported during compilation with code -1"
+            },
+            {
+              "id": "opt_3",
+              "text": "A syntax error caught by linting tools"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Undefined behavior occurs when code violates standard rules (like buffer overflow or dereferencing null); compilers make no guarantees about execution."
+        },
+        {
+          "questionId": "c-q9",
+          "difficulty": "advanced",
+          "question": "What is the danger of using `gets()` in C, which led to its complete removal in C11?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "It cannot read strings containing spaces"
+            },
+            {
+              "id": "opt_4",
+              "text": "It is too slow compared to scanf"
+            },
+            {
+              "id": "opt_2",
+              "text": "It does not perform boundary checks on the destination buffer, allowing catastrophic buffer overflow vulnerabilities"
+            },
+            {
+              "id": "opt_1",
+              "text": "It fails to convert uppercase to lowercase"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "gets() has no mechanism to limit the number of characters read, meaning user input exceeding the destination buffer will overwrite adjacent stack memory, enabling arbitrary code execution."
+        },
+        {
+          "questionId": "c-q25",
+          "difficulty": "advanced",
+          "question": "How can you prevent multiple inclusion of header files in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Declaring all headers with extern"
+            },
+            {
+              "id": "opt_1",
+              "text": "Using static inline declarations"
+            },
+            {
+              "id": "opt_2",
+              "text": "Using preprocessor include guards (#ifndef HEADER_H ... #endif) or #pragma once"
+            },
+            {
+              "id": "opt_4",
+              "text": "Compiling with the -no-duplicate flag"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Include guards (#ifndef, #define, #endif) prevent compiler errors caused by re-declaring types when a header is included multiple times."
+        },
+        {
+          "questionId": "c-q22",
+          "difficulty": "advanced",
+          "question": "What is the syntax for declaring a pointer to a function taking two ints and returning an int in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "int (*fp)(int, int);"
+            },
+            {
+              "id": "opt_1",
+              "text": "int *fp(int, int);"
+            },
+            {
+              "id": "opt_3",
+              "text": "int (int, int) *fp;"
+            },
+            {
+              "id": "opt_4",
+              "text": "function<int(int, int)> fp;"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Parentheses around `(*fp)` bind the pointer operator to the identifier; without parentheses, it declares a function returning an int pointer."
+        }
+      ],
+      "totalQuestions": 21,
+      "score": 24,
+      "quizPassed": false,
+      "correctCount": 5,
+      "totalCount": 21,
+      "attemptNumber": 1,
+      "userAnswers": {
+        "c-q13": "opt_1",
+        "c-q2": "opt_4",
+        "c-q3": "opt_3",
+        "c-q11": "opt_2",
+        "c-q14": "opt_4",
+        "c-q12": "opt_2",
+        "c-q1": "opt_4",
+        "c-q6": "opt_4",
+        "c-q16": "opt_1",
+        "c-q20": "opt_1",
+        "c-q5": "opt_1",
+        "c-q4": "opt_1",
+        "c-q19": "opt_1",
+        "c-q7": "opt_3",
+        "c-q24": "opt_2",
+        "c-q21": "opt_2",
+        "c-q8": "opt_2",
+        "c-q23": "opt_1",
+        "c-q9": "opt_1",
+        "c-q25": "opt_3",
+        "c-q22": "opt_3"
+      },
+      "completedAt": "2026-09-09T21:24:53.395Z"
+    },
+    {
+      "id": "att_1788989198290_v3lmli",
+      "userId": "usr_1788684825056_b3kgge",
+      "skillId": "c",
+      "skillName": "C",
+      "status": "in_progress",
+      "startedAt": "2026-09-09T21:26:38.290Z",
+      "questionMappings": [
+        {
+          "questionId": "c-q13",
+          "difficulty": "basic",
+          "question": "Which header file must be included to use malloc() and free() in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "<memory.h>"
+            },
+            {
+              "id": "opt_3",
+              "text": "<string.h>"
+            },
+            {
+              "id": "opt_2",
+              "text": "<stdlib.h>"
+            },
+            {
+              "id": "opt_1",
+              "text": "<stdio.h>"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "<stdlib.h> contains the function prototypes for dynamic memory allocation functions malloc, calloc, realloc, and free."
+        },
+        {
+          "questionId": "c-q11",
+          "difficulty": "basic",
+          "question": "What is the correct format specifier for printing an unsigned integer using printf?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "%f"
+            },
+            {
+              "id": "opt_1",
+              "text": "%d"
+            },
+            {
+              "id": "opt_2",
+              "text": "%u"
+            },
+            {
+              "id": "opt_3",
+              "text": "%i"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "%u is specifically designated for printing unsigned decimal integers in C."
+        },
+        {
+          "questionId": "c-q14",
+          "difficulty": "basic",
+          "question": "What character is automatically appended to string literals to indicate their end in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "'\\n'"
+            },
+            {
+              "id": "opt_2",
+              "text": "'\\0'"
+            },
+            {
+              "id": "opt_4",
+              "text": "';'"
+            },
+            {
+              "id": "opt_3",
+              "text": "'EOF'"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "C strings are null-terminated character arrays ending with the null terminator character '\\0' (ASCII 0)."
+        },
+        {
+          "questionId": "c-q15",
+          "difficulty": "basic",
+          "question": "What is the value of 5 & 3 using the bitwise AND operator?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "7"
+            },
+            {
+              "id": "opt_4",
+              "text": "0"
+            },
+            {
+              "id": "opt_1",
+              "text": "1"
+            },
+            {
+              "id": "opt_3",
+              "text": "8"
+            }
+          ],
+          "correctOptionId": "opt_1",
+          "explanation": "5 in binary is 101, and 3 is 011. The bitwise AND produces 001, which is 1."
+        },
+        {
+          "questionId": "c-q1",
+          "difficulty": "basic",
+          "question": "What is the output of pointer arithmetic when incrementing `ptr++` where `int *ptr = 1000;` on a 64-bit system where `sizeof(int) == 4`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "1008"
+            },
+            {
+              "id": "opt_1",
+              "text": "1001"
+            },
+            {
+              "id": "opt_4",
+              "text": "Undefined behavior"
+            },
+            {
+              "id": "opt_2",
+              "text": "1004"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "In C, incrementing a typed pointer increases its address by sizeof(T) bytes. Since sizeof(int) is 4, 1000 + 4 = 1004."
+        },
+        {
+          "questionId": "c-q3",
+          "difficulty": "basic",
+          "question": "What is a \"dangling pointer\" in C programming?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "A pointer that points to a memory location that has already been deallocated"
+            },
+            {
+              "id": "opt_1",
+              "text": "A pointer initialized to NULL"
+            },
+            {
+              "id": "opt_4",
+              "text": "A pointer that has not yet been declared"
+            },
+            {
+              "id": "opt_3",
+              "text": "A pointer stored in read-only code segment"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "A dangling pointer references memory that has been freed. Dereferencing it leads to undefined behavior or security vulnerabilities."
+        },
+        {
+          "questionId": "c-q12",
+          "difficulty": "basic",
+          "question": "What does the sizeof operator return in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "Length of string excluding null character"
+            },
+            {
+              "id": "opt_2",
+              "text": "Size in bytes as a size_t"
+            },
+            {
+              "id": "opt_1",
+              "text": "Size in bits"
+            },
+            {
+              "id": "opt_3",
+              "text": "Number of memory addresses allocated"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "sizeof returns the memory size of an expression or type in bytes, represented as size_t."
+        },
+        {
+          "questionId": "c-q18",
+          "difficulty": "intermediate",
+          "question": "What is the meaning of the `static` keyword when applied to a global variable in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "The variable cannot be modified (read-only)"
+            },
+            {
+              "id": "opt_3",
+              "text": "The variable is stored in processor registers"
+            },
+            {
+              "id": "opt_2",
+              "text": "The variable has internal linkage, restricting its scope to the translation unit (.c file) where it is defined"
+            },
+            {
+              "id": "opt_4",
+              "text": "The variable is automatically freed when main exits"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "A static global variable has internal linkage, preventing other object files from accessing it via the extern keyword."
+        },
+        {
+          "questionId": "c-q20",
+          "difficulty": "intermediate",
+          "question": "What is structure padding in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "Reserving memory for future struct expansion"
+            },
+            {
+              "id": "opt_1",
+              "text": "Adding empty string fields to structs"
+            },
+            {
+              "id": "opt_2",
+              "text": "Compiler insertion of unused bytes between structure members to satisfy hardware memory alignment requirements"
+            },
+            {
+              "id": "opt_3",
+              "text": "Encrypting structure data in memory"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Processors access memory more efficiently in 4-byte or 8-byte aligned words; compilers pad structures to align member offsets."
+        },
+        {
+          "questionId": "c-q5",
+          "difficulty": "intermediate",
+          "question": "Why do C compilers add padding bytes between struct members?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "To satisfy hardware memory alignment requirements for efficient CPU bus access"
+            },
+            {
+              "id": "opt_1",
+              "text": "To encrypt struct data in memory"
+            },
+            {
+              "id": "opt_3",
+              "text": "To leave space for object-oriented virtual method tables"
+            },
+            {
+              "id": "opt_4",
+              "text": "To prevent buffer overflow exploits"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Modern CPU architectures access memory faster when multi-byte data types are aligned to addresses that are multiples of their size. Compilers insert padding to ensure proper data alignment."
+        },
+        {
+          "questionId": "c-q19",
+          "difficulty": "intermediate",
+          "question": "What happens when you pass an array to a function in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "A complete deep copy of the array elements is created on the call stack"
+            },
+            {
+              "id": "opt_4",
+              "text": "Compilation fails unless passed by reference using the & operator"
+            },
+            {
+              "id": "opt_3",
+              "text": "The function receives the array length automatically as a hidden argument"
+            },
+            {
+              "id": "opt_2",
+              "text": "The array decays into a pointer to its first element"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "In C, array names decay into a pointer to the type of their first element when passed as function arguments."
+        },
+        {
+          "questionId": "c-q6",
+          "difficulty": "intermediate",
+          "question": "What does the `static` keyword mean when applied to a global variable in a C source file (.c)?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "The variable is stored on the stack frame"
+            },
+            {
+              "id": "opt_1",
+              "text": "The variable cannot be modified (constant)"
+            },
+            {
+              "id": "opt_2",
+              "text": "The variable has internal linkage, meaning it is only visible within that compilation unit"
+            },
+            {
+              "id": "opt_4",
+              "text": "The variable is dynamically allocated at runtime"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "When used at file scope, static gives the symbol internal linkage, preventing other translation units from linking or referencing it directly."
+        },
+        {
+          "questionId": "c-q17",
+          "difficulty": "intermediate",
+          "question": "What is the primary difference between malloc() and calloc() in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "calloc allocates memory on the stack while malloc allocates on the heap"
+            },
+            {
+              "id": "opt_2",
+              "text": "calloc initializes allocated memory to zero; malloc leaves memory uninitialized"
+            },
+            {
+              "id": "opt_3",
+              "text": "malloc takes two parameters and calloc takes one"
+            },
+            {
+              "id": "opt_4",
+              "text": "malloc cannot allocate arrays"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "calloc(num, size) zeros out all allocated memory bits, whereas malloc(size) allocates raw memory containing indeterminate values."
+        },
+        {
+          "questionId": "c-q7",
+          "difficulty": "intermediate",
+          "question": "What is the difference between `malloc()` and `calloc()`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "malloc() automatically frees memory when out of scope"
+            },
+            {
+              "id": "opt_2",
+              "text": "calloc() initializes the allocated memory to all zero bits; malloc() leaves memory uninitialized"
+            },
+            {
+              "id": "opt_4",
+              "text": "calloc() can only allocate memory for char pointers"
+            },
+            {
+              "id": "opt_1",
+              "text": "calloc() allocates stack memory; malloc() allocates heap memory"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "calloc(num, size) zeroes out all allocated memory bytes and checks for integer overflow in the size calculation. malloc(size) leaves the memory contents indeterminate."
+        },
+        {
+          "questionId": "c-q21",
+          "difficulty": "advanced",
+          "question": "What does the `volatile` type qualifier tell the C compiler?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "The variable can be modified by hardware or concurrent threads, disabling compiler caching/optimization into CPU registers"
+            },
+            {
+              "id": "opt_1",
+              "text": "The variable will be stored on external persistent storage"
+            },
+            {
+              "id": "opt_4",
+              "text": "The variable is thread-safe and atomic"
+            },
+            {
+              "id": "opt_3",
+              "text": "The variable must be cleared when a function returns"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "`volatile` tells the compiler never to optimize away reads or writes to the variable, ensuring every read/write hits actual memory."
+        },
+        {
+          "questionId": "c-q10",
+          "difficulty": "advanced",
+          "question": "What does the `sizeof` operator in C return?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Memory address pointer"
+            },
+            {
+              "id": "opt_2",
+              "text": "Size in bytes as an unsigned integer type `size_t`"
+            },
+            {
+              "id": "opt_1",
+              "text": "Size in bits as an int"
+            },
+            {
+              "id": "opt_4",
+              "text": "Number of CPU clock cycles required"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "sizeof yields the memory size in bytes of its operand as a compile-time constant of type size_t."
+        },
+        {
+          "questionId": "c-q9",
+          "difficulty": "advanced",
+          "question": "What is the danger of using `gets()` in C, which led to its complete removal in C11?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "It fails to convert uppercase to lowercase"
+            },
+            {
+              "id": "opt_4",
+              "text": "It is too slow compared to scanf"
+            },
+            {
+              "id": "opt_3",
+              "text": "It cannot read strings containing spaces"
+            },
+            {
+              "id": "opt_2",
+              "text": "It does not perform boundary checks on the destination buffer, allowing catastrophic buffer overflow vulnerabilities"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "gets() has no mechanism to limit the number of characters read, meaning user input exceeding the destination buffer will overwrite adjacent stack memory, enabling arbitrary code execution."
+        },
+        {
+          "questionId": "c-q24",
+          "difficulty": "advanced",
+          "question": "What does realloc(ptr, 0) do in standard compliant modern C (C23)?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Allocates a zero-length array"
+            },
+            {
+              "id": "opt_1",
+              "text": "Doubles the allocated buffer"
+            },
+            {
+              "id": "opt_4",
+              "text": "Throws a BadAllocException"
+            },
+            {
+              "id": "opt_2",
+              "text": "Has undefined or deallocating behavior; modern C standard deprecates or treats zero size as freeing ptr or returning NULL"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Calling realloc with size 0 is historically undefined/inconsistent and in modern standards frees the memory or returns NULL."
+        },
+        {
+          "questionId": "c-q25",
+          "difficulty": "advanced",
+          "question": "How can you prevent multiple inclusion of header files in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "Using static inline declarations"
+            },
+            {
+              "id": "opt_2",
+              "text": "Using preprocessor include guards (#ifndef HEADER_H ... #endif) or #pragma once"
+            },
+            {
+              "id": "opt_4",
+              "text": "Compiling with the -no-duplicate flag"
+            },
+            {
+              "id": "opt_3",
+              "text": "Declaring all headers with extern"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Include guards (#ifndef, #define, #endif) prevent compiler errors caused by re-declaring types when a header is included multiple times."
+        },
+        {
+          "questionId": "c-q22",
+          "difficulty": "advanced",
+          "question": "What is the syntax for declaring a pointer to a function taking two ints and returning an int in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "int (int, int) *fp;"
+            },
+            {
+              "id": "opt_2",
+              "text": "int (*fp)(int, int);"
+            },
+            {
+              "id": "opt_4",
+              "text": "function<int(int, int)> fp;"
+            },
+            {
+              "id": "opt_1",
+              "text": "int *fp(int, int);"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Parentheses around `(*fp)` bind the pointer operator to the identifier; without parentheses, it declares a function returning an int pointer."
+        },
+        {
+          "questionId": "c-q23",
+          "difficulty": "advanced",
+          "question": "What is Undefined Behavior (UB) in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "An error reported during compilation with code -1"
+            },
+            {
+              "id": "opt_3",
+              "text": "A syntax error caught by linting tools"
+            },
+            {
+              "id": "opt_2",
+              "text": "Code execution for which the ISO C standard imposes no requirements, allowing crashes, corrupted data, or erratic behavior"
+            },
+            {
+              "id": "opt_4",
+              "text": "Platform-dependent behavior with documented implementation choices"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Undefined behavior occurs when code violates standard rules (like buffer overflow or dereferencing null); compilers make no guarantees about execution."
+        }
+      ],
+      "totalQuestions": 21
+    },
+    {
+      "id": "att_1788989198321_xorc02",
+      "userId": "usr_1788684825056_b3kgge",
+      "skillId": "c",
+      "skillName": "C",
+      "status": "completed",
+      "startedAt": "2026-09-09T21:26:38.321Z",
+      "questionMappings": [
+        {
+          "questionId": "c-q13",
+          "difficulty": "basic",
+          "question": "Which header file must be included to use malloc() and free() in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "<string.h>"
+            },
+            {
+              "id": "opt_1",
+              "text": "<stdio.h>"
+            },
+            {
+              "id": "opt_4",
+              "text": "<memory.h>"
+            },
+            {
+              "id": "opt_2",
+              "text": "<stdlib.h>"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "<stdlib.h> contains the function prototypes for dynamic memory allocation functions malloc, calloc, realloc, and free."
+        },
+        {
+          "questionId": "c-q1",
+          "difficulty": "basic",
+          "question": "What is the output of pointer arithmetic when incrementing `ptr++` where `int *ptr = 1000;` on a 64-bit system where `sizeof(int) == 4`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "1004"
+            },
+            {
+              "id": "opt_3",
+              "text": "1008"
+            },
+            {
+              "id": "opt_1",
+              "text": "1001"
+            },
+            {
+              "id": "opt_4",
+              "text": "Undefined behavior"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "In C, incrementing a typed pointer increases its address by sizeof(T) bytes. Since sizeof(int) is 4, 1000 + 4 = 1004."
+        },
+        {
+          "questionId": "c-q15",
+          "difficulty": "basic",
+          "question": "What is the value of 5 & 3 using the bitwise AND operator?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "7"
+            },
+            {
+              "id": "opt_1",
+              "text": "1"
+            },
+            {
+              "id": "opt_4",
+              "text": "0"
+            },
+            {
+              "id": "opt_3",
+              "text": "8"
+            }
+          ],
+          "correctOptionId": "opt_1",
+          "explanation": "5 in binary is 101, and 3 is 011. The bitwise AND produces 001, which is 1."
+        },
+        {
+          "questionId": "c-q11",
+          "difficulty": "basic",
+          "question": "What is the correct format specifier for printing an unsigned integer using printf?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "%d"
+            },
+            {
+              "id": "opt_3",
+              "text": "%i"
+            },
+            {
+              "id": "opt_2",
+              "text": "%u"
+            },
+            {
+              "id": "opt_4",
+              "text": "%f"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "%u is specifically designated for printing unsigned decimal integers in C."
+        },
+        {
+          "questionId": "c-q12",
+          "difficulty": "basic",
+          "question": "What does the sizeof operator return in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "Size in bytes as a size_t"
+            },
+            {
+              "id": "opt_4",
+              "text": "Length of string excluding null character"
+            },
+            {
+              "id": "opt_1",
+              "text": "Size in bits"
+            },
+            {
+              "id": "opt_3",
+              "text": "Number of memory addresses allocated"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "sizeof returns the memory size of an expression or type in bytes, represented as size_t."
+        },
+        {
+          "questionId": "c-q2",
+          "difficulty": "basic",
+          "question": "What happens if you allocate dynamic memory with `malloc()` but never call `free()` before program exit?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "A memory leak occurs during execution; operating systems reclaim the virtual address space upon process termination"
+            },
+            {
+              "id": "opt_3",
+              "text": "The compiler issues a fatal syntax error"
+            },
+            {
+              "id": "opt_4",
+              "text": "The memory is automatically freed by the C runtime garbage collector"
+            },
+            {
+              "id": "opt_1",
+              "text": "A segmentation fault occurs immediately"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Failing to free heap memory causes a memory leak that consumes RAM during program runtime. While modern OSes clean up process memory on exit, long-running services will exhaust system memory."
+        },
+        {
+          "questionId": "c-q14",
+          "difficulty": "basic",
+          "question": "What character is automatically appended to string literals to indicate their end in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "'EOF'"
+            },
+            {
+              "id": "opt_2",
+              "text": "'\\0'"
+            },
+            {
+              "id": "opt_4",
+              "text": "';'"
+            },
+            {
+              "id": "opt_1",
+              "text": "'\\n'"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "C strings are null-terminated character arrays ending with the null terminator character '\\0' (ASCII 0)."
+        },
+        {
+          "questionId": "c-q19",
+          "difficulty": "intermediate",
+          "question": "What happens when you pass an array to a function in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "The array decays into a pointer to its first element"
+            },
+            {
+              "id": "opt_4",
+              "text": "Compilation fails unless passed by reference using the & operator"
+            },
+            {
+              "id": "opt_1",
+              "text": "A complete deep copy of the array elements is created on the call stack"
+            },
+            {
+              "id": "opt_3",
+              "text": "The function receives the array length automatically as a hidden argument"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "In C, array names decay into a pointer to the type of their first element when passed as function arguments."
+        },
+        {
+          "questionId": "c-q6",
+          "difficulty": "intermediate",
+          "question": "What does the `static` keyword mean when applied to a global variable in a C source file (.c)?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "The variable is stored on the stack frame"
+            },
+            {
+              "id": "opt_4",
+              "text": "The variable is dynamically allocated at runtime"
+            },
+            {
+              "id": "opt_2",
+              "text": "The variable has internal linkage, meaning it is only visible within that compilation unit"
+            },
+            {
+              "id": "opt_1",
+              "text": "The variable cannot be modified (constant)"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "When used at file scope, static gives the symbol internal linkage, preventing other translation units from linking or referencing it directly."
+        },
+        {
+          "questionId": "c-q5",
+          "difficulty": "intermediate",
+          "question": "Why do C compilers add padding bytes between struct members?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "To leave space for object-oriented virtual method tables"
+            },
+            {
+              "id": "opt_4",
+              "text": "To prevent buffer overflow exploits"
+            },
+            {
+              "id": "opt_2",
+              "text": "To satisfy hardware memory alignment requirements for efficient CPU bus access"
+            },
+            {
+              "id": "opt_1",
+              "text": "To encrypt struct data in memory"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Modern CPU architectures access memory faster when multi-byte data types are aligned to addresses that are multiples of their size. Compilers insert padding to ensure proper data alignment."
+        },
+        {
+          "questionId": "c-q7",
+          "difficulty": "intermediate",
+          "question": "What is the difference between `malloc()` and `calloc()`?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "calloc() initializes the allocated memory to all zero bits; malloc() leaves memory uninitialized"
+            },
+            {
+              "id": "opt_4",
+              "text": "calloc() can only allocate memory for char pointers"
+            },
+            {
+              "id": "opt_3",
+              "text": "malloc() automatically frees memory when out of scope"
+            },
+            {
+              "id": "opt_1",
+              "text": "calloc() allocates stack memory; malloc() allocates heap memory"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "calloc(num, size) zeroes out all allocated memory bytes and checks for integer overflow in the size calculation. malloc(size) leaves the memory contents indeterminate."
+        },
+        {
+          "questionId": "c-q4",
+          "difficulty": "intermediate",
+          "question": "What character marks the end of a valid C-string in memory?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "EOF marker"
+            },
+            {
+              "id": "opt_4",
+              "text": "Character '$'"
+            },
+            {
+              "id": "opt_2",
+              "text": "Null character '\\0' (ASCII 0)"
+            },
+            {
+              "id": "opt_1",
+              "text": "Character '/n'"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "C strings are null-terminated byte sequences where the character '\\0' denotes the end of the string. Functions like strlen() scan until reaching this byte."
+        },
+        {
+          "questionId": "c-q17",
+          "difficulty": "intermediate",
+          "question": "What is the primary difference between malloc() and calloc() in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "calloc initializes allocated memory to zero; malloc leaves memory uninitialized"
+            },
+            {
+              "id": "opt_1",
+              "text": "calloc allocates memory on the stack while malloc allocates on the heap"
+            },
+            {
+              "id": "opt_4",
+              "text": "malloc cannot allocate arrays"
+            },
+            {
+              "id": "opt_3",
+              "text": "malloc takes two parameters and calloc takes one"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "calloc(num, size) zeros out all allocated memory bits, whereas malloc(size) allocates raw memory containing indeterminate values."
+        },
+        {
+          "questionId": "c-q18",
+          "difficulty": "intermediate",
+          "question": "What is the meaning of the `static` keyword when applied to a global variable in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "The variable has internal linkage, restricting its scope to the translation unit (.c file) where it is defined"
+            },
+            {
+              "id": "opt_4",
+              "text": "The variable is automatically freed when main exits"
+            },
+            {
+              "id": "opt_3",
+              "text": "The variable is stored in processor registers"
+            },
+            {
+              "id": "opt_1",
+              "text": "The variable cannot be modified (read-only)"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "A static global variable has internal linkage, preventing other object files from accessing it via the extern keyword."
+        },
+        {
+          "questionId": "c-q24",
+          "difficulty": "advanced",
+          "question": "What does realloc(ptr, 0) do in standard compliant modern C (C23)?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Allocates a zero-length array"
+            },
+            {
+              "id": "opt_2",
+              "text": "Has undefined or deallocating behavior; modern C standard deprecates or treats zero size as freeing ptr or returning NULL"
+            },
+            {
+              "id": "opt_4",
+              "text": "Throws a BadAllocException"
+            },
+            {
+              "id": "opt_1",
+              "text": "Doubles the allocated buffer"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Calling realloc with size 0 is historically undefined/inconsistent and in modern standards frees the memory or returns NULL."
+        },
+        {
+          "questionId": "c-q25",
+          "difficulty": "advanced",
+          "question": "How can you prevent multiple inclusion of header files in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "Using static inline declarations"
+            },
+            {
+              "id": "opt_2",
+              "text": "Using preprocessor include guards (#ifndef HEADER_H ... #endif) or #pragma once"
+            },
+            {
+              "id": "opt_3",
+              "text": "Declaring all headers with extern"
+            },
+            {
+              "id": "opt_4",
+              "text": "Compiling with the -no-duplicate flag"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Include guards (#ifndef, #define, #endif) prevent compiler errors caused by re-declaring types when a header is included multiple times."
+        },
+        {
+          "questionId": "c-q23",
+          "difficulty": "advanced",
+          "question": "What is Undefined Behavior (UB) in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "Platform-dependent behavior with documented implementation choices"
+            },
+            {
+              "id": "opt_3",
+              "text": "A syntax error caught by linting tools"
+            },
+            {
+              "id": "opt_1",
+              "text": "An error reported during compilation with code -1"
+            },
+            {
+              "id": "opt_2",
+              "text": "Code execution for which the ISO C standard imposes no requirements, allowing crashes, corrupted data, or erratic behavior"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Undefined behavior occurs when code violates standard rules (like buffer overflow or dereferencing null); compilers make no guarantees about execution."
+        },
+        {
+          "questionId": "c-q21",
+          "difficulty": "advanced",
+          "question": "What does the `volatile` type qualifier tell the C compiler?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "The variable can be modified by hardware or concurrent threads, disabling compiler caching/optimization into CPU registers"
+            },
+            {
+              "id": "opt_3",
+              "text": "The variable must be cleared when a function returns"
+            },
+            {
+              "id": "opt_1",
+              "text": "The variable will be stored on external persistent storage"
+            },
+            {
+              "id": "opt_4",
+              "text": "The variable is thread-safe and atomic"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "`volatile` tells the compiler never to optimize away reads or writes to the variable, ensuring every read/write hits actual memory."
+        },
+        {
+          "questionId": "c-q9",
+          "difficulty": "advanced",
+          "question": "What is the danger of using `gets()` in C, which led to its complete removal in C11?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "It is too slow compared to scanf"
+            },
+            {
+              "id": "opt_2",
+              "text": "It does not perform boundary checks on the destination buffer, allowing catastrophic buffer overflow vulnerabilities"
+            },
+            {
+              "id": "opt_1",
+              "text": "It fails to convert uppercase to lowercase"
+            },
+            {
+              "id": "opt_3",
+              "text": "It cannot read strings containing spaces"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "gets() has no mechanism to limit the number of characters read, meaning user input exceeding the destination buffer will overwrite adjacent stack memory, enabling arbitrary code execution."
+        },
+        {
+          "questionId": "c-q22",
+          "difficulty": "advanced",
+          "question": "What is the syntax for declaring a pointer to a function taking two ints and returning an int in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "int *fp(int, int);"
+            },
+            {
+              "id": "opt_4",
+              "text": "function<int(int, int)> fp;"
+            },
+            {
+              "id": "opt_2",
+              "text": "int (*fp)(int, int);"
+            },
+            {
+              "id": "opt_3",
+              "text": "int (int, int) *fp;"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Parentheses around `(*fp)` bind the pointer operator to the identifier; without parentheses, it declares a function returning an int pointer."
+        },
+        {
+          "questionId": "c-q8",
+          "difficulty": "advanced",
+          "question": "What is the bitwise result of `5 & 3` in C?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "7"
+            },
+            {
+              "id": "opt_3",
+              "text": "0"
+            },
+            {
+              "id": "opt_4",
+              "text": "8"
+            },
+            {
+              "id": "opt_2",
+              "text": "1"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "5 in binary is 0101; 3 in binary is 0011. Performing bitwise AND (0101 & 0011) results in 0001, which is 1."
+        }
+      ],
+      "totalQuestions": 21,
+      "score": 100,
+      "quizPassed": true,
+      "correctCount": 21,
+      "totalCount": 21,
+      "attemptNumber": 2,
+      "userAnswers": {
+        "c-q13": "opt_2",
+        "c-q1": "opt_2",
+        "c-q15": "opt_1",
+        "c-q11": "opt_2",
+        "c-q12": "opt_2",
+        "c-q2": "opt_2",
+        "c-q14": "opt_2",
+        "c-q19": "opt_2",
+        "c-q6": "opt_2",
+        "c-q5": "opt_2",
+        "c-q7": "opt_2",
+        "c-q4": "opt_2",
+        "c-q17": "opt_2",
+        "c-q18": "opt_2",
+        "c-q24": "opt_2",
+        "c-q25": "opt_2",
+        "c-q23": "opt_2",
+        "c-q21": "opt_2",
+        "c-q9": "opt_2",
+        "c-q22": "opt_2",
+        "c-q8": "opt_2"
+      },
+      "completedAt": "2026-09-09T21:34:25.540Z"
     }
   ],
   "opportunities": [
     {
-      "id": "opp-1",
-      "title": "Full Stack Engineer Intern",
-      "company": "Apex Data Systems",
-      "location": "Bangalore, India (Hybrid)",
-      "stipend": "₹35,000 - ₹45,000 / month",
-      "type": "Internship (6 Months) with PPO",
-      "postedDate": "2 days ago",
-      "openings": 3,
-      "description": "Build robust REST APIs and responsive dashboards under high event volume.",
+      "id": "opp-google-swe",
+      "title": "Software Engineering Intern",
+      "company": "Google",
+      "location": "Bangalore / Hyderabad, India",
+      "workMode": "Hybrid",
+      "stipend": "₹1,00,000 - ₹1,30,000 / month",
+      "type": "Internship",
+      "duration": "12 weeks (Summer)",
+      "targetRole": "Software Engineer",
+      "eligibility": "Currently pursuing Bachelor's or Master's degree in Computer Science or related technical field.",
       "requiredSkills": [
         {
-          "name": "Frontend (React)",
+          "name": "Python",
+          "weight": 0.3,
+          "minScore": 80
+        },
+        {
+          "name": "C++",
+          "weight": 0.3,
+          "minScore": 80
+        },
+        {
+          "name": "Java",
+          "weight": 0.2,
           "minScore": 75
         },
         {
-          "name": "Backend (Node.js)",
+          "name": "JavaScript",
+          "weight": 0.2,
+          "minScore": 75
+        }
+      ],
+      "description": "Work on core search infrastructure, distributed systems, machine learning pipelines, and cloud services under mentorship of Google senior engineers.",
+      "openings": 25,
+      "postedDate": "Updated this week",
+      "source": "Google Careers Official",
+      "officialUrl": "https://www.google.com/about/careers/applications/jobs/results/?q=software%20engineer%20intern",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-msft-swe",
+      "title": "Software Engineer Intern (University)",
+      "company": "Microsoft",
+      "location": "Hyderabad / Bangalore / Noida, India",
+      "workMode": "Hybrid",
+      "stipend": "₹1,25,000 / month",
+      "type": "Internship",
+      "duration": "2-6 months",
+      "targetRole": "Software Engineer",
+      "eligibility": "Pre-final or final year B.Tech/BE/M.Tech students with strong fundamentals in algorithms and computer systems.",
+      "requiredSkills": [
+        {
+          "name": "C++",
+          "weight": 0.35,
+          "minScore": 80
+        },
+        {
+          "name": "Java",
+          "weight": 0.3,
+          "minScore": 75
+        },
+        {
+          "name": "Python",
+          "weight": 0.2,
           "minScore": 75
         },
         {
           "name": "SQL",
+          "weight": 0.15,
           "minScore": 70
         }
-      ]
+      ],
+      "description": "Build reliable cloud-native services for Microsoft Azure, Developer Tools, or Office 365. Write production-grade code and run automated integration tests.",
+      "openings": 20,
+      "postedDate": "Active campus cycle",
+      "source": "Microsoft Global Careers",
+      "officialUrl": "https://careers.microsoft.com/v2/global/en/home.html",
+      "applicationType": "External Application"
     },
     {
-      "id": "opp-2",
-      "title": "Python Data Systems Engineer",
-      "company": "CloudScale Infrastructure",
-      "location": "Remote (India)",
-      "stipend": "₹40,000 - ₹50,000 / month",
-      "type": "Full-Time Placement",
-      "postedDate": "3 days ago",
-      "openings": 2,
-      "description": "Architect high-throughput data pipelines, telemetry aggregators, and defensive API endpoints.",
+      "id": "opp-tcs-nqt",
+      "title": "TCS National Qualifier Test (NQT) - Digital & Ninja Roles",
+      "company": "Tata Consultancy Services (TCS)",
+      "location": "Pan-India (Bangalore, Pune, Chennai, Mumbai, Delhi)",
+      "workMode": "On-site / Hybrid",
+      "stipend": "₹3.36 LPA - ₹7.0 LPA",
+      "type": "Job",
+      "duration": "Full-Time",
+      "targetRole": "Graduate Trainee Engineer",
+      "eligibility": "B.Tech / BE / MCA / M.Sc / BCA 2025 / 2026 graduating batches with minimum 60% aggregate.",
       "requiredSkills": [
         {
+          "name": "C",
+          "weight": 0.25,
+          "minScore": 70
+        },
+        {
+          "name": "Java",
+          "weight": 0.25,
+          "minScore": 70
+        },
+        {
           "name": "Python",
+          "weight": 0.25,
+          "minScore": 70
+        },
+        {
+          "name": "SQL",
+          "weight": 0.25,
+          "minScore": 70
+        }
+      ],
+      "description": "Official campus recruitment gateway for TCS Ninja, Digital, and Prime engineering tracks. Evaluates foundational coding, system design, and quantitative acumen.",
+      "openings": 500,
+      "postedDate": "National Hiring Window",
+      "source": "TCS NextStep Official",
+      "officialUrl": "https://nextstep.tcs.com",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-infy-springboard",
+      "title": "Systems Engineer & Springboard Internship",
+      "company": "Infosys",
+      "location": "Bangalore / Mysore / Pune, India",
+      "workMode": "Hybrid",
+      "stipend": "₹3.6 LPA - ₹6.5 LPA",
+      "type": "Internship to PPO",
+      "duration": "3-6 months",
+      "targetRole": "Systems Engineer",
+      "eligibility": "All engineering branches and computer applications students graduating in 2025 or 2026.",
+      "requiredSkills": [
+        {
+          "name": "Java",
+          "weight": 0.35,
+          "minScore": 75
+        },
+        {
+          "name": "Python",
+          "weight": 0.25,
+          "minScore": 70
+        },
+        {
+          "name": "SQL",
+          "weight": 0.2,
+          "minScore": 70
+        },
+        {
+          "name": "HTML / CSS",
+          "weight": 0.2,
+          "minScore": 70
+        }
+      ],
+      "description": "Industry readiness program and hiring pipeline. Focuses on full-stack web applications, microservices, cloud deployments, and enterprise software engineering.",
+      "openings": 350,
+      "postedDate": "Springboard Semester Cohort",
+      "source": "Infosys Springboard Official",
+      "officialUrl": "https://infyspringboard.onwingspan.com",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-amazon-sde",
+      "title": "Software Development Engineer (SDE) Intern",
+      "company": "Amazon",
+      "location": "Bangalore / Hyderabad / Chennai, India",
+      "workMode": "Hybrid",
+      "stipend": "₹1,10,000 / month",
+      "type": "Internship",
+      "duration": "6 months",
+      "targetRole": "Backend Engineer",
+      "eligibility": "Currently enrolled in Bachelor's or Master's in Computer Science or related degree.",
+      "requiredSkills": [
+        {
+          "name": "Java",
+          "weight": 0.35,
+          "minScore": 80
+        },
+        {
+          "name": "Backend",
+          "weight": 0.35,
           "minScore": 80
         },
         {
           "name": "SQL",
+          "weight": 0.15,
           "minScore": 75
         },
         {
-          "name": "Data Analytics",
-          "minScore": 70
+          "name": "Python",
+          "weight": 0.15,
+          "minScore": 75
         }
-      ]
+      ],
+      "description": "Build highly scalable, distributed backend architectures supporting millions of Amazon customers worldwide with high availability and defensive fault-tolerance.",
+      "openings": 30,
+      "postedDate": "Active seasonal opening",
+      "source": "Amazon University Portal",
+      "officialUrl": "https://www.amazon.jobs/en/job_categories/software-development",
+      "applicationType": "External Application"
     },
     {
-      "id": "opp-3",
-      "title": "Frontend UI/UX Engineer",
-      "company": "Nexus Design Systems",
-      "location": "Pune, India (On-Site)",
-      "stipend": "₹30,000 - ₹40,000 / month",
-      "type": "Internship (4 Months)",
-      "postedDate": "1 day ago",
-      "openings": 4,
-      "description": "Implement accessible, high-performance web applications using React and Tailwind CSS.",
+      "id": "opp-zomato-swe",
+      "title": "Software Development Engineer - Early Career",
+      "company": "Zomato",
+      "location": "Gurgaon, Haryana, India",
+      "workMode": "On-site",
+      "stipend": "₹60,000 / month",
+      "type": "Internship to PPO",
+      "duration": "6 months",
+      "targetRole": "Full Stack Web Developer",
+      "eligibility": "Final-year B.Tech / BE with strong problem-solving skills and hands-on full-stack or mobile projects.",
       "requiredSkills": [
         {
-          "name": "Frontend (React)",
+          "name": "Frontend",
+          "weight": 0.3,
           "minScore": 80
         },
         {
           "name": "JavaScript",
+          "weight": 0.3,
           "minScore": 80
         },
         {
-          "name": "HTML & CSS",
+          "name": "Backend",
+          "weight": 0.25,
+          "minScore": 75
+        },
+        {
+          "name": "SQL",
+          "weight": 0.15,
           "minScore": 75
         }
-      ]
+      ],
+      "description": "Ship features for customer-facing order flows, delivery partner dispatch telemetry, real-time tracking systems, and high-concurrency microservices.",
+      "openings": 8,
+      "postedDate": "3 days ago",
+      "source": "Zomato Careers Portal",
+      "officialUrl": "https://www.zomato.com/careers",
+      "applicationType": "External Application"
     },
     {
-      "id": "opp-4",
-      "title": "Core Java Systems Developer",
-      "company": "FinTech Quantum Labs",
-      "location": "Hyderabad, India (Hybrid)",
+      "id": "opp-swiggy-asde",
+      "title": "Associate Software Development Engineer (Backend)",
+      "company": "Swiggy",
+      "location": "Bangalore, India",
+      "workMode": "Remote / Hybrid",
       "stipend": "₹50,000 / month",
-      "type": "Full-Time Placement",
-      "postedDate": "5 days ago",
-      "openings": 2,
-      "description": "Develop low-latency transactional microservices and resilient message queuing workers.",
+      "type": "Internship",
+      "duration": "6 months",
+      "targetRole": "Backend Engineer",
+      "eligibility": "Pre-final / Final year students in CS, IT, or related fields with solid understanding of concurrency and databases.",
       "requiredSkills": [
         {
           "name": "Java",
+          "weight": 0.35,
+          "minScore": 80
+        },
+        {
+          "name": "Backend",
+          "weight": 0.3,
+          "minScore": 75
+        },
+        {
+          "name": "SQL",
+          "weight": 0.2,
+          "minScore": 75
+        },
+        {
+          "name": "Python",
+          "weight": 0.15,
+          "minScore": 70
+        }
+      ],
+      "description": "Architect low-latency event-driven microservices handling millions of transactions, restaurant catalogs, and delivery fleet optimization algorithms.",
+      "openings": 10,
+      "postedDate": "Active campus batch",
+      "source": "Swiggy Careers Official",
+      "officialUrl": "https://careers.swiggy.com",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-cisco-intern",
+      "title": "Software Engineer Intern - Systems & Cloud",
+      "company": "Cisco",
+      "location": "Bangalore, Karnataka, India",
+      "workMode": "Hybrid",
+      "stipend": "₹70,000 / month",
+      "type": "Internship",
+      "duration": "6 months",
+      "targetRole": "Systems Engineer",
+      "eligibility": "Students pursuing Bachelor's in CS, Information Science, or Electronics graduating in 2026/2027.",
+      "requiredSkills": [
+        {
+          "name": "Python",
+          "weight": 0.35,
+          "minScore": 80
+        },
+        {
+          "name": "C",
+          "weight": 0.3,
+          "minScore": 75
+        },
+        {
+          "name": "C++",
+          "weight": 0.2,
+          "minScore": 75
+        },
+        {
+          "name": "Backend",
+          "weight": 0.15,
+          "minScore": 70
+        }
+      ],
+      "description": "Develop enterprise networking software, secure telemetry agents, cloud edge gateways, and automated SDN pipelines on Linux platforms.",
+      "openings": 12,
+      "postedDate": "Early Career Drive",
+      "source": "Cisco Jobs Official",
+      "officialUrl": "https://jobs.cisco.com",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-razorpay-backend",
+      "title": "Software Engineering Intern - Payments & Platform",
+      "company": "Razorpay",
+      "location": "Bangalore, India",
+      "workMode": "Hybrid",
+      "stipend": "₹45,000 / month",
+      "type": "Internship",
+      "duration": "6 months",
+      "targetRole": "Backend Engineer",
+      "eligibility": "Penultimate or final-year undergraduate students with demonstrable interest in payment gateways and transactional integrity.",
+      "requiredSkills": [
+        {
+          "name": "Backend",
+          "weight": 0.35,
           "minScore": 80
         },
         {
           "name": "SQL",
+          "weight": 0.3,
+          "minScore": 75
+        },
+        {
+          "name": "Python",
+          "weight": 0.2,
+          "minScore": 75
+        },
+        {
+          "name": "JavaScript",
+          "weight": 0.15,
+          "minScore": 70
+        }
+      ],
+      "description": "Design idempotent payment reconciliation workflows, secure webhook processors, and fault-tolerant banking integrations under strict regulatory standards.",
+      "openings": 6,
+      "postedDate": "1 week ago",
+      "source": "Razorpay Careers",
+      "officialUrl": "https://razorpay.com/jobs/",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-github-octernships",
+      "title": "GitHub Octernships - Open Source Contributor",
+      "company": "GitHub (Microsoft)",
+      "location": "Remote (Global / India)",
+      "workMode": "Remote",
+      "stipend": "$500 - $1,000 / month (Paid stipend)",
+      "type": "Project / Fellowship",
+      "duration": "3-6 months",
+      "targetRole": "Open Source Contributor",
+      "eligibility": "Active students who hold a validated GitHub Student Developer Pack and demonstrate genuine git commits.",
+      "requiredSkills": [
+        {
+          "name": "JavaScript",
+          "weight": 0.3,
+          "minScore": 75
+        },
+        {
+          "name": "Python",
+          "weight": 0.3,
+          "minScore": 75
+        },
+        {
+          "name": "Frontend",
+          "weight": 0.2,
+          "minScore": 75
+        },
+        {
+          "name": "Backend",
+          "weight": 0.2,
           "minScore": 75
         }
-      ]
+      ],
+      "description": "Work directly on high-impact production open-source partner repositories with GitHub mentorship, code reviews, and remote compensation.",
+      "openings": 40,
+      "postedDate": "Open Cycle",
+      "source": "GitHub Education Portal",
+      "officialUrl": "https://github.com/education/octernships",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-internshala-cs",
+      "title": "Web Development & Full-Stack Internships Catalog",
+      "company": "Internshala Partner Network",
+      "location": "Remote & Multiple Indian Metros",
+      "workMode": "Remote / Hybrid",
+      "stipend": "₹15,000 - ₹35,000 / month",
+      "type": "Internship",
+      "duration": "2-6 months",
+      "targetRole": "Full Stack Web Developer",
+      "eligibility": "College students of all academic years. Filterable by stipend, location, and required tech stack.",
+      "requiredSkills": [
+        {
+          "name": "Frontend",
+          "weight": 0.3,
+          "minScore": 70
+        },
+        {
+          "name": "JavaScript",
+          "weight": 0.3,
+          "minScore": 70
+        },
+        {
+          "name": "HTML / CSS",
+          "weight": 0.2,
+          "minScore": 70
+        },
+        {
+          "name": "SQL",
+          "weight": 0.2,
+          "minScore": 65
+        }
+      ],
+      "description": "Curated catalog of accredited Indian startup internships across MERN stack, Python Django, mobile apps, and technical client delivery.",
+      "openings": 1200,
+      "postedDate": "Updated Daily",
+      "source": "Internshala Official",
+      "officialUrl": "https://internshala.com/internships/computer-science-internship",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-wellfound-startups",
+      "title": "Startup Founding Engineer & Intern Track",
+      "company": "Wellfound (AngelList)",
+      "location": "Remote / Bangalore / Gurgaon",
+      "workMode": "Remote",
+      "stipend": "₹30,000 - ₹70,000 / month",
+      "type": "Startup Role",
+      "duration": "3-12 months",
+      "targetRole": "Full Stack Web Developer",
+      "eligibility": "High-agency builders with live deployed portfolio projects and active GitHub repositories.",
+      "requiredSkills": [
+        {
+          "name": "Frontend",
+          "weight": 0.35,
+          "minScore": 75
+        },
+        {
+          "name": "JavaScript",
+          "weight": 0.35,
+          "minScore": 75
+        },
+        {
+          "name": "Backend",
+          "weight": 0.15,
+          "minScore": 75
+        },
+        {
+          "name": "SQL",
+          "weight": 0.15,
+          "minScore": 70
+        }
+      ],
+      "description": "Connect directly with startup founders and engineering leads. Fast-moving teams building generative AI, web platforms, and creator economy tools.",
+      "openings": 80,
+      "postedDate": "Continuously Active",
+      "source": "Wellfound Platform",
+      "officialUrl": "https://wellfound.com/jobs",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-hackerearth-challenges",
+      "title": "Campus Developer Hiring Challenges & Hackathons",
+      "company": "HackerEarth Hiring Portal",
+      "location": "Online / Pan-India",
+      "workMode": "Remote",
+      "stipend": "Full-Time Hiring & PPOs (₹8 - ₹18 LPA)",
+      "type": "Hiring Challenge",
+      "duration": "Continuous Challenges",
+      "targetRole": "Competitive Programmer / SDE",
+      "eligibility": "Open to all engineering students nationwide. Solves timed algorithmic and engineering challenges.",
+      "requiredSkills": [
+        {
+          "name": "C++",
+          "weight": 0.3,
+          "minScore": 80
+        },
+        {
+          "name": "Python",
+          "weight": 0.3,
+          "minScore": 80
+        },
+        {
+          "name": "Java",
+          "weight": 0.2,
+          "minScore": 75
+        },
+        {
+          "name": "SQL",
+          "weight": 0.2,
+          "minScore": 70
+        }
+      ],
+      "description": "Participate in sponsored hiring challenges from Fortune 500 tech companies. High-scoring algorithmic submissions directly qualify for interview rounds.",
+      "openings": 150,
+      "postedDate": "Monthly Sprints",
+      "source": "HackerEarth Challenges",
+      "officialUrl": "https://www.hackerearth.com/challenges/",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-unstop-internships",
+      "title": "Tech Internships & Corporate Competitions",
+      "company": "Unstop (formerly Dare2Compete)",
+      "location": "Multiple Cities / Remote",
+      "workMode": "Remote / Hybrid",
+      "stipend": "₹20,000 - ₹50,000 / month",
+      "type": "Internship & Competitions",
+      "duration": "1-6 months",
+      "targetRole": "Data & Software Intern",
+      "eligibility": "Undergraduate and postgraduate students enrolled in recognized Indian universities.",
+      "requiredSkills": [
+        {
+          "name": "Data Analytics",
+          "weight": 0.35,
+          "minScore": 75
+        },
+        {
+          "name": "Python",
+          "weight": 0.35,
+          "minScore": 75
+        },
+        {
+          "name": "SQL",
+          "weight": 0.3,
+          "minScore": 70
+        }
+      ],
+      "description": "National student hackathons, corporate challenges, and direct internship listings hosted by leading organizations and unicorn startups.",
+      "openings": 300,
+      "postedDate": "Weekly Updates",
+      "source": "Unstop Official",
+      "officialUrl": "https://unstop.com/internships",
+      "applicationType": "External Application"
+    },
+    {
+      "id": "opp-ibm-associate",
+      "title": "Associate System Engineer & Student Developer",
+      "company": "IBM",
+      "location": "Bangalore / Hyderabad / Pune / Kochi",
+      "workMode": "Hybrid",
+      "stipend": "₹35,000 / month",
+      "type": "Job / Trainee",
+      "duration": "Full-Time Trainee",
+      "targetRole": "Systems Engineer",
+      "eligibility": "B.Tech / BE / MCA / M.Tech in CS, IT, Software or Electrical Engineering.",
+      "requiredSkills": [
+        {
+          "name": "Java",
+          "weight": 0.3,
+          "minScore": 75
+        },
+        {
+          "name": "Python",
+          "weight": 0.3,
+          "minScore": 75
+        },
+        {
+          "name": "Backend",
+          "weight": 0.2,
+          "minScore": 70
+        },
+        {
+          "name": "SQL",
+          "weight": 0.2,
+          "minScore": 70
+        }
+      ],
+      "description": "Design cloud architecture on Red Hat OpenShift and IBM Cloud. Work on enterprise modernization, microservices, and AI data engineering solutions.",
+      "openings": 60,
+      "postedDate": "Early Career Portal",
+      "source": "IBM Official Careers",
+      "officialUrl": "https://www.ibm.com/careers/entry-level",
+      "applicationType": "External Application"
     }
   ],
   "applications": [
+    {
+      "id": "app_1788991833381_xdjml",
+      "status": "Applied",
+      "statusHistory": [
+        {
+          "status": "Applied",
+          "timestamp": "2026-09-09T22:10:33.381Z",
+          "note": "Applied via Microsoft Careers portal."
+        }
+      ],
+      "createdAt": "2026-09-09T22:10:33.381Z",
+      "lastUpdated": "2026-09-09T22:10:33.381Z",
+      "userId": "usr_1788991833306_pr73m7",
+      "candidateName": "Rohan Verma",
+      "candidateEmail": "rohan.1788991833010@university.edu",
+      "opportunityId": null,
+      "company": "Microsoft",
+      "role": "Software Engineer Internship - Summer 2026",
+      "opportunityTitle": "Software Engineer Internship - Summer 2026",
+      "opportunityType": "Internship",
+      "source": "Microsoft Careers",
+      "applicationUrl": "https://careers.microsoft.com/v2/global/en/home.html",
+      "location": "Remote / Hybrid",
+      "stipend": "Disclosed upon interview",
+      "appliedDate": "2026-09-09",
+      "notes": "Applied via Microsoft Careers portal.",
+      "interviewDate": null,
+      "followUpDate": null,
+      "isExternal": true
+    },
+    {
+      "id": "app_1788991833367_2rgoz",
+      "status": "Interview",
+      "statusHistory": [
+        {
+          "status": "Applied",
+          "timestamp": "2026-09-09T22:10:33.368Z",
+          "note": "Applied via official Google Careers portal."
+        },
+        {
+          "status": "Interview",
+          "timestamp": "2026-09-09T22:10:33.408Z",
+          "note": "Scheduled Round 1 Technical Screening"
+        }
+      ],
+      "createdAt": "2026-09-09T22:10:33.368Z",
+      "lastUpdated": "2026-09-09T22:10:33.408Z",
+      "userId": "usr_1788991833205_ohp1az",
+      "candidateName": "Priya Sharma",
+      "candidateEmail": "priya.1788991833010@university.edu",
+      "opportunityId": null,
+      "company": "Google",
+      "role": "Software Engineering Intern (Summer 2026)",
+      "opportunityTitle": "Software Engineering Intern (Summer 2026)",
+      "opportunityType": "Internship",
+      "source": "Google Careers Portal",
+      "applicationUrl": "https://careers.google.com/jobs/results/",
+      "location": "Remote / Hybrid",
+      "stipend": "Disclosed upon interview",
+      "appliedDate": "2026-09-09",
+      "notes": "Applied via official Google Careers portal.",
+      "interviewDate": null,
+      "followUpDate": null,
+      "isExternal": true,
+      "statusChangeNote": "Scheduled Round 1 Technical Screening"
+    },
     {
       "id": "app_1788956081912_j9dqh",
       "userId": "usr_1788684825056_b3kgge",
@@ -1998,5 +4729,77 @@
       "notes": "Excited to apply with my SkillProof verified scorecard!",
       "createdAt": "2026-09-06T08:26:19.400Z"
     }
-  ]
+  ],
+  "companyProfiles": [],
+  "shortlistedCandidates": [
+    {
+      "id": "short_1788991833425",
+      "companyId": "demo_recruiter",
+      "studentId": "usr_1788991833205_ohp1az",
+      "studentName": "Priya Sharma",
+      "roleTitle": "Data Platform Engineer",
+      "shortlistedAt": "2026-09-09T22:10:33.425Z"
+    }
+  ],
+  "studentGroups": [
+    {
+      "id": "grp_1788991833443",
+      "name": "Batch 2026 - Systems & Cloud Track",
+      "department": "Computer Science & Engineering",
+      "studentsCount": 45,
+      "activeAssessments": 0,
+      "createdAt": "2026-09-09T22:10:33.443Z"
+    }
+  ],
+  "assignedAssessments": [],
+  "facultyData": {
+    "facultyName": "Dr. Ananya Sharma",
+    "department": "Computer Science & Engineering",
+    "designation": "Associate Professor & Placement Faculty Lead",
+    "email": "ananya.sharma@college.edu.in",
+    "mentoredStudents": 34,
+    "activities": [
+      {
+        "id": "act_1788991833457",
+        "type": "Workshop",
+        "title": "Distributed Consensus & Raft Protocol Sandbox",
+        "partner": "Apex Data Systems",
+        "date": "2026-09-09",
+        "participants": 60,
+        "createdAt": "2026-09-09T22:10:33.457Z"
+      },
+      {
+        "id": "act-1",
+        "type": "Workshop",
+        "title": "Defensive Code Mutation & Production Sandboxes",
+        "partner": "TCS & SkillProof",
+        "date": "2026-09-02",
+        "participants": 120
+      },
+      {
+        "id": "act-2",
+        "type": "Guest Lecture",
+        "title": "Zero-Downtime Microservices Architecture",
+        "partner": "Amazon AWS Lead",
+        "date": "2026-08-20",
+        "participants": 180
+      },
+      {
+        "id": "act-3",
+        "type": "FDP",
+        "title": "Faculty Cloud Infrastructure & SRE Fellowship",
+        "partner": "Google Cloud Training",
+        "date": "2026-07-15",
+        "participants": 45
+      },
+      {
+        "id": "act-4",
+        "type": "Mentorship",
+        "title": "Hackathon Mentoring - SIH 2026 Innovation Sprint",
+        "partner": "Smart India Hackathon",
+        "date": "2026-08-28",
+        "participants": 25
+      }
+    ]
+  }
 }

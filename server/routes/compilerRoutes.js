@@ -1,6 +1,6 @@
 import express from 'express';
 import { compilerService } from '../services/compilerService.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, optionalAuth } from '../middleware/auth.js';
 import { db } from '../db.js';
 
 const router = express.Router();
@@ -31,7 +31,7 @@ router.post('/run', async (req, res) => {
 
 // POST /api/compiler/submit
 // Runs candidate's code against ALL test cases (including hidden) and saves verification
-router.post('/submit', requireAuth, async (req, res) => {
+router.post('/submit', optionalAuth, async (req, res) => {
   try {
     const {
       language = 'python',
@@ -54,20 +54,23 @@ router.post('/submit', requireAuth, async (req, res) => {
       testCases
     });
 
-    // Record submission telemetry
-    const submissionRecord = {
-      id: `sub_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-      userId: req.user.id,
-      skillId: (skillId || language).toLowerCase(),
-      skillName: skillName || language,
-      roundName,
-      status: report.status,
-      allPassed: report.allPassed,
-      score: report.score || 0,
-      passedCount: report.passedCount || 0,
-      totalCount: report.totalCount || 0,
-      submittedAt: new Date().toISOString()
-    };
+    // Record submission telemetry if user is authenticated
+    let submissionRecord = null;
+    if (req.user) {
+      submissionRecord = {
+        id: `sub_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+        userId: req.user.id,
+        skillId: (skillId || language).toLowerCase(),
+        skillName: skillName || language,
+        roundName,
+        status: report.status,
+        allPassed: report.allPassed,
+        score: report.score || 0,
+        passedCount: report.passedCount || 0,
+        totalCount: report.totalCount || 0,
+        submittedAt: new Date().toISOString()
+      };
+    }
 
     return res.json({
       ...report,

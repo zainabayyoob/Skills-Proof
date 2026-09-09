@@ -183,11 +183,85 @@ export const storageService = {
     return newApp;
   },
 
-  updateApplicationStatus: (appId, newStatus) => {
+  updateApplicationStatus: (appId, newStatus, note = '') => {
     const apps = storageService.getApplications();
-    const updated = apps.map((a) => (a.id === appId ? { ...a, status: newStatus } : a));
+    const updated = apps.map((a) => {
+      if (a.id === appId) {
+        const history = a.statusHistory || [
+          { status: a.status, timestamp: a.appliedDate || new Date().toISOString(), note: 'Initial application' }
+        ];
+        if (newStatus !== a.status) {
+          history.push({
+            status: newStatus,
+            timestamp: new Date().toISOString(),
+            note: note || `Status changed to ${newStatus}`
+          });
+        }
+        return { ...a, status: newStatus, statusHistory: history };
+      }
+      return a;
+    });
     localStorage.setItem(STORAGE_KEYS.APPLICATIONS, JSON.stringify(updated));
     return updated;
+  },
+
+  addCustomApplication: (appData) => {
+    const apps = storageService.getApplications();
+    const newApp = {
+      id: `app-custom-${Date.now()}`,
+      opportunityTitle: appData.role || appData.opportunityTitle || 'Software Engineer',
+      company: appData.company || 'Unknown',
+      location: appData.location || 'Remote / Hybrid',
+      stipend: appData.stipend || 'Competitive',
+      opportunityType: appData.opportunityType || 'Internship',
+      matchScore: appData.matchScore || 85,
+      status: appData.status || 'Applied',
+      appliedDate: new Date().toISOString().split('T')[0],
+      applicationUrl: appData.applicationUrl || '',
+      notes: appData.notes || '',
+      followUpDate: appData.followUpDate || null,
+      interviewDate: appData.interviewDate || null,
+      isExternal: Boolean(appData.applicationUrl || appData.isExternal),
+      statusHistory: [
+        { status: appData.status || 'Applied', timestamp: new Date().toISOString(), note: 'Application added to tracker' }
+      ]
+    };
+    apps.unshift(newApp);
+    localStorage.setItem(STORAGE_KEYS.APPLICATIONS, JSON.stringify(apps));
+    return newApp;
+  },
+
+  updateApplication: (appId, updates) => {
+    const apps = storageService.getApplications();
+    const updated = apps.map((a) => {
+      if (a.id === appId) {
+        const history = a.statusHistory || [
+          { status: a.status, timestamp: a.appliedDate || new Date().toISOString(), note: 'Initial application' }
+        ];
+        if (updates.status && updates.status !== a.status) {
+          history.push({
+            status: updates.status,
+            timestamp: new Date().toISOString(),
+            note: updates.statusChangeNote || `Status changed to ${updates.status}`
+          });
+        }
+        return {
+          ...a,
+          ...updates,
+          statusHistory: history
+        };
+      }
+      return a;
+    });
+    localStorage.setItem(STORAGE_KEYS.APPLICATIONS, JSON.stringify(updated));
+    return updated;
+  },
+
+  deleteApplication: (appId) => {
+    const apps = storageService.getApplications();
+    const filtered = apps.filter((a) => a.id !== appId);
+    localStorage.setItem(STORAGE_KEYS.APPLICATIONS, JSON.stringify(filtered));
+    return filtered;
   },
 
   // Opportunities

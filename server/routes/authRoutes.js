@@ -12,8 +12,8 @@ const sanitizeUser = (user) => {
   return sanitized;
 };
 
-// POST /api/auth/register
-router.post('/register', async (req, res) => {
+// POST /api/auth/register & POST /api/auth/signup
+const handleRegister = async (req, res) => {
   try {
     const { name, email, phone, password, college, degree, graduationYear, semester, targetRole } = req.body;
 
@@ -77,7 +77,10 @@ router.post('/register', async (req, res) => {
     console.error('Register error:', err);
     return res.status(500).json({ error: 'Internal server error during registration' });
   }
-});
+};
+
+router.post('/register', handleRegister);
+router.post('/signup', handleRegister);
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
