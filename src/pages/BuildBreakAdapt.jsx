@@ -183,8 +183,19 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
         setBuildDone(false);
         setTerminalOutput({
           type: 'error',
-          text: `❌ Compilation / Syntax Error:\n${report.error}`
+          title: report.status === 'SYNTAX_ERROR' ? 'Syntax Error' : 'Compilation Error',
+          text: report.error || 'Compiler failed to build source code'
         });
+        const cases = (spec.sampleTestCases || []).map((tc, idx) => ({
+          id: tc.id || idx + 1,
+          title: tc.title || `Test Case ${idx + 1}`,
+          status: 'FAILED',
+          input: tc.input !== undefined ? (typeof tc.input === 'object' ? JSON.stringify(tc.input) : String(tc.input)) : null,
+          expected: typeof tc.expected === 'object' ? JSON.stringify(tc.expected) : String(tc.expected),
+          actual: report.status,
+          note: report.error ? report.error.split('\n')[0] : 'Syntax error in source code'
+        }));
+        setTestCaseResults(cases);
         return;
       }
 
@@ -192,8 +203,19 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
         setBuildDone(false);
         setTerminalOutput({
           type: 'error',
-          text: `⏱ Timeout Watchdog Aborted:\n${report.error || 'Execution exceeded 3500ms time limit.'}`
+          title: 'Execution Timeout Watchdog (3500ms Exceeded)',
+          text: report.error || 'Execution exceeded 3500ms time limit. Infinite loop detected.'
         });
+        const cases = (spec.sampleTestCases || []).map((tc, idx) => ({
+          id: tc.id || idx + 1,
+          title: tc.title || `Test Case ${idx + 1}`,
+          status: 'FAILED',
+          input: tc.input !== undefined ? (typeof tc.input === 'object' ? JSON.stringify(tc.input) : String(tc.input)) : null,
+          expected: typeof tc.expected === 'object' ? JSON.stringify(tc.expected) : String(tc.expected),
+          actual: 'TIMEOUT_ERROR',
+          note: 'Execution aborted: infinite loop detected'
+        }));
+        setTestCaseResults(cases);
         return;
       }
 
@@ -201,8 +223,19 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
         setBuildDone(false);
         setTerminalOutput({
           type: 'error',
-          text: `⚠️ Execution Notice:\n${report.error}`
+          title: report.status === 'EMPTY_CODE' ? 'Empty Code Submitted' : 'Function Not Found',
+          text: report.error
         });
+        const cases = (spec.sampleTestCases || []).map((tc, idx) => ({
+          id: tc.id || idx + 1,
+          title: tc.title || `Test Case ${idx + 1}`,
+          status: 'FAILED',
+          input: tc.input !== undefined ? (typeof tc.input === 'object' ? JSON.stringify(tc.input) : String(tc.input)) : null,
+          expected: typeof tc.expected === 'object' ? JSON.stringify(tc.expected) : String(tc.expected),
+          actual: report.status,
+          note: report.error
+        }));
+        setTestCaseResults(cases);
         return;
       }
 
@@ -210,6 +243,7 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
         id: r.id || idx + 1,
         title: (spec.sampleTestCases && spec.sampleTestCases[idx]?.title) || `Test Case ${idx + 1}`,
         status: r.passed ? 'PASSED' : 'FAILED',
+        input: r.input !== undefined ? (typeof r.input === 'object' ? JSON.stringify(r.input) : String(r.input)) : ((spec.sampleTestCases && spec.sampleTestCases[idx]?.input) ? JSON.stringify(spec.sampleTestCases[idx].input) : null),
         expected: typeof r.expected === 'object' ? JSON.stringify(r.expected) : String(r.expected),
         actual: r.actual === null ? 'None / Undefined' : typeof r.actual === 'object' ? JSON.stringify(r.actual) : String(r.actual),
         note: r.error ? `Error: ${r.error}` : (r.elapsedMs !== undefined ? `Execution time: ${r.elapsedMs}ms` : '')
@@ -221,16 +255,15 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
         setBuildDone(true);
         setTerminalOutput({
           type: 'success',
-          text: `✓ All ${report.passedCount}/${report.totalCount} Sample Test Cases Passed!
-Execution verified on native runtime engine in ${report.results?.[0]?.elapsedMs || 0.1}ms.
-Now click "Next Step: Proceed to Break Mutation →" to test production resilience under real-world anomalies.`
+          title: 'Code is Correct — 100% Tests Passed',
+          text: `✓ All ${report.passedCount}/${report.totalCount} Sample Test Cases Passed!\nExecution verified on native ${skillData.name} runtime in ${report.results?.[0]?.elapsedMs || 0.1}ms.\nNow click "Next Step: Proceed to Break Mutation →" to test production resilience under real-world anomalies.`
         });
       } else {
         setBuildDone(false);
         setTerminalOutput({
           type: 'error',
-          text: `❌ ${report.passedCount}/${report.totalCount} Sample Test Cases Passed.
-Check the Test Results Console below for expected vs actual differences and implement your solution.`
+          title: 'Code is Incorrect — Tests Failed',
+          text: `❌ ${report.passedCount || 0}/${report.totalCount || cases.length} Test Cases Passed.\nCheck the Test Results Console below: Compare your function's "Actual" return value against the "Expected" value to fix your code.`
         });
       }
     } catch (err) {
@@ -238,6 +271,7 @@ Check the Test Results Console below for expected vs actual differences and impl
       setBuildDone(false);
       setTerminalOutput({
         type: 'error',
+        title: 'Communication Error',
         text: `Error contacting compiler service: ${err.message}`
       });
     }
@@ -270,6 +304,7 @@ Baseline implementation halted with fatal exception.`
   const handleTestAdaptedCode = async () => {
     setIsRunning(true);
     setTerminalOutput(null);
+    setTestCaseResults(null);
 
     const spec = getExecutableSpec(activeConcept.id, skillData.id, code);
     const combinedTestCases = [
@@ -291,35 +326,67 @@ Baseline implementation halted with fatal exception.`
         setAdaptDone(false);
         setTerminalOutput({
           type: 'error',
-          text: `❌ Compilation / Syntax Error:\n${report.error}`
+          title: report.status === 'SYNTAX_ERROR' ? 'Syntax Error' : 'Compilation Error',
+          text: report.error || 'Compiler failed to build adapted code'
         });
+        const cases = combinedTestCases.map((tc, idx) => ({
+          id: tc.id || idx + 1,
+          title: tc.title || `Mutation Test ${idx + 1}`,
+          status: 'FAILED',
+          input: tc.input !== undefined ? (typeof tc.input === 'object' ? JSON.stringify(tc.input) : String(tc.input)) : null,
+          expected: typeof tc.expected === 'object' ? JSON.stringify(tc.expected) : String(tc.expected),
+          actual: report.status,
+          note: report.error ? report.error.split('\n')[0] : 'Syntax error'
+        }));
+        setTestCaseResults(cases);
         return;
       }
 
-      if (report.status === 'TIMEOUT_ERROR') {
+      if (report.status === 'TIMEOUT_ERROR' || report.status === 'TIMEOUT') {
         setAdaptDone(false);
         setTerminalOutput({
           type: 'error',
-          text: `⏱ Timeout Watchdog Aborted:\n${report.error}`
+          title: 'Execution Timeout Watchdog (3500ms Exceeded)',
+          text: report.error || 'Execution exceeded 3500ms time limit.'
         });
+        const cases = combinedTestCases.map((tc, idx) => ({
+          id: tc.id || idx + 1,
+          title: tc.title || `Mutation Test ${idx + 1}`,
+          status: 'FAILED',
+          input: tc.input !== undefined ? (typeof tc.input === 'object' ? JSON.stringify(tc.input) : String(tc.input)) : null,
+          expected: typeof tc.expected === 'object' ? JSON.stringify(tc.expected) : String(tc.expected),
+          actual: 'TIMEOUT_ERROR',
+          note: 'Execution aborted by watchdog (infinite loop)'
+        }));
+        setTestCaseResults(cases);
         return;
       }
+
+      const cases = (report.results || []).map((r, idx) => ({
+        id: r.id || idx + 1,
+        title: combinedTestCases[idx]?.title || `Mutation Test ${idx + 1}`,
+        status: r.passed ? 'PASSED' : 'FAILED',
+        input: r.input !== undefined ? (typeof r.input === 'object' ? JSON.stringify(r.input) : String(r.input)) : ((combinedTestCases[idx]?.input) ? JSON.stringify(combinedTestCases[idx].input) : null),
+        expected: typeof r.expected === 'object' ? JSON.stringify(r.expected) : String(r.expected),
+        actual: r.actual === null ? 'None / Undefined' : typeof r.actual === 'object' ? JSON.stringify(r.actual) : String(r.actual),
+        note: r.error ? `Error: ${r.error}` : (r.elapsedMs !== undefined ? `Execution time: ${r.elapsedMs}ms` : '')
+      }));
+
+      setTestCaseResults(cases);
 
       if (report.allPassed) {
         setAdaptDone(true);
         setTerminalOutput({
           type: 'success',
-          text: `✓ All ${report.passedCount}/${report.totalCount} Mutation & Edge-Case Tests Survived!
-Your defensive implementation safely quarantined invalid null records and handled edge values.
-Click "Next Step: Submit for Multi-Vector Audit →" to run hidden evaluation and earn official SkillProof verification (85% required).`
+          title: 'Mutation Tests Survived — Code is Resilient!',
+          text: `✓ All ${report.passedCount}/${report.totalCount} Mutation & Edge-Case Tests Survived!\nYour defensive implementation safely quarantined invalid records and handled edge values.\nClick "Next Step: Submit for Multi-Vector Audit →" to run hidden evaluation and earn official SkillProof verification (85% required).`
         });
       } else {
         setAdaptDone(false);
         setTerminalOutput({
           type: 'error',
-          text: `❌ ${report.passedCount}/${report.totalCount} Mutation Tests Passed.
-Reason: Solution still crashed under contaminated production batch or lacked defensive guards.
-Check null pointers, boundary clamping, and input deduplication, then run again.`
+          title: 'Mutation Tests Failed — Code Crashed or Returned Incorrect Output',
+          text: `❌ ${report.passedCount || 0}/${report.totalCount || combinedTestCases.length} Mutation Tests Passed.\nReason: Solution still crashed under contaminated production batch or lacked defensive guards.\nCheck the Expected vs Actual values below, fix null pointers and boundary clamping, then run again.`
         });
       }
     } catch (err) {
@@ -327,6 +394,7 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
       setAdaptDone(false);
       setTerminalOutput({
         type: 'error',
+        title: 'Execution Error',
         text: `Execution error: ${err.message}`
       });
     }
@@ -729,16 +797,16 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
 
                 {/* Live status badge */}
                 <div className="text-xs font-mono">
-                  {isRunning && <span className="text-brand-300 animate-pulse">Running test cases...</span>}
-                  {!isRunning && !testCaseResults && <span className="text-slate-500">Ready to test</span>}
+                  {isRunning && <span className="text-brand-300 animate-pulse font-bold">Executing on compiler...</span>}
+                  {!isRunning && !testCaseResults && !terminalOutput && <span className="text-slate-500">Ready to test</span>}
                   {!isRunning && testCaseResults && buildDone && (
-                    <span className="text-emerald-400 font-bold flex items-center gap-1">
-                      <CheckCircle2 className="w-4 h-4" /> {testCaseResults.filter((t) => t.status === 'PASSED').length}/{testCaseResults.length} Tests Passed
+                    <span className="text-emerald-400 font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/40 border border-emerald-500/40">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" /> All {testCaseResults.length}/{testCaseResults.length} Tests Passed (Code is Correct ✓)
                     </span>
                   )}
-                  {!isRunning && testCaseResults && !buildDone && (
-                    <span className="text-rose-400 font-bold flex items-center gap-1">
-                      <XCircle className="w-4 h-4" /> Tests Failed ({testCaseResults.filter((t) => t.status === 'PASSED').length}/{testCaseResults.length} passed)
+                  {!isRunning && (testCaseResults || terminalOutput) && !buildDone && (
+                    <span className="text-rose-400 font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-950/40 border border-rose-500/40">
+                      <XCircle className="w-4 h-4 text-rose-400" /> Code is Incorrect ({testCaseResults ? testCaseResults.filter((t) => t.status === 'PASSED').length : 0}/{testCaseResults ? testCaseResults.length : 0} passed)
                     </span>
                   )}
                 </div>
@@ -758,34 +826,107 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
             </div>
 
             {/* Test Results Console */}
-            <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 font-mono text-xs shadow-xl space-y-3">
+            <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 font-mono text-xs shadow-xl space-y-3.5">
               <div className="flex items-center justify-between pb-2 border-b border-slate-900 text-[11px] text-slate-400 font-semibold">
                 <span className="flex items-center gap-1.5">
                   <Terminal className="w-3.5 h-3.5 text-brand-400" /> Test Results Console
                 </span>
                 {buildDone ? (
-                  <span className="text-emerald-400 font-bold">Code is Correct ✓</span>
+                  <span className="text-emerald-400 font-bold flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> CODE IS CORRECT ✓
+                  </span>
+                ) : (testCaseResults || terminalOutput) ? (
+                  <span className="text-rose-400 font-bold flex items-center gap-1">
+                    <XCircle className="w-3.5 h-3.5" /> CODE IS INCORRECT ✗
+                  </span>
                 ) : (
-                  <span>Status: {testCaseResults ? 'Needs Fix' : 'Awaiting Run'}</span>
+                  <span className="text-slate-500">Status: Awaiting Run</span>
                 )}
               </div>
 
+              {/* Prominent High-Visibility Verdict Banner */}
+              {buildDone && (
+                <div className="p-3.5 rounded-xl bg-emerald-950/50 border border-emerald-500/50 flex flex-wrap items-center justify-between gap-3 text-emerald-300">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-xs text-white">YOUR CODE IS 100% CORRECT!</div>
+                      <div className="text-[11px] text-emerald-300/90">All sample test cases executed and passed on the native {skillData.name} compiler engine.</div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleTriggerBreak}
+                    className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Proceed to Break →</span>
+                  </button>
+                </div>
+              )}
+
+              {!buildDone && (testCaseResults || terminalOutput) && (
+                <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/50 flex items-start gap-3 text-rose-300">
+                  <div className="w-8 h-8 rounded-lg bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                    <XCircle className="w-5 h-5 text-rose-400" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="font-bold text-xs text-white flex items-center gap-2">
+                      <span>YOUR CODE IS INCORRECT OR HAS ERRORS</span>
+                      <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-mono border border-rose-500/30">
+                        {testCaseResults ? `${testCaseResults.filter((t) => t.status === 'PASSED').length}/${testCaseResults.length} Passed` : '0 Passed'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-rose-200/90 leading-relaxed">
+                      Review the error message and the Expected vs. Actual comparison below to understand why your solution failed, fix the code above, and click "▶ Run & Test Code" again.
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Prominent Compiler Error / Diagnostics Box */}
+              {terminalOutput && terminalOutput.type === 'error' && (
+                <div className="p-3.5 rounded-xl bg-rose-950/60 border-2 border-rose-600/80 text-rose-200 space-y-2">
+                  <div className="flex items-center gap-2 font-bold text-xs text-rose-300">
+                    <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                    <span>{terminalOutput.title || 'Compiler / Execution Diagnostic'}</span>
+                  </div>
+                  <pre className="p-3 rounded-lg bg-black/80 border border-rose-900/80 font-mono text-[11px] text-rose-300 whitespace-pre-wrap overflow-x-auto leading-relaxed max-h-[220px]">
+                    {terminalOutput.text}
+                  </pre>
+                  <div className="text-[10px] text-slate-400 italic">
+                    💡 The compiler error message above pinpoints the exact line number and syntax or exception issue. Fix it in the code editor above and test again.
+                  </div>
+                </div>
+              )}
+
               {/* Test Cases Output List */}
-              {testCaseResults ? (
+              {testCaseResults && testCaseResults.length > 0 ? (
                 <div className="space-y-2.5">
+                  <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">
+                    Detailed Test Case Results ({testCaseResults.filter(t => t.status === 'PASSED').length}/{testCaseResults.length} Passed)
+                  </div>
                   {testCaseResults.map((tc) => (
                     <div
                       key={tc.id}
-                      className={`p-3 rounded-xl border text-xs leading-relaxed ${
+                      className={`p-3.5 rounded-xl border text-xs leading-relaxed transition-all ${
                         tc.status === 'PASSED'
                           ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-300'
-                          : 'bg-rose-950/20 border-rose-500/30 text-rose-300'
+                          : 'bg-rose-950/20 border-rose-500/40 text-rose-300'
                       }`}
                     >
-                      <div className="flex items-center justify-between font-bold mb-1">
-                        <span>{tc.title}</span>
+                      <div className="flex items-center justify-between font-bold mb-2">
+                        <span className="flex items-center gap-2">
+                          {tc.status === 'PASSED' ? (
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                          ) : (
+                            <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                          )}
+                          <span>{tc.title}</span>
+                        </span>
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-mono ${
+                          className={`px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-bold ${
                             tc.status === 'PASSED'
                               ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                               : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
@@ -794,36 +935,50 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
                           {tc.status}
                         </span>
                       </div>
-                      <div className="text-[11px] text-slate-400 font-mono space-y-0.5 mt-1">
-                        <div>
-                          <strong className="text-slate-300">Expected:</strong> {tc.expected}
+                      <div className="text-[11px] font-mono space-y-1 mt-1.5 p-2.5 rounded-lg bg-black/50 border border-slate-900">
+                        {tc.input && (
+                          <div className="flex items-start gap-2">
+                            <strong className="text-slate-400 w-16 shrink-0">Input:</strong>
+                            <span className="text-slate-200 overflow-x-auto break-all">{tc.input}</span>
+                          </div>
+                        )}
+                        <div className="flex items-start gap-2">
+                          <strong className="text-slate-400 w-16 shrink-0">Expected:</strong>
+                          <span className="text-emerald-300 overflow-x-auto break-all font-semibold">{tc.expected}</span>
                         </div>
-                        <div>
-                          <strong className="text-slate-300">Actual:</strong> {tc.actual}
+                        <div className="flex items-start gap-2">
+                          <strong className="text-slate-400 w-16 shrink-0">Actual:</strong>
+                          <span
+                            className={`overflow-x-auto break-all font-semibold ${
+                              tc.status === 'PASSED' ? 'text-emerald-300' : 'text-rose-400 underline decoration-rose-500/50'
+                            }`}
+                          >
+                            {tc.actual}
+                          </span>
                         </div>
-                        {tc.note && <div className="text-slate-400 italic text-[10px]">↳ {tc.note}</div>}
+                        {tc.note && (
+                          <div className="text-slate-400 italic text-[10px] pt-1 border-t border-slate-900/80">
+                            ↳ {tc.note}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
-
-                  {terminalOutput && (
-                    <div
-                      className={`p-3 rounded-xl text-xs font-mono mt-2 ${
-                        terminalOutput.type === 'error'
-                          ? 'bg-rose-950/40 border border-rose-900/60 text-rose-300'
-                          : 'bg-emerald-950/40 border border-emerald-900/60 text-emerald-300'
-                      }`}
-                    >
-                      <pre className="whitespace-pre-wrap">{terminalOutput.text}</pre>
-                    </div>
-                  )}
                 </div>
-              ) : (
-                <div className="text-slate-500 italic py-4 text-center">
-                  Write your solution in the code space above, then click{' '}
-                  <strong className="text-slate-300">"▶ Run & Test Code"</strong> to check if it's correct.
+              ) : !terminalOutput ? (
+                <div className="text-slate-500 italic py-6 text-center space-y-2">
+                  <div className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto text-slate-400">
+                    <Play className="w-4 h-4 ml-0.5" />
+                  </div>
+                  <div>
+                    Write your solution in the code space above, then click{' '}
+                    <strong className="text-slate-300">"▶ Run & Test Code"</strong> to check if it's correct.
+                  </div>
+                  <div className="text-[10px] text-slate-600">
+                    Real-time execution results, expected vs actual values, and compiler diagnostics will appear here.
+                  </div>
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
@@ -942,17 +1097,35 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
             />
 
             {/* Run Mutation Tests & Submit */}
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-lg">
-                <button
-                  type="button"
-                  onClick={handleTestAdaptedCode}
-                  disabled={isRunning}
-                  className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 flex items-center gap-2 transition-all shadow-md cursor-pointer"
-                >
-                  <Play className="w-4 h-4 text-amber-400" />
-                  <span>{isRunning ? 'Testing Mutation...' : '▶ Run Mutation Tests'}</span>
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleTestAdaptedCode}
+                    disabled={isRunning}
+                    className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:bg-slate-800 text-white font-bold text-xs shadow-lg shadow-amber-600/30 flex items-center gap-2 transition-all cursor-pointer"
+                  >
+                    <Play className="w-4 h-4 text-white" />
+                    <span>{isRunning ? 'Testing Mutation...' : '▶ Run Mutation Tests'}</span>
+                  </button>
+
+                  {/* Live status badge */}
+                  <div className="text-xs font-mono">
+                    {isRunning && <span className="text-amber-300 animate-pulse font-bold">Executing on compiler...</span>}
+                    {!isRunning && !testCaseResults && !terminalOutput && <span className="text-slate-500">Ready to test defensive code</span>}
+                    {!isRunning && testCaseResults && adaptDone && (
+                      <span className="text-emerald-400 font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/40 border border-emerald-500/40">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" /> All {testCaseResults.length}/{testCaseResults.length} Mutations Survived (Code is Resilient ✓)
+                      </span>
+                    )}
+                    {!isRunning && (testCaseResults || terminalOutput) && !adaptDone && (
+                      <span className="text-rose-400 font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-950/40 border border-rose-500/40">
+                        <XCircle className="w-4 h-4 text-rose-400" /> Mutation Failed ({testCaseResults ? testCaseResults.filter((t) => t.status === 'PASSED').length : 0}/{testCaseResults ? testCaseResults.length : 0} passed)
+                      </span>
+                    )}
+                  </div>
+                </div>
 
                 {adaptDone && (
                   <button
@@ -966,32 +1139,157 @@ Check null pointers, boundary clamping, and input deduplication, then run again.
                 )}
               </div>
 
-              {/* Mutation Console */}
-              <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 font-mono text-xs overflow-y-auto max-h-[220px]">
-                <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-900 text-[11px] text-slate-400 font-semibold">
+              {/* Mutation Test Results Console */}
+              <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 font-mono text-xs shadow-xl space-y-3.5">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-900 text-[11px] text-slate-400 font-semibold">
                   <span className="flex items-center gap-1.5">
                     <Terminal className="w-3.5 h-3.5 text-amber-400" /> Mutation Stress Console
                   </span>
-                  {adaptDone && (
+                  {adaptDone ? (
                     <span className="text-emerald-400 font-bold flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Mutation Survived ✓
+                      <CheckCircle2 className="w-3.5 h-3.5" /> MUTATION SURVIVED ✓
                     </span>
+                  ) : (testCaseResults || terminalOutput) ? (
+                    <span className="text-rose-400 font-bold flex items-center gap-1">
+                      <XCircle className="w-3.5 h-3.5" /> CODE CRASHED OR FAILED ✗
+                    </span>
+                  ) : (
+                    <span className="text-slate-500">Status: Awaiting Run</span>
                   )}
                 </div>
 
-                {terminalOutput ? (
-                  <pre
-                    className={`whitespace-pre-wrap leading-relaxed ${
-                      terminalOutput.type === 'error' ? 'text-rose-400' : 'text-emerald-400'
-                    }`}
-                  >
-                    {terminalOutput.text}
-                  </pre>
-                ) : (
-                  <div className="text-slate-500 italic py-2">
-                    Click <strong className="text-slate-300">"▶ Run Mutation Tests"</strong> to test your defensive code against the injected production anomalies.
+                {/* Verdict Banner */}
+                {adaptDone && (
+                  <div className="p-3.5 rounded-xl bg-emerald-950/50 border border-emerald-500/50 flex flex-wrap items-center justify-between gap-3 text-emerald-300">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-white">DEFENSIVE CODE IS 100% RESILIENT!</div>
+                        <div className="text-[11px] text-emerald-300/90">Your implementation survived production anomalies, null injections, and boundary mutations.</div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSubmitForVerification}
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-brand-600 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Submit for Verification →</span>
+                    </button>
                   </div>
                 )}
+
+                {!adaptDone && (testCaseResults || terminalOutput) && (
+                  <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/50 flex items-start gap-3 text-rose-300">
+                    <div className="w-8 h-8 rounded-lg bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                      <XCircle className="w-5 h-5 text-rose-400" />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="font-bold text-xs text-white flex items-center gap-2">
+                        <span>DEFENSIVE GUARDS INCOMPLETE</span>
+                        <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-mono border border-rose-500/30">
+                          {testCaseResults ? `${testCaseResults.filter((t) => t.status === 'PASSED').length}/${testCaseResults.length} Passed` : '0 Passed'}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-rose-200/90 leading-relaxed">
+                        Your code did not survive the mutation stress tests. Review the failure details and Expected vs. Actual outputs below to add the necessary guards.
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Error diagnostics box */}
+                {terminalOutput && terminalOutput.type === 'error' && (
+                  <div className="p-3.5 rounded-xl bg-rose-950/60 border-2 border-rose-600/80 text-rose-200 space-y-2">
+                    <div className="flex items-center gap-2 font-bold text-xs text-rose-300">
+                      <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                      <span>{terminalOutput.title || 'Compiler / Execution Diagnostic'}</span>
+                    </div>
+                    <pre className="p-3 rounded-lg bg-black/80 border border-rose-900/80 font-mono text-[11px] text-rose-300 whitespace-pre-wrap overflow-x-auto leading-relaxed max-h-[220px]">
+                      {terminalOutput.text}
+                    </pre>
+                  </div>
+                )}
+
+                {/* Mutation Test Cases Output List */}
+                {testCaseResults && testCaseResults.length > 0 ? (
+                  <div className="space-y-2.5">
+                    <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">
+                      Mutation & Sample Test Breakdown ({testCaseResults.filter(t => t.status === 'PASSED').length}/{testCaseResults.length} Passed)
+                    </div>
+                    {testCaseResults.map((tc) => (
+                      <div
+                        key={tc.id}
+                        className={`p-3.5 rounded-xl border text-xs leading-relaxed transition-all ${
+                          tc.status === 'PASSED'
+                            ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-300'
+                            : 'bg-rose-950/20 border-rose-500/40 text-rose-300'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between font-bold mb-2">
+                          <span className="flex items-center gap-2">
+                            {tc.status === 'PASSED' ? (
+                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                            ) : (
+                              <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                            )}
+                            <span>{tc.title}</span>
+                          </span>
+                          <span
+                            className={`px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-bold ${
+                              tc.status === 'PASSED'
+                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                            }`}
+                          >
+                            {tc.status}
+                          </span>
+                        </div>
+                        <div className="text-[11px] font-mono space-y-1 mt-1.5 p-2.5 rounded-lg bg-black/50 border border-slate-900">
+                          {tc.input && (
+                            <div className="flex items-start gap-2">
+                              <strong className="text-slate-400 w-16 shrink-0">Input:</strong>
+                              <span className="text-slate-200 overflow-x-auto break-all">{tc.input}</span>
+                            </div>
+                          )}
+                          <div className="flex items-start gap-2">
+                            <strong className="text-slate-400 w-16 shrink-0">Expected:</strong>
+                            <span className="text-emerald-300 overflow-x-auto break-all font-semibold">{tc.expected}</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <strong className="text-slate-400 w-16 shrink-0">Actual:</strong>
+                            <span
+                              className={`overflow-x-auto break-all font-semibold ${
+                                tc.status === 'PASSED' ? 'text-emerald-300' : 'text-rose-400 underline decoration-rose-500/50'
+                              }`}
+                            >
+                              {tc.actual}
+                            </span>
+                          </div>
+                          {tc.note && (
+                            <div className="text-slate-400 italic text-[10px] pt-1 border-t border-slate-900/80">
+                              ↳ {tc.note}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : !terminalOutput ? (
+                  <div className="text-slate-500 italic py-6 text-center space-y-2">
+                    <div className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto text-amber-400">
+                      <Play className="w-4 h-4 ml-0.5" />
+                    </div>
+                    <div>
+                      Click <strong className="text-slate-300">"▶ Run Mutation Tests"</strong> to test your defensive code against the injected production anomalies.
+                    </div>
+                    <div className="text-[10px] text-slate-600">
+                      Stress testing evaluates null handling, boundary clamping, and anomalous data resilience.
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
