@@ -158,7 +158,7 @@ export const SkillQuizRunner = ({ onAssessmentCompleted }) => {
   // RESULT & REVIEW SCREEN
   // ========================================================
   if (result) {
-    const isPassed = result.score >= 70;
+    const isPassed = result.score >= 75;
 
     return (
       <div className="max-w-4xl mx-auto space-y-8 pb-12 animate-in fade-in duration-300">
@@ -175,14 +175,35 @@ export const SkillQuizRunner = ({ onAssessmentCompleted }) => {
 
           <div className="space-y-1">
             <h1 className="text-3xl sm:text-4xl font-black text-white">
-              {isPassed ? 'Skill Verified Successfully! 🎉' : 'Assessment Completed'}
+              {isPassed ? 'Quiz Passed! Coding Assessment Unlocked 🎉' : 'Quiz Completed'}
             </h1>
-            <p className="text-sm text-slate-400 max-w-md mx-auto">
+            <p className="text-sm text-slate-400 max-w-lg mx-auto">
               {isPassed
-                ? 'Your performance meets the verified threshold. This score has been minted to your database profile and passport.'
-                : 'Review the explanations below, study the gap areas, and retake the test with a fresh randomized question set.'}
+                ? `You scored ${result.score}%, exceeding the required 75% cutoff! You have unlocked the sequential Build → Break → Adapt coding challenge for ${catalogItem.name}.`
+                : `You scored ${result.score}%. A minimum score of 75% is required to unlock the live coding challenge. Review explanations below and retry!`}
             </p>
           </div>
+
+          {isPassed && (
+            <div className="my-3 p-4 bg-emerald-950/40 border border-emerald-500/40 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white">Coding Assessment Unlocked!</h4>
+                  <p className="text-xs text-emerald-200/80">3 Sequential Rounds: Build → Break → Adapt (85% to pass)</p>
+                </div>
+              </div>
+              <Link
+                to={`/build-break-adapt?skill=${skillParam}&mode=verified`}
+                className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/20 flex items-center gap-2 whitespace-nowrap"
+              >
+                <span>Start Coding Assessment</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          )}
 
           <div className="flex items-center justify-center gap-6 py-4">
             <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800/90 text-center min-w-[120px]">
@@ -198,33 +219,36 @@ export const SkillQuizRunner = ({ onAssessmentCompleted }) => {
               </p>
             </div>
             <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800/90 text-center min-w-[120px]">
-              <span className="text-xs text-slate-400 uppercase font-bold">Verified Level</span>
-              <p className="text-xl font-black text-white mt-2">
-                {result.level}
+              <span className="text-xs text-slate-400 uppercase font-bold">Quiz Status</span>
+              <p className={`text-base font-black mt-2 ${isPassed ? 'text-emerald-400' : 'text-amber-400'}`}>
+                {isPassed ? 'PASSED (≥75%)' : 'RETRY NEEDED'}
               </p>
             </div>
           </div>
 
           {/* Action Bar */}
           <div className="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-center gap-3">
+            {isPassed && (
+              <Link
+                to={`/build-break-adapt?skill=${skillParam}&mode=verified`}
+                className="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-lg shadow-brand-600/30 flex items-center gap-2 cursor-pointer transition-all"
+              >
+                <CodeXml className="w-4 h-4" />
+                <span>Launch Build → Break → Adapt</span>
+              </Link>
+            )}
             <button
               onClick={startNewTest}
-              className="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-lg shadow-brand-600/30 flex items-center gap-2 cursor-pointer transition-all"
+              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow-md flex items-center gap-2 cursor-pointer transition-all"
             >
               <RotateCcw className="w-4 h-4" />
-              <span>Retake Test (New Questions & Randomized Options)</span>
+              <span>Retake Quiz (Randomized)</span>
             </button>
             <Link
               to="/"
-              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors"
-            >
-              View Updated Dashboard
-            </Link>
-            <Link
-              to="/profile"
               className="px-6 py-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-bold transition-colors"
             >
-              View Profile & History
+              Dashboard
             </Link>
           </div>
         </div>

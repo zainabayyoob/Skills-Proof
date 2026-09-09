@@ -29,20 +29,38 @@ router.post('/start', requireAuth, (req, res) => {
       return res.status(404).json({ error: `No questions found for skill: ${skillId}` });
     }
 
-    // Dynamic selection: randomly pick 5 questions (or all if < 5)
-    const numQuestions = Math.min(5, availableQuestions.length);
-    const shuffledQuestions = shuffleArray(availableQuestions).slice(0, numQuestions);
+    // Filter questions by progressive difficulty: Basic -> Intermediate -> Advanced
+    const basicQuestions = availableQuestions.filter((q) => q.difficulty === 'basic');
+    const interQuestions = availableQuestions.filter((q) => q.difficulty === 'intermediate');
+    const advQuestions = availableQuestions.filter((q) => q.difficulty === 'advanced');
+
+    // Select ~7-8 from each tier to assemble a progressive 20-24 question quiz
+    const targetPerTier = 7;
+    const selectedBasic = shuffleArray(basicQuestions).slice(0, Math.min(targetPerTier, basicQuestions.length));
+    const selectedInter = shuffleArray(interQuestions).slice(0, Math.min(targetPerTier, interQuestions.length));
+    const selectedAdv = shuffleArray(advQuestions).slice(0, Math.min(targetPerTier, advQuestions.length));
+
+    let selectedQuestions = [...selectedBasic, ...selectedInter, ...selectedAdv];
+
+    // If fewer than 20 questions chosen due to uneven tier sizes, backfill up to 21-24
+    if (selectedQuestions.length < 20 && availableQuestions.length >= 20) {
+      const selectedIds = new Set(selectedQuestions.map((q) => q.id));
+      const remaining = shuffleArray(availableQuestions.filter((q) => !selectedIds.has(q.id)));
+      const needed = Math.min(22 - selectedQuestions.length, remaining.length);
+      selectedQuestions = [...selectedQuestions, ...remaining.slice(0, needed)];
+    }
 
     // For each question, randomize the options order
     const attemptQuestionsBackend = [];
     const sanitizedQuestionsFrontend = [];
 
-    shuffledQuestions.forEach((q) => {
+    selectedQuestions.forEach((q) => {
       const randomizedOptions = shuffleArray(q.options);
 
       // Store complete record on backend with correct answer mapping
       attemptQuestionsBackend.push({
         questionId: q.id,
+        difficulty: q.difficulty || 'intermediate',
         question: q.question,
         codeSnippet: q.codeSnippet || '',
         options: randomizedOptions,
@@ -53,6 +71,7 @@ router.post('/start', requireAuth, (req, res) => {
       // Strip correct answers before sending to frontend!
       sanitizedQuestionsFrontend.push({
         id: q.id,
+        difficulty: q.difficulty || 'intermediate',
         question: q.question,
         codeSnippet: q.codeSnippet || '',
         options: randomizedOptions.map((opt) => ({
@@ -88,6 +107,31 @@ router.post('/start', requireAuth, (req, res) => {
   } catch (err) {
     console.error('Test start error:', err);
     return res.status(500).json({ error: 'Failed to initialize test attempt' });
+  }
+});
+
+// GET /api/tests/eligibility/:skillId
+// Checks whether a student has passed the quiz (>= 75%) to unlock the coding assessment
+router.get('/eligibility/:skillId', requireAuth, (req, res) => {
+  try {
+    const { skillId } = req.params;
+    const user = db.getUserById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const sId = skillId.toLowerCase();
+    const unlocked = user.unlockedCodingSkills?.[sId]?.unlocked || false;
+    const verified = (user.verifiedSkills || []).find((s) => s.skillId === sId);
+    const isEligible = unlocked || (verified && (verified.quizPassed || verified.score >= 75));
+
+    return res.json({
+      skillId: sId,
+      isEligible: !!isEligible,
+      quizPassed: !!isEligible,
+      quizScore: user.unlockedCodingSkills?.[sId]?.quizScore || verified?.score || null
+    });
+  } catch (err) {
+    console.error('Eligibility check error:', err);
+    return res.status(500).json({ error: 'Failed to check assessment eligibility' });
   }
 });
 
@@ -138,8 +182,9 @@ router.post('/submit', requireAuth, (req, res) => {
 
     const totalCount = attempt.questionMappings.length;
     const score = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
-    const level = score >= 85 ? 'Advanced' : score >= 70 ? 'Proficient' : 'Intermediate';
-    const badge = score >= 85 ? 'Gold' : score >= 70 ? 'Silver' : 'Bronze';
+    const isQuizPassed = score >= 75;
+    const level = score >= 85 ? 'Advanced' : score >= 75 ? 'Proficient' : 'Intermediate';
+    const badge = score >= 85 ? 'Gold' : score >= 75 ? 'Silver' : 'Bronze';
 
     // Count attempt number for this user and skill
     const previousAttempts = db.getTestAttemptsByUser(req.user.id)
@@ -150,6 +195,7 @@ router.post('/submit', requireAuth, (req, res) => {
     const updatedAttempt = db.updateTestAttempt(attemptId, {
       status: 'completed',
       score,
+      quizPassed: isQuizPassed,
       correctCount,
       totalCount,
       attemptNumber,
@@ -167,38 +213,61 @@ router.post('/submit', requireAuth, (req, res) => {
       skillId: attempt.skillId,
       score,
       level,
+      quizPassed: isQuizPassed,
       verifiedAt: new Date().toISOString().split('T')[0],
       badge,
       latestAttemptNumber: attemptNumber
     };
 
     if (existingIndex >= 0) {
-      // Keep highest score or update with recent verified score
       const prevScore = verifiedList[existingIndex].score;
+      const prevPassed = verifiedList[existingIndex].quizPassed;
       verifiedList[existingIndex] = {
         ...skillRecord,
         score: Math.max(prevScore, score),
-        level: Math.max(prevScore, score) >= 85 ? 'Advanced' : Math.max(prevScore, score) >= 70 ? 'Proficient' : 'Intermediate',
-        badge: Math.max(prevScore, score) >= 85 ? 'Gold' : Math.max(prevScore, score) >= 70 ? 'Silver' : 'Bronze'
+        quizPassed: prevPassed || isQuizPassed,
+        level: Math.max(prevScore, score) >= 85 ? 'Advanced' : Math.max(prevScore, score) >= 75 ? 'Proficient' : 'Intermediate',
+        badge: Math.max(prevScore, score) >= 85 ? 'Gold' : Math.max(prevScore, score) >= 75 ? 'Silver' : 'Bronze'
       };
     } else {
       verifiedList.push(skillRecord);
+    }
+
+    const unlockedCodingSkills = { ...(user.unlockedCodingSkills || {}) };
+    if (isQuizPassed) {
+      unlockedCodingSkills[attempt.skillId] = {
+        unlocked: true,
+        quizScore: score,
+        unlockedAt: new Date().toISOString()
+      };
+
+      if (typeof db.addNotification === 'function') {
+        db.addNotification(user.id, {
+          title: `Coding Assessment Unlocked!`,
+          message: `Congratulations! You scored ${score}% on the ${attempt.skillName} quiz. You have unlocked the Build-Break-Adapt coding challenge.`,
+          type: 'ASSESSMENT_UNLOCKED',
+          skillId: attempt.skillId
+        });
+      }
     }
 
     const passportHash = `SKP-2026-${attempt.skillId.toUpperCase().slice(0, 3)}-${Date.now().toString(36).toUpperCase()}`;
 
     const updatedUser = db.updateUser(user.id, {
       verifiedSkills: verifiedList,
+      unlockedCodingSkills,
       passportHash
     });
 
     const { passwordHash, ...sanitizedUser } = updatedUser;
 
     return res.json({
-      message: 'Test submitted and graded successfully',
+      message: isQuizPassed ? 'Quiz passed! Coding assessment unlocked.' : 'Test submitted and graded.',
       attemptId,
       attemptNumber,
       score,
+      quizPassed: isQuizPassed,
+      unlockedCoding: isQuizPassed,
       correctCount,
       totalCount,
       level,
@@ -213,17 +282,18 @@ router.post('/submit', requireAuth, (req, res) => {
 });
 
 // POST /api/tests/verify-code
-// For Build -> Break -> Adapt interactive code challenges
+// For Build -> Break -> Adapt interactive code challenges (85% passing cutoff)
 router.post('/verify-code', requireAuth, (req, res) => {
   try {
-    const { skillId, skillName, overallScore, evidence } = req.body;
+    const { skillId, skillName, overallScore, roundsEvidence } = req.body;
     if (!skillId || overallScore === undefined) {
       return res.status(400).json({ error: 'skillId and overallScore are required' });
     }
 
     const score = Number(overallScore);
-    const level = score >= 85 ? 'Advanced' : score >= 70 ? 'Proficient' : 'Intermediate';
-    const badge = score >= 85 ? 'Gold' : score >= 70 ? 'Silver' : 'Bronze';
+    const isCodingPassed = score >= 85;
+    const level = score >= 90 ? 'Production Ready' : score >= 85 ? 'Advanced Verified' : score >= 75 ? 'Proficient' : 'Needs Practice';
+    const badge = score >= 85 ? 'Gold' : score >= 75 ? 'Silver' : 'Bronze';
 
     const user = db.getUserById(req.user.id);
     const verifiedList = [...(user.verifiedSkills || [])];
@@ -236,13 +306,29 @@ router.post('/verify-code', requireAuth, (req, res) => {
       level,
       verifiedAt: new Date().toISOString().split('T')[0],
       badge,
-      type: 'code_challenge'
+      codingPassed: isCodingPassed,
+      type: 'code_challenge_bba'
     };
 
     if (existingIdx >= 0) {
-      verifiedList[existingIdx] = record;
+      const prev = verifiedList[existingIdx];
+      verifiedList[existingIdx] = {
+        ...prev,
+        ...record,
+        score: Math.max(prev.score || 0, score),
+        codingPassed: prev.codingPassed || isCodingPassed
+      };
     } else {
       verifiedList.push(record);
+    }
+
+    if (isCodingPassed && typeof db.addNotification === 'function') {
+      db.addNotification(user.id, {
+        title: `Skill Verified: ${skillName || skillId}!`,
+        message: `Outstanding! You scored ${score}% on the Build-Break-Adapt coding assessment, meeting the 85% production readiness standard.`,
+        type: 'SKILL_VERIFIED',
+        skillId: skillId.toLowerCase()
+      });
     }
 
     const passportHash = `SKP-2026-${skillId.toUpperCase().slice(0, 3)}-${Date.now().toString(36).toUpperCase()}`;

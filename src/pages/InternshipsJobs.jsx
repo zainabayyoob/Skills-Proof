@@ -30,6 +30,8 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [appliedSuccess, setAppliedSuccess] = useState(false);
   const [candidateNote, setCandidateNote] = useState('');
+  const [typeFilter, setTypeFilter] = useState('All');
+  const [workModeFilter, setWorkModeFilter] = useState('All');
 
   // Compute smart match for all listings
   const enrichedOpportunities = opportunities.map((opp) => {
@@ -44,6 +46,25 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
       application: existingApp || null
     };
   }).sort((a, b) => b.matchScore - a.matchScore);
+
+  const filteredOpportunities = enrichedOpportunities.filter((opp) => {
+    if (typeFilter !== 'All') {
+      const t = (opp.type || '').toLowerCase();
+      if (typeFilter === 'Job' && !t.includes('job') && !t.includes('placement') && !t.includes('full-time')) return false;
+      if (typeFilter === 'Internship' && !t.includes('internship')) return false;
+      if (typeFilter === 'Part-time' && !t.includes('part-time')) return false;
+      if (typeFilter === 'Startup' && !t.includes('startup')) return false;
+      if (typeFilter === 'Project' && !t.includes('project')) return false;
+    }
+    if (workModeFilter !== 'All') {
+      const loc = (opp.location || '').toLowerCase();
+      const wm = (opp.workMode || '').toLowerCase();
+      if (workModeFilter === 'Remote' && !loc.includes('remote') && !wm.includes('remote')) return false;
+      if (workModeFilter === 'Hybrid' && !loc.includes('hybrid') && !wm.includes('hybrid')) return false;
+      if (workModeFilter === 'On-site' && (loc.includes('remote') || loc.includes('hybrid') || wm.includes('remote') || wm.includes('hybrid'))) return false;
+    }
+    return true;
+  });
 
   const handleOpenApplyModal = (opp) => {
     setSelectedOpp(opp);
@@ -134,9 +155,70 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
         </div>
       )}
 
+      {/* Type & Work Mode Filter Bar */}
+      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Opportunity Type Filters */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-bold text-slate-400 uppercase mr-1">Type:</span>
+            {['All', 'Job', 'Internship', 'Part-time', 'Startup', 'Project'].map((t) => {
+              const active = typeFilter === t;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTypeFilter(t)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    active
+                      ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
+                      : 'bg-slate-950/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  {t === 'All' ? 'All Types' : t}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Work Mode Filters */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-bold text-slate-400 uppercase mr-1">Location:</span>
+            {['All', 'Remote', 'Hybrid', 'On-site'].map((m) => {
+              const active = workModeFilter === m;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setWorkModeFilter(m)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    active
+                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                      : 'bg-slate-950/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  {m}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* Opportunities List */}
       <div className="space-y-4">
-        {enrichedOpportunities.map((opp) => {
+        {filteredOpportunities.length === 0 ? (
+          <div className="p-12 text-center bg-slate-900/60 rounded-2xl border border-slate-800 text-slate-400 text-sm space-y-2">
+            <p>No opportunities match the selected filters ({typeFilter} • {workModeFilter}).</p>
+            <button
+              type="button"
+              onClick={() => { setTypeFilter('All'); setWorkModeFilter('All'); }}
+              className="text-brand-400 hover:underline text-xs font-bold cursor-pointer"
+            >
+              Reset filters
+            </button>
+          </div>
+        ) : (
+          filteredOpportunities.map((opp) => {
           const isApplied = !!opp.application;
           const isVerified = student.verifiedSkills && student.verifiedSkills.length > 0;
 
@@ -256,7 +338,7 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
               </div>
             </div>
           );
-        })}
+        }))}
       </div>
 
       {/* 1-Click Apply Modal */}

@@ -95,6 +95,34 @@ export const api = {
       });
       return handleResponse(res);
     },
+
+    checkEligibility: async (skillId) => {
+      const res = await fetch(`${API_BASE}/tests/eligibility/${skillId}`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+  },
+
+  // Real Compiler API
+  compiler: {
+    run: async (payload) => {
+      const res = await fetch(`${API_BASE}/compiler/run`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    submit: async (payload) => {
+      const res = await fetch(`${API_BASE}/compiler/submit`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
   },
 
   // Profile API

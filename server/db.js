@@ -80,9 +80,9 @@ export const defaultOpportunities = [
     openings: 3,
     description: "Build robust REST APIs and responsive dashboards under high event volume.",
     requiredSkills: [
-      { name: "Frontend (React)", minScore: 75 },
-      { name: "Backend (Node.js)", minScore: 75 },
-      { name: "SQL", minScore: 70 }
+      { name: "Frontend (React)", weight: 0.35, minScore: 75 },
+      { name: "Backend (Node.js)", weight: 0.35, minScore: 75 },
+      { name: "SQL", weight: 0.3, minScore: 70 }
     ]
   },
   {
@@ -90,31 +90,31 @@ export const defaultOpportunities = [
     title: "Python Data Systems Engineer",
     company: "CloudScale Infrastructure",
     location: "Remote (India)",
-    stipend: "₹40,000 - ₹50,000 / month",
-    type: "Full-Time Placement",
+    stipend: "₹14,00,000 - ₹18,00,000 / annum",
+    type: "Job",
     postedDate: "3 days ago",
     openings: 2,
     description: "Architect high-throughput data pipelines, telemetry aggregators, and defensive API endpoints.",
     requiredSkills: [
-      { name: "Python", minScore: 80 },
-      { name: "SQL", minScore: 75 },
-      { name: "Data Analytics", minScore: 70 }
+      { name: "Python", weight: 0.4, minScore: 80 },
+      { name: "SQL", weight: 0.35, minScore: 75 },
+      { name: "Data Analytics", weight: 0.25, minScore: 70 }
     ]
   },
   {
     id: "opp-3",
     title: "Frontend UI/UX Engineer",
     company: "Nexus Design Systems",
-    location: "Pune, India (On-Site)",
+    location: "Pune, India (Hybrid)",
     stipend: "₹30,000 - ₹40,000 / month",
-    type: "Internship (4 Months)",
+    type: "Internship",
     postedDate: "1 day ago",
     openings: 4,
     description: "Implement accessible, high-performance web applications using React and Tailwind CSS.",
     requiredSkills: [
-      { name: "Frontend (React)", minScore: 80 },
-      { name: "JavaScript", minScore: 80 },
-      { name: "HTML & CSS", minScore: 75 }
+      { name: "Frontend (React)", weight: 0.4, minScore: 80 },
+      { name: "JavaScript", weight: 0.35, minScore: 80 },
+      { name: "HTML & CSS", weight: 0.25, minScore: 75 }
     ]
   },
   {
@@ -122,14 +122,62 @@ export const defaultOpportunities = [
     title: "Core Java Systems Developer",
     company: "FinTech Quantum Labs",
     location: "Hyderabad, India (Hybrid)",
-    stipend: "₹50,000 / month",
-    type: "Full-Time Placement",
+    stipend: "₹16,00,000 / annum",
+    type: "Job",
     postedDate: "5 days ago",
     openings: 2,
     description: "Develop low-latency transactional microservices and resilient message queuing workers.",
     requiredSkills: [
-      { name: "Java", minScore: 80 },
-      { name: "SQL", minScore: 75 }
+      { name: "Java", weight: 0.5, minScore: 80 },
+      { name: "SQL", weight: 0.5, minScore: 75 }
+    ]
+  },
+  {
+    id: "opp-5",
+    title: "Founding Backend Engineer",
+    company: "Krypton Health (YC S25)",
+    location: "Bangalore, India (Hybrid)",
+    stipend: "₹18,00,000 / annum + 0.5% Equity",
+    type: "Startup",
+    postedDate: "Just now",
+    openings: 2,
+    description: "Build HIPAA-compliant health data pipelines under rapid release cycles with high autonomy.",
+    requiredSkills: [
+      { name: "Python", weight: 0.4, minScore: 85 },
+      { name: "SQL", weight: 0.35, minScore: 80 },
+      { name: "Backend (Node.js)", weight: 0.25, minScore: 75 }
+    ]
+  },
+  {
+    id: "opp-6",
+    title: "Python Automation Specialist",
+    company: "MarketPulse Labs",
+    location: "Remote",
+    stipend: "₹25,000 / month (20 hrs/wk)",
+    type: "Part-time",
+    postedDate: "1 day ago",
+    openings: 3,
+    description: "Flexible part-time student role: construct resilient scrapers and data validation scripts.",
+    requiredSkills: [
+      { name: "Python", weight: 0.5, minScore: 75 },
+      { name: "Data Analytics", weight: 0.3, minScore: 70 },
+      { name: "SQL", weight: 0.2, minScore: 70 }
+    ]
+  },
+  {
+    id: "opp-7",
+    title: "Open Source Graph Query Optimization",
+    company: "SkillProof Foundation",
+    location: "Remote (Global Bounty)",
+    stipend: "₹75,000 Fixed Milestone Bounty",
+    type: "Project",
+    postedDate: "Just now",
+    openings: 2,
+    description: "Paid open-source bounty to optimize graph database traversal and resolve memory leaks.",
+    requiredSkills: [
+      { name: "C++", weight: 0.4, minScore: 80 },
+      { name: "Python", weight: 0.35, minScore: 80 },
+      { name: "SQL", weight: 0.25, minScore: 75 }
     ]
   }
 ];
@@ -245,6 +293,7 @@ class Database {
       id: `usr_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
       name: userData.name,
       email: userData.email.toLowerCase().trim(),
+      phone: userData.phone ? userData.phone.trim() : "",
       passwordHash: userData.passwordHash,
       college: userData.college || "Institute of Technology",
       degree: userData.degree || "Computer Science & Engineering",
@@ -258,6 +307,17 @@ class Database {
       verifiedSkills: [],
       skillGaps: initialGaps,
       recommendedRoles: initialRoles,
+      notifications: [
+        {
+          id: `notif_${Date.now()}_welcome`,
+          type: 'WELCOME',
+          title: 'Welcome to SkillProof!',
+          message: 'Your candidate profile is ready. Select a skill to take the qualifying quiz and unlock coding challenges.',
+          channel: 'IN_APP',
+          createdAt: new Date().toISOString(),
+          read: false
+        }
+      ],
       passportHash: null,
       avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
       createdAt: new Date().toISOString()
@@ -347,6 +407,28 @@ class Database {
     data.applications.unshift(newApp);
     this.writeSync(data);
     return newApp;
+  }
+
+  // --- Notifications Architecture ---
+  addNotification(userId, notif) {
+    const data = this.read();
+    const user = data.users.find((u) => u.id === userId);
+    if (!user) return null;
+    if (!user.notifications) user.notifications = [];
+    const newNotif = {
+      id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      ...notif,
+      createdAt: new Date().toISOString(),
+      read: false
+    };
+    user.notifications.unshift(newNotif);
+    this.writeSync(data);
+    return newNotif;
+  }
+
+  getNotificationsByUser(userId) {
+    const user = this.getUserById(userId);
+    return user?.notifications || [];
   }
 }
 

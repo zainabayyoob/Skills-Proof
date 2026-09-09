@@ -21,9 +21,16 @@ export function calculateOpportunityMatch(opportunity, student) {
     };
   }
 
+  const normalizeStr = (str) => (str ? str.toLowerCase().replace(/[^a-z0-9]/g, '') : '');
+
   const studentSkillsMap = new Map();
   student.verifiedSkills.forEach((s) => {
-    studentSkillsMap.set(s.name.toLowerCase(), s.score);
+    const nameLower = (s.name || '').toLowerCase().trim();
+    studentSkillsMap.set(nameLower, s.score);
+    if (s.skillId) {
+      studentSkillsMap.set(s.skillId.toLowerCase().trim(), s.score);
+    }
+    studentSkillsMap.set(normalizeStr(s.name), s.score);
   });
 
   let totalWeight = 0;
@@ -32,11 +39,32 @@ export function calculateOpportunityMatch(opportunity, student) {
   const missingSkills = [];
 
   opportunity.requiredSkills.forEach((req) => {
-    totalWeight += req.weight;
-    const studentScore = studentSkillsMap.get(req.name.toLowerCase());
+    const weight = typeof req.weight === 'number' && !isNaN(req.weight) ? req.weight : 1;
+    totalWeight += weight;
+
+    const reqNameLower = (req.name || '').toLowerCase().trim();
+    const reqIdLower = (req.id || '').toLowerCase().trim();
+    const reqNormalized = normalizeStr(req.name);
+
+    let studentScore = studentSkillsMap.get(reqNameLower);
+    if (studentScore === undefined && reqIdLower) {
+      studentScore = studentSkillsMap.get(reqIdLower);
+    }
+    if (studentScore === undefined) {
+      studentScore = studentSkillsMap.get(reqNormalized);
+    }
+    if (studentScore === undefined) {
+      // Substring fallback (e.g. "React" inside "Frontend (React)")
+      for (const [k, score] of studentSkillsMap.entries()) {
+        if (k.length > 2 && (reqNameLower.includes(k) || k.includes(reqNameLower))) {
+          studentScore = score;
+          break;
+        }
+      }
+    }
 
     if (studentScore !== undefined && studentScore >= req.minScore) {
-      earnedScore += req.weight * Math.min(100, studentScore);
+      earnedScore += weight * Math.min(100, studentScore);
       matchingSkills.push({
         name: req.name,
         studentScore,
@@ -44,7 +72,7 @@ export function calculateOpportunityMatch(opportunity, student) {
         status: "Passed Benchmark"
       });
     } else if (studentScore !== undefined) {
-      earnedScore += req.weight * (studentScore * 0.75);
+      earnedScore += weight * (studentScore * 0.75);
       missingSkills.push({
         name: req.name,
         studentScore,
@@ -66,7 +94,8 @@ export function calculateOpportunityMatch(opportunity, student) {
   // Factor in overall career readiness index (10% influence)
   const baseSkillMatch = totalWeight > 0 ? earnedScore / totalWeight : 0;
   const readinessBonus = (student.careerReadiness || 0) * 0.1;
-  const finalMatchPercentage = Math.min(98, Math.max(10, Math.round(baseSkillMatch * 0.9 + readinessBonus)));
+  const rawPct = Math.round(baseSkillMatch * 0.9 + readinessBonus);
+  const finalMatchPercentage = Math.min(98, Math.max(10, isNaN(rawPct) ? 15 : rawPct));
 
   let rationale = "";
   if (finalMatchPercentage >= 85) {

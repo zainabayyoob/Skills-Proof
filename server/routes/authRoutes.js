@@ -15,7 +15,7 @@ const sanitizeUser = (user) => {
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, college, degree, graduationYear, semester, targetRole } = req.body;
+    const { name, email, phone, password, college, degree, graduationYear, semester, targetRole } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ error: 'Full name is required' });
@@ -28,6 +28,16 @@ router.post('/register', async (req, res) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       return res.status(400).json({ error: 'Invalid email address format' });
+    }
+
+    // Phone validation
+    if (!phone || !phone.trim()) {
+      return res.status(400).json({ error: 'Mobile phone number is required' });
+    }
+    const cleanPhone = phone.trim().replace(/[\s\-()]/g, '');
+    const phoneRegex = /^\+?[0-9]{10,15}$/;
+    if (!phoneRegex.test(cleanPhone)) {
+      return res.status(400).json({ error: 'Please enter a valid phone number (10 to 15 digits, e.g. +91 9876543210)' });
     }
 
     if (!password || password.length < 6) {
@@ -47,6 +57,7 @@ router.post('/register', async (req, res) => {
     const newUser = db.createUser({
       name: name.trim(),
       email: email.trim(),
+      phone: phone.trim(),
       passwordHash,
       college: college ? college.trim() : 'Institute of Technology',
       degree: degree ? degree.trim() : 'Computer Science & Engineering',

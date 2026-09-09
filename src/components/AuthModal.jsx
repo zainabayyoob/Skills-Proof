@@ -12,6 +12,7 @@ import {
   AlertCircle,
   CheckCircle2,
   Loader2,
+  Phone,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { roleTracks } from '../data/mockData';
@@ -34,6 +35,7 @@ export const AuthModal = () => {
   // Register form state
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
+  const [regPhone, setRegPhone] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regCollege, setRegCollege] = useState('');
   const [regDegree, setRegDegree] = useState('');
@@ -63,6 +65,12 @@ export const AuthModal = () => {
     e.preventDefault();
     setErrorMsg('');
 
+    const cleanPhone = regPhone.trim().replace(/[\s\-()]/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      setErrorMsg('Please enter a valid phone number (10 to 15 digits).');
+      return;
+    }
+
     if (regPassword.length < 6) {
       setErrorMsg('Password must be at least 6 characters long.');
       return;
@@ -74,6 +82,7 @@ export const AuthModal = () => {
       await register({
         name: regName,
         email: regEmail,
+        phone: regPhone.trim(),
         password: regPassword,
         college: regCollege || 'Institute of Technology',
         degree: regDegree || 'Computer Science & Engineering',
@@ -250,6 +259,20 @@ export const AuthModal = () => {
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
                   placeholder="zainab@university.edu"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none placeholder:text-slate-600"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5 text-brand-400" /> Mobile Phone Number
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={regPhone}
+                  onChange={(e) => setRegPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none placeholder:text-slate-600"
                 />
               </div>

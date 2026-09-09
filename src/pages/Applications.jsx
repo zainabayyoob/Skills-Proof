@@ -21,6 +21,7 @@ const STATUS_PIPELINE = [
 
 export const Applications = () => {
   const [applications, setApplications] = useState(storageService.getApplications());
+  const [activeFilter, setActiveFilter] = useState('All');
 
   const handleStatusChange = (appId, newStatus) => {
     const updated = storageService.updateApplicationStatus(appId, newStatus);
@@ -41,6 +42,23 @@ export const Applications = () => {
         return 'bg-slate-800 text-slate-300 border-slate-700';
     }
   };
+
+  const counts = {
+    All: applications.length,
+    Applied: applications.filter((a) => a.status === 'Applied').length,
+    'Under Review': applications.filter((a) => a.status === 'Under Review' || a.status === 'Shortlisted').length,
+    Interview: applications.filter((a) => a.status === 'Interview').length,
+    Selected: applications.filter((a) => a.status === 'Selected').length,
+  };
+
+  const filteredApplications = applications.filter((app) => {
+    if (activeFilter === 'All') return true;
+    if (activeFilter === 'Applied') return app.status === 'Applied';
+    if (activeFilter === 'Under Review') return app.status === 'Under Review' || app.status === 'Shortlisted';
+    if (activeFilter === 'Interview') return app.status === 'Interview';
+    if (activeFilter === 'Selected') return app.status === 'Selected';
+    return true;
+  });
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
@@ -66,23 +84,60 @@ export const Applications = () => {
           to="/opportunities"
           className="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-lg shadow-brand-600/30 flex items-center gap-2 shrink-0 self-start md:self-center"
         >
-          <span>Find More Internships</span>
+          <span>Find More Opportunities</span>
           <ChevronRight className="w-4 h-4" />
         </Link>
       </div>
 
+      {/* Status Filter Tabs */}
+      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-lg">
+        {['All', 'Applied', 'Under Review', 'Interview', 'Selected'].map((filterKey) => {
+          const isActive = activeFilter === filterKey;
+          return (
+            <button
+              key={filterKey}
+              type="button"
+              onClick={() => setActiveFilter(filterKey)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                isActive
+                  ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <span>{filterKey}</span>
+              <span
+                className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
+                  isActive ? 'bg-white/20 text-white font-bold' : 'bg-slate-800 text-slate-400'
+                }`}
+              >
+                {counts[filterKey] || 0}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Applications List */}
       <div className="space-y-4">
-        {applications.length === 0 ? (
-          <div className="p-12 text-center bg-slate-900/60 rounded-2xl border border-slate-800 text-slate-400 text-sm">
-            No active applications yet.{' '}
-            <Link to="/opportunities" className="text-brand-400 hover:underline font-bold">
-              Explore Matched Internships
-            </Link>{' '}
-            to apply with your SkillProof Passport!
+        {filteredApplications.length === 0 ? (
+          <div className="p-12 text-center bg-slate-900/60 rounded-2xl border border-slate-800 text-slate-400 text-sm space-y-2">
+            <p>No applications currently in <strong className="text-white">"{activeFilter}"</strong> stage.</p>
+            {activeFilter !== 'All' ? (
+              <button
+                type="button"
+                onClick={() => setActiveFilter('All')}
+                className="text-brand-400 hover:underline text-xs font-bold cursor-pointer"
+              >
+                View all applications ({applications.length})
+              </button>
+            ) : (
+              <Link to="/opportunities" className="text-brand-400 hover:underline font-bold block">
+                Explore Matched Opportunities with SkillProof Passport!
+              </Link>
+            )}
           </div>
         ) : (
-          applications.map((app) => (
+          filteredApplications.map((app) => (
             <div
               key={app.id}
               className="bg-slate-900/80 border border-slate-800 hover:border-brand-500/40 rounded-2xl p-6 transition-all space-y-4 shadow-xl"

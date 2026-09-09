@@ -109,6 +109,82 @@ export const initialOpportunities = [
     description: "Implement enterprise Spring/Java pipelines handling concurrent transaction streams without NullPointerExceptions.",
     openings: 2,
     deadline: "2026-11-20"
+  },
+  {
+    id: "opp-7",
+    title: "Junior Full-Stack Software Engineer",
+    company: "ZetaScale Technologies",
+    location: "Remote (Global / India)",
+    stipend: "₹12,00,000 - ₹16,00,000 / annum",
+    type: "Job",
+    workMode: "Remote",
+    duration: "Full-Time",
+    targetRole: "Full Stack Web Developer",
+    requiredSkills: [
+      { name: "React", weight: 0.35, minScore: 80 },
+      { name: "Node.js", weight: 0.35, minScore: 80 },
+      { name: "SQL", weight: 0.3, minScore: 75 }
+    ],
+    description: "Architect distributed client-facing dashboards and fault-tolerant event streams with verified SkillProof credentials.",
+    openings: 5,
+    deadline: "2026-12-01"
+  },
+  {
+    id: "opp-8",
+    title: "Founding Backend Engineer",
+    company: "Krypton Health (Y Combinator S25)",
+    location: "Bangalore, India (Hybrid)",
+    stipend: "₹15,00,000 - ₹20,00,000 + 0.5% Equity",
+    type: "Startup",
+    workMode: "Hybrid",
+    duration: "Full-Time",
+    targetRole: "Backend Systems Engineer",
+    requiredSkills: [
+      { name: "Python", weight: 0.4, minScore: 85 },
+      { name: "SQL", weight: 0.35, minScore: 80 },
+      { name: "Node.js", weight: 0.25, minScore: 75 }
+    ],
+    description: "Join as early core engineer building HIPAA-compliant healthcare data ingestion engines under rapid sprint cycles.",
+    openings: 2,
+    deadline: "2026-11-30"
+  },
+  {
+    id: "opp-9",
+    title: "Python Web Scraping & Automation Specialist",
+    company: "MarketPulse Data Labs",
+    location: "Remote",
+    stipend: "₹25,000 / month (20 hrs/week)",
+    type: "Part-time",
+    workMode: "Remote",
+    duration: "6 months (Flexible hours)",
+    targetRole: "Data Analyst",
+    requiredSkills: [
+      { name: "Python", weight: 0.5, minScore: 75 },
+      { name: "Data Analytics", weight: 0.3, minScore: 70 },
+      { name: "SQL", weight: 0.2, minScore: 70 }
+    ],
+    description: "Flexible part-time engagement for students: build defensive web extractors and automated anomaly detection scripts.",
+    openings: 4,
+    deadline: "2026-10-25"
+  },
+  {
+    id: "opp-10",
+    title: "Open Source Graph Query Optimization",
+    company: "SkillProof Grant Foundation",
+    location: "Remote (Open Source Bounty)",
+    stipend: "₹75,000 Fixed Milestone Bounty",
+    type: "Project",
+    workMode: "Remote",
+    duration: "8 weeks project",
+    targetRole: "Systems / Core Software Engineer",
+    requiredSkills: [
+      { name: "C++", weight: 0.4, minScore: 80 },
+      { name: "Python", weight: 0.35, minScore: 80 },
+      { name: "SQL", weight: 0.25, minScore: 75 }
+    ],
+    description: "Paid open-source milestone bounty: refactor graph query caching routines and eliminate memory bottlenecks.",
+    openings: 3,
+    deadline: "2026-11-15"
   }
 ];
 

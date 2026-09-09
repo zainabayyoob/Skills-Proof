@@ -433,6 +433,401 @@
       "passportHash": null,
       "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
       "createdAt": "2026-09-06T08:26:19.377Z"
+    },
+    {
+      "id": "usr_1788684825056_b3kgge",
+      "name": "THEKEDAR",
+      "email": "thekedae@gmail.com",
+      "passwordHash": "$2b$10$QsmSco9Qms2yG7R1xixECumhMgp9i6.WarBEDrDQjFPqyP3DaKc9S",
+      "college": "TEERTHANKAR MAHAVEER UNIVERSITY",
+      "degree": "Computer Science & Engineering",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Full Stack Web Developer",
+      "careerReadiness": 40,
+      "verifiedSkills": [
+        {
+          "name": "HTML & CSS",
+          "skillId": "htmlcss",
+          "score": 40,
+          "level": "Intermediate",
+          "verifiedAt": "2026-09-09",
+          "badge": "Bronze",
+          "latestAttemptNumber": 3
+        }
+      ],
+      "skillGaps": [
+        {
+          "skill": "Frontend (React)",
+          "skillId": "react",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Frontend (React) Skill"
+        },
+        {
+          "skill": "Backend (Node.js)",
+          "skillId": "node",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Backend (Node.js) Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "JavaScript",
+          "skillId": "javascript",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove JavaScript Skill"
+        },
+        {
+          "skill": "HTML & CSS",
+          "skillId": "htmlcss",
+          "currentScore": 40,
+          "requiredScore": 70,
+          "gap": 30,
+          "status": "Critical Gap",
+          "action": "Prove HTML & CSS Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 6,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend (React)",
+            "Backend (Node.js)",
+            "SQL",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 6,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Backend (Node.js)",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 6,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 6,
+          "demand": "High",
+          "topMissing": [
+            "Frontend (React)",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        }
+      ],
+      "passportHash": "SKP-2026-HTM-MTU255LQ",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-06T08:53:45.057Z",
+      "updatedAt": "2026-09-09T12:11:22.915Z"
+    },
+    {
+      "id": "usr_1788988557120_209sb2",
+      "name": "Test Candidate",
+      "email": "cand_1788988557105@example.com",
+      "phone": "+919876543210",
+      "passwordHash": "hash123",
+      "college": "Institute of Technology",
+      "degree": "Computer Science & Engineering",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Full Stack Web Developer",
+      "careerReadiness": 0,
+      "verifiedSkills": [],
+      "skillGaps": [
+        {
+          "skill": "Frontend (React)",
+          "skillId": "react",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Frontend (React) Skill"
+        },
+        {
+          "skill": "Backend (Node.js)",
+          "skillId": "node",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Backend (Node.js) Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "JavaScript",
+          "skillId": "javascript",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove JavaScript Skill"
+        },
+        {
+          "skill": "HTML & CSS",
+          "skillId": "htmlcss",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove HTML & CSS Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 0,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend (React)",
+            "Backend (Node.js)",
+            "SQL",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 0,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Backend (Node.js)",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Frontend (React)",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        }
+      ],
+      "notifications": [
+        {
+          "id": "notif_1788988557120_welcome",
+          "type": "WELCOME",
+          "title": "Welcome to SkillProof!",
+          "message": "Your candidate profile is ready. Select a skill to take the qualifying quiz and unlock coding challenges.",
+          "channel": "IN_APP",
+          "createdAt": "2026-09-09T21:15:57.120Z",
+          "read": false
+        }
+      ],
+      "passportHash": null,
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-09T21:15:57.122Z"
+    },
+    {
+      "id": "usr_1788988568377_c8ne5y",
+      "name": "Test Candidate",
+      "email": "cand_1788988568375@example.com",
+      "phone": "+919876543210",
+      "passwordHash": "hash123",
+      "college": "Institute of Technology",
+      "degree": "Computer Science & Engineering",
+      "graduationYear": 2026,
+      "semester": "6th Semester (3rd Year)",
+      "bio": "",
+      "github": "",
+      "linkedin": "",
+      "targetRole": "Full Stack Web Developer",
+      "careerReadiness": 0,
+      "verifiedSkills": [],
+      "skillGaps": [
+        {
+          "skill": "Frontend (React)",
+          "skillId": "react",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Frontend (React) Skill"
+        },
+        {
+          "skill": "Backend (Node.js)",
+          "skillId": "node",
+          "currentScore": 0,
+          "requiredScore": 75,
+          "gap": 75,
+          "status": "Critical Gap",
+          "action": "Prove Backend (Node.js) Skill"
+        },
+        {
+          "skill": "SQL",
+          "skillId": "sql",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove SQL Skill"
+        },
+        {
+          "skill": "JavaScript",
+          "skillId": "javascript",
+          "currentScore": 0,
+          "requiredScore": 80,
+          "gap": 80,
+          "status": "Critical Gap",
+          "action": "Prove JavaScript Skill"
+        },
+        {
+          "skill": "HTML & CSS",
+          "skillId": "htmlcss",
+          "currentScore": 0,
+          "requiredScore": 70,
+          "gap": 70,
+          "status": "Critical Gap",
+          "action": "Prove HTML & CSS Skill"
+        }
+      ],
+      "recommendedRoles": [
+        {
+          "role": "Full Stack Web Developer",
+          "match": 0,
+          "demand": "Very High",
+          "topMissing": [
+            "Frontend (React)",
+            "Backend (Node.js)",
+            "SQL",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        },
+        {
+          "role": "Backend Systems Engineer",
+          "match": 0,
+          "demand": "Critical",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Backend (Node.js)",
+            "Java",
+            "C++"
+          ]
+        },
+        {
+          "role": "Data & AI Engineer",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Python",
+            "SQL",
+            "Data Analytics"
+          ]
+        },
+        {
+          "role": "Frontend Specialist",
+          "match": 0,
+          "demand": "High",
+          "topMissing": [
+            "Frontend (React)",
+            "JavaScript",
+            "HTML & CSS"
+          ]
+        }
+      ],
+      "notifications": [
+        {
+          "id": "notif_1788988568415_4rzw",
+          "type": "INFO",
+          "title": "Assessment Unlocked",
+          "message": "Your coding challenge is ready",
+          "channel": "SMS_READY",
+          "deliveryStatus": "QUEUED_FOR_SMS_GATEWAY",
+          "channelNote": "Ready for SMS dispatch to +919876543210",
+          "metadata": {},
+          "createdAt": "2026-09-09T21:16:08.415Z",
+          "read": false
+        },
+        {
+          "id": "notif_1788988568398_hj2w",
+          "type": "INFO",
+          "title": "Assessment Unlocked",
+          "message": "Your coding challenge is ready",
+          "channel": "IN_APP",
+          "deliveryStatus": "DELIVERED",
+          "channelNote": null,
+          "metadata": {},
+          "createdAt": "2026-09-09T21:16:08.398Z",
+          "read": false
+        },
+        {
+          "id": "notif_1788988568377_welcome",
+          "type": "WELCOME",
+          "title": "Welcome to SkillProof!",
+          "message": "Your candidate profile is ready. Select a skill to take the qualifying quiz and unlock coding challenges.",
+          "channel": "IN_APP",
+          "createdAt": "2026-09-09T21:16:08.377Z",
+          "read": false
+        }
+      ],
+      "passportHash": null,
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "createdAt": "2026-09-09T21:16:08.378Z"
     }
   ],
   "testAttempts": [
@@ -1015,6 +1410,447 @@
         "py-q5": "opt_3"
       },
       "completedAt": "2026-09-06T08:26:19.271Z"
+    },
+    {
+      "id": "att_1788948179284_j95i20",
+      "userId": "usr_1788684825056_b3kgge",
+      "skillId": "htmlcss",
+      "skillName": "HTML & CSS",
+      "status": "completed",
+      "startedAt": "2026-09-09T10:02:59.284Z",
+      "questionMappings": [
+        {
+          "questionId": "hc-q3",
+          "question": "What is the CSS specificity hierarchy from highest to lowest priority?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "All selectors have identical specificity weight"
+            },
+            {
+              "id": "opt_1",
+              "text": "Element -> Class -> ID -> Inline style"
+            },
+            {
+              "id": "opt_2",
+              "text": "Inline style -> ID selector -> Class/Attribute/Pseudo-class -> Element selector"
+            },
+            {
+              "id": "opt_3",
+              "text": "Class -> ID -> Element -> Inline style"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Inline styles (1,0,0,0) override ID selectors (0,1,0,0), which override class/pseudo-classes (0,0,1,0), which override element selectors (0,0,0,1)."
+        },
+        {
+          "questionId": "hc-q7",
+          "question": "What CSS unit is relative to the font-size of the root `<html>` element?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "vh"
+            },
+            {
+              "id": "opt_4",
+              "text": "ch"
+            },
+            {
+              "id": "opt_1",
+              "text": "em"
+            },
+            {
+              "id": "opt_2",
+              "text": "rem"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "rem stands for \"root em\" and scales relative to the root html font-size (typically 16px by default), unlike em which scales relative to the immediate parent font-size."
+        },
+        {
+          "questionId": "hc-q6",
+          "question": "What is the purpose of the `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">` tag in HTML?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "Enables dark mode automatically"
+            },
+            {
+              "id": "opt_2",
+              "text": "Instructs mobile browsers to match screen width and sets initial zoom level for responsive rendering"
+            },
+            {
+              "id": "opt_3",
+              "text": "Preloads all CSS stylesheets"
+            },
+            {
+              "id": "opt_1",
+              "text": "Enables 3D hardware acceleration in mobile browsers"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Without the viewport meta tag, mobile browsers assume a desktop viewport (~980px) and scale down content, breaking responsive media queries."
+        },
+        {
+          "questionId": "hc-q2",
+          "question": "Which CSS property creates a two-dimensional grid layout capable of handling both rows and columns simultaneously?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "display: table"
+            },
+            {
+              "id": "opt_1",
+              "text": "display: flex"
+            },
+            {
+              "id": "opt_2",
+              "text": "display: grid"
+            },
+            {
+              "id": "opt_3",
+              "text": "display: inline-block"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "CSS Grid is designed for 2D layouts (rows and columns simultaneously), whereas Flexbox is primarily designed for 1D layouts (a single row or column at a time)."
+        },
+        {
+          "questionId": "hc-q8",
+          "question": "What does the CSS property `flex-wrap: wrap` do in a Flexbox container?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Reverses the order of flex items"
+            },
+            {
+              "id": "opt_2",
+              "text": "Allows flex items to break onto multiple lines if they exceed container width instead of overflowing or squishing"
+            },
+            {
+              "id": "opt_1",
+              "text": "Shrinks all items to zero width"
+            },
+            {
+              "id": "opt_4",
+              "text": "Aligns items vertically in the center"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "By default, flex-wrap is nowrap which forces all items onto a single line. Setting wrap allows elements to wrap gracefully onto subsequent lines."
+        }
+      ],
+      "totalQuestions": 5,
+      "score": 40,
+      "correctCount": 2,
+      "totalCount": 5,
+      "attemptNumber": 1,
+      "userAnswers": {
+        "hc-q3": "opt_2",
+        "hc-q7": "opt_3",
+        "hc-q6": "opt_3",
+        "hc-q2": "opt_2"
+      },
+      "completedAt": "2026-09-09T10:03:21.327Z"
+    },
+    {
+      "id": "att_1788955128223_uzdq3w",
+      "userId": "usr_1788684825056_b3kgge",
+      "skillId": "htmlcss",
+      "skillName": "HTML & CSS",
+      "status": "completed",
+      "startedAt": "2026-09-09T11:58:48.224Z",
+      "questionMappings": [
+        {
+          "questionId": "hc-q1",
+          "question": "What is the difference between `box-sizing: content-box` and `box-sizing: border-box` in CSS?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "border-box only works on table elements"
+            },
+            {
+              "id": "opt_3",
+              "text": "content-box renders elements without margins"
+            },
+            {
+              "id": "opt_2",
+              "text": "border-box includes padding and border within the specified width and height, whereas content-box adds them on top of the dimensions"
+            },
+            {
+              "id": "opt_1",
+              "text": "border-box excludes borders from the element calculation"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "With border-box, an element with width: 200px and 20px padding remains 200px wide. With content-box, the total rendered width becomes 240px."
+        },
+        {
+          "questionId": "hc-q9",
+          "question": "What creates a new Stacking Context in CSS affecting `z-index` layering?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Any paragraph element"
+            },
+            {
+              "id": "opt_2",
+              "text": "Positioned elements with z-index, opacity less than 1, transform properties, or filter effects"
+            },
+            {
+              "id": "opt_1",
+              "text": "Adding a class attribute to an element"
+            },
+            {
+              "id": "opt_4",
+              "text": "Setting font-size to 14px"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "A stacking context is a 3D conceptualization of HTML elements. Once formed, child z-index values are contained and cannot break out relative to parent siblings."
+        },
+        {
+          "questionId": "hc-q6",
+          "question": "What is the purpose of the `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">` tag in HTML?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "Preloads all CSS stylesheets"
+            },
+            {
+              "id": "opt_4",
+              "text": "Enables dark mode automatically"
+            },
+            {
+              "id": "opt_2",
+              "text": "Instructs mobile browsers to match screen width and sets initial zoom level for responsive rendering"
+            },
+            {
+              "id": "opt_1",
+              "text": "Enables 3D hardware acceleration in mobile browsers"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "Without the viewport meta tag, mobile browsers assume a desktop viewport (~980px) and scale down content, breaking responsive media queries."
+        },
+        {
+          "questionId": "hc-q4",
+          "question": "How does `position: sticky` behave in CSS?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "It acts as `relative` until a specified scroll threshold is reached, then sticks like `fixed` within its parent container"
+            },
+            {
+              "id": "opt_4",
+              "text": "It animates smoothly to the center of the screen"
+            },
+            {
+              "id": "opt_1",
+              "text": "It positions an element relative to the entire screen viewport at all times"
+            },
+            {
+              "id": "opt_3",
+              "text": "It prevents the element from being clicked"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "sticky toggles between relative and fixed positioning based on the user scroll position, constrained within the bounds of its parent container."
+        },
+        {
+          "questionId": "hc-q2",
+          "question": "Which CSS property creates a two-dimensional grid layout capable of handling both rows and columns simultaneously?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "display: table"
+            },
+            {
+              "id": "opt_2",
+              "text": "display: grid"
+            },
+            {
+              "id": "opt_3",
+              "text": "display: inline-block"
+            },
+            {
+              "id": "opt_1",
+              "text": "display: flex"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "CSS Grid is designed for 2D layouts (rows and columns simultaneously), whereas Flexbox is primarily designed for 1D layouts (a single row or column at a time)."
+        }
+      ],
+      "totalQuestions": 5,
+      "score": 20,
+      "correctCount": 1,
+      "totalCount": 5,
+      "attemptNumber": 2,
+      "userAnswers": {
+        "hc-q1": "opt_2",
+        "hc-q9": "opt_4",
+        "hc-q6": "opt_4",
+        "hc-q4": "opt_3"
+      },
+      "completedAt": "2026-09-09T11:59:15.002Z"
+    },
+    {
+      "id": "att_1788955868313_i9i1pf",
+      "userId": "usr_1788684825056_b3kgge",
+      "skillId": "htmlcss",
+      "skillName": "HTML & CSS",
+      "status": "completed",
+      "startedAt": "2026-09-09T12:11:08.313Z",
+      "questionMappings": [
+        {
+          "questionId": "hc-q10",
+          "question": "What is the purpose of the `alt` attribute on `<img>` tags?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_4",
+              "text": "Specifies the URL for image caching"
+            },
+            {
+              "id": "opt_2",
+              "text": "Provides descriptive alternative text for visually impaired users using screen readers and when images fail to load"
+            },
+            {
+              "id": "opt_1",
+              "text": "Defines the image width in pixels"
+            },
+            {
+              "id": "opt_3",
+              "text": "Applies visual filters to the image"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "The alt attribute is critical for web accessibility (WCAG) and provides fallback text if the image asset is unavailable."
+        },
+        {
+          "questionId": "hc-q2",
+          "question": "Which CSS property creates a two-dimensional grid layout capable of handling both rows and columns simultaneously?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_1",
+              "text": "display: flex"
+            },
+            {
+              "id": "opt_3",
+              "text": "display: inline-block"
+            },
+            {
+              "id": "opt_2",
+              "text": "display: grid"
+            },
+            {
+              "id": "opt_4",
+              "text": "display: table"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "CSS Grid is designed for 2D layouts (rows and columns simultaneously), whereas Flexbox is primarily designed for 1D layouts (a single row or column at a time)."
+        },
+        {
+          "questionId": "hc-q7",
+          "question": "What CSS unit is relative to the font-size of the root `<html>` element?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "vh"
+            },
+            {
+              "id": "opt_4",
+              "text": "ch"
+            },
+            {
+              "id": "opt_1",
+              "text": "em"
+            },
+            {
+              "id": "opt_2",
+              "text": "rem"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "rem stands for \"root em\" and scales relative to the root html font-size (typically 16px by default), unlike em which scales relative to the immediate parent font-size."
+        },
+        {
+          "questionId": "hc-q4",
+          "question": "How does `position: sticky` behave in CSS?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_2",
+              "text": "It acts as `relative` until a specified scroll threshold is reached, then sticks like `fixed` within its parent container"
+            },
+            {
+              "id": "opt_1",
+              "text": "It positions an element relative to the entire screen viewport at all times"
+            },
+            {
+              "id": "opt_4",
+              "text": "It animates smoothly to the center of the screen"
+            },
+            {
+              "id": "opt_3",
+              "text": "It prevents the element from being clicked"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "sticky toggles between relative and fixed positioning based on the user scroll position, constrained within the bounds of its parent container."
+        },
+        {
+          "questionId": "hc-q1",
+          "question": "What is the difference between `box-sizing: content-box` and `box-sizing: border-box` in CSS?",
+          "codeSnippet": "",
+          "options": [
+            {
+              "id": "opt_3",
+              "text": "content-box renders elements without margins"
+            },
+            {
+              "id": "opt_2",
+              "text": "border-box includes padding and border within the specified width and height, whereas content-box adds them on top of the dimensions"
+            },
+            {
+              "id": "opt_4",
+              "text": "border-box only works on table elements"
+            },
+            {
+              "id": "opt_1",
+              "text": "border-box excludes borders from the element calculation"
+            }
+          ],
+          "correctOptionId": "opt_2",
+          "explanation": "With border-box, an element with width: 200px and 20px padding remains 200px wide. With content-box, the total rendered width becomes 240px."
+        }
+      ],
+      "totalQuestions": 5,
+      "score": 20,
+      "correctCount": 1,
+      "totalCount": 5,
+      "attemptNumber": 3,
+      "userAnswers": {
+        "hc-q10": "opt_1",
+        "hc-q2": "opt_2",
+        "hc-q7": "opt_1",
+        "hc-q4": "opt_3"
+      },
+      "completedAt": "2026-09-09T12:11:22.852Z"
     }
   ],
   "opportunities": [
@@ -1116,6 +1952,29 @@
     }
   ],
   "applications": [
+    {
+      "id": "app_1788956081912_j9dqh",
+      "userId": "usr_1788684825056_b3kgge",
+      "candidateName": "THEKEDAR",
+      "candidateEmail": "thekedae@gmail.com",
+      "opportunityId": "opp-2",
+      "opportunityTitle": "Python Data Systems Engineer",
+      "company": "CloudScale Infrastructure",
+      "location": "Remote (India)",
+      "stipend": "₹40,000 - ₹50,000 / month",
+      "matchScore": 65,
+      "status": "Applied",
+      "appliedDate": "2026-09-09",
+      "matchingSkills": [],
+      "missingSkills": [
+        "Python (Unverified)",
+        "SQL (Unverified)",
+        "Data Analytics (Unverified)"
+      ],
+      "passportHash": "SKP-2026-HTM-MTU255LQ",
+      "notes": "Excited to apply for the Data Analyst & BI Intern role! My SkillProof Passport contains verified capability evidence withstanding production mutations.",
+      "createdAt": "2026-09-09T12:14:41.912Z"
+    },
     {
       "id": "app_1788683179400_4dahh",
       "userId": "usr_1788683179208_sbnpjj",
