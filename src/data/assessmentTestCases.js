@@ -7,7 +7,7 @@
 
 export const conceptExecutableSpecs = {
   // -------------------------------------------------------------
-  // PYTHON CONCEPTS
+  // 1. PYTHON CONCEPTS
   // -------------------------------------------------------------
   'python-kpi': {
     entrypoint: 'analyze_sales_data',
@@ -113,8 +113,37 @@ export const conceptExecutableSpecs = {
     ]
   },
 
+  'python-rate-limiter': {
+    entrypoint: 'TokenBucketLimiter',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Capacity Initialization',
+        input: [10, 2],
+        expected: 10
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Burst Traffic Exceeding Rate',
+        input: [5, 1],
+        expected: 5
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Fractional Token Refill',
+        isHidden: true,
+        input: [20, 5],
+        expected: 20
+      }
+    ]
+  },
+
   // -------------------------------------------------------------
-  // SQL CONCEPTS
+  // 2. SQL CONCEPTS
   // -------------------------------------------------------------
   'sql-cohort': {
     entrypoint: 'query',
@@ -227,8 +256,69 @@ export const conceptExecutableSpecs = {
     ]
   },
 
+  'sql-recursive-cte': {
+    entrypoint: 'query',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Org Hierarchy Traversal',
+        schema: `
+          CREATE TABLE employees (emp_id INT, name TEXT, manager_id INT);
+          INSERT INTO employees VALUES (1, 'CEO', NULL);
+          INSERT INTO employees VALUES (2, 'VP Eng', 1);
+          INSERT INTO employees VALUES (3, 'Lead Dev', 2);
+        `,
+        input: [],
+        expected: [
+          { emp_id: 1, name: 'CEO', level: 1 },
+          { emp_id: 2, name: 'VP Eng', level: 2 },
+          { emp_id: 3, name: 'Lead Dev', level: 3 }
+        ]
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Parallel Department Leaves',
+        schema: `
+          CREATE TABLE employees (emp_id INT, name TEXT, manager_id INT);
+          INSERT INTO employees VALUES (1, 'CEO', NULL);
+          INSERT INTO employees VALUES (2, 'VP Product', 1);
+          INSERT INTO employees VALUES (3, 'VP Eng', 1);
+        `,
+        input: [],
+        expected: [
+          { emp_id: 1, name: 'CEO', level: 1 },
+          { emp_id: 2, name: 'VP Product', level: 2 },
+          { emp_id: 3, name: 'VP Eng', level: 2 }
+        ]
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Deep Tree Traversal',
+        isHidden: true,
+        schema: `
+          CREATE TABLE employees (emp_id INT, name TEXT, manager_id INT);
+          INSERT INTO employees VALUES (1, 'CEO', NULL);
+          INSERT INTO employees VALUES (2, 'CTO', 1);
+          INSERT INTO employees VALUES (3, 'Director', 2);
+          INSERT INTO employees VALUES (4, 'Engineer', 3);
+        `,
+        input: [],
+        expected: [
+          { emp_id: 1, name: 'CEO', level: 1 },
+          { emp_id: 2, name: 'CTO', level: 2 },
+          { emp_id: 3, name: 'Director', level: 3 },
+          { emp_id: 4, name: 'Engineer', level: 4 }
+        ]
+      }
+    ]
+  },
+
   // -------------------------------------------------------------
-  // JAVASCRIPT CONCEPTS
+  // 3. JAVASCRIPT CONCEPTS
   // -------------------------------------------------------------
   'js-promise-batch': {
     entrypoint: 'batchProcess',
@@ -294,8 +384,595 @@ export const conceptExecutableSpecs = {
     ]
   },
 
+  'js-event-emitter': {
+    entrypoint: 'EventEmitter',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Event Listener Registration & Emit',
+        input: ['click'],
+        expected: true
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Emitting Unregistered Event',
+        input: ['unknown_event'],
+        expected: false
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Multiple Listeners for Same Event',
+        isHidden: true,
+        input: ['data'],
+        expected: true
+      }
+    ]
+  },
+
   // -------------------------------------------------------------
-  // DATA ANALYTICS CONCEPTS
+  // 4. C CONCEPTS
+  // -------------------------------------------------------------
+  'c-tokenizer': {
+    entrypoint: 'tokenize',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Memory-Safe String Tokenizer Compilation',
+        input: ["hello,world", ","],
+        expected: "Executable compiled and executed successfully"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Null Delimiter Defense',
+        input: ["hello", ""],
+        expected: "Executable compiled and executed successfully"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Multi-Delimiter String Parsing',
+        isHidden: true,
+        input: ["a:b:c", ":"],
+        expected: "Executable compiled and executed successfully"
+      }
+    ]
+  },
+
+  'c-ring-buffer': {
+    entrypoint: 'RingBuffer',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Circular Buffer Enqueue & Dequeue',
+        input: [10],
+        expected: "Executable compiled and executed successfully"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Buffer Overflow Wrap-around',
+        input: [65],
+        expected: "Executable compiled and executed successfully"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Continuous FIFO Drain',
+        isHidden: true,
+        input: [100],
+        expected: "Executable compiled and executed successfully"
+      }
+    ]
+  },
+
+  'c-hashmap': {
+    entrypoint: 'HashMap',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Key Insert and Lookup',
+        input: ["key1", 42],
+        expected: "Executable compiled and executed successfully"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Hash Collision Chaining',
+        input: ["key_coll1", 10],
+        expected: "Executable compiled and executed successfully"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Rehash and Table Resize',
+        isHidden: true,
+        input: ["key_resize", 99],
+        expected: "Executable compiled and executed successfully"
+      }
+    ]
+  },
+
+  // -------------------------------------------------------------
+  // 5. C++ CONCEPTS
+  // -------------------------------------------------------------
+  'cpp-stl-metrics': {
+    entrypoint: 'computeMetrics',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Vector Telemetry Normalizer',
+        input: [[10.0, 20.0, 30.0]],
+        expected: "C++ solution compiled and verified"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Empty Vector Guard',
+        input: [[]],
+        expected: "C++ solution compiled and verified"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: High-Variance Telemetry Series',
+        isHidden: true,
+        input: [[1.0, 1000.0, 50.0]],
+        expected: "C++ solution compiled and verified"
+      }
+    ]
+  },
+
+  'cpp-raii': {
+    entrypoint: 'ScopedDescriptor',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: RAII Resource Acquisition',
+        input: [1],
+        expected: "C++ solution compiled and verified"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Exception-Safe Cleanup',
+        input: [-1],
+        expected: "C++ solution compiled and verified"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Move Semantics Transfer',
+        isHidden: true,
+        input: [10],
+        expected: "C++ solution compiled and verified"
+      }
+    ]
+  },
+
+  'cpp-order-book': {
+    entrypoint: 'OrderBook',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Limit Order Matching',
+        input: ["BUY", 100.50, 10],
+        expected: "C++ solution compiled and verified"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Crossed Spread Rejection',
+        input: ["SELL", 99.00, 5],
+        expected: "C++ solution compiled and verified"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: High-Volume Depth Book',
+        isHidden: true,
+        input: ["BUY", 105.00, 50],
+        expected: "C++ solution compiled and verified"
+      }
+    ]
+  },
+
+  // -------------------------------------------------------------
+  // 6. JAVA CONCEPTS
+  // -------------------------------------------------------------
+  'java-order-stream': {
+    entrypoint: 'OrderStreamAggregator',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Order Stream Stream API Aggregator',
+        input: [100],
+        expected: "Java class compiled and verified"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Null Order Filter',
+        input: [0],
+        expected: "Java class compiled and verified"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Concurrent Stream Aggregation',
+        isHidden: true,
+        input: [500],
+        expected: "Java class compiled and verified"
+      }
+    ]
+  },
+
+  'java-worker-pool': {
+    entrypoint: 'WorkDispatcher',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Thread Pool Dispatch',
+        input: [4],
+        expected: "Java class compiled and verified"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Worker Backpressure & Rejection',
+        input: [100],
+        expected: "Java class compiled and verified"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Graceful Pool Shutdown',
+        isHidden: true,
+        input: [1],
+        expected: "Java class compiled and verified"
+      }
+    ]
+  },
+
+  'java-lru-cache': {
+    entrypoint: 'LRUCache',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Cache Eviction Under Capacity',
+        input: [3],
+        expected: "Java class compiled and verified"
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Zero Capacity Guard',
+        input: [0],
+        expected: "Java class compiled and verified"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: O(1) Get and Put Verification',
+        isHidden: true,
+        input: [10],
+        expected: "Java class compiled and verified"
+      }
+    ]
+  },
+
+  // -------------------------------------------------------------
+  // 7. HTML / CSS CONCEPTS
+  // -------------------------------------------------------------
+  'html-responsive-grid': {
+    entrypoint: 'htmlcss',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Grid Layout Structure',
+        expected: ['.card-grid', 'display: grid', 'grid-template-columns']
+      },
+      {
+        id: 2,
+        title: 'Test Case 2: Responsive Media Query',
+        expected: ['@media', 'min-width']
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 3,
+        title: 'Mutation: Mobile Viewport Fluid Sizing',
+        expected: ['gap', 'width']
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 4,
+        title: 'Hidden: Semantic HTML5 Elements',
+        isHidden: true,
+        expected: ['<article', '<header']
+      }
+    ]
+  },
+
+  'html-accessible-nav': {
+    entrypoint: 'htmlcss',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Semantic Navigation Markup',
+        expected: ['<nav', '<ul', '<li', '<a']
+      },
+      {
+        id: 2,
+        title: 'Test Case 2: ARIA Attributes & Focus Management',
+        expected: ['aria-label', ':focus']
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 3,
+        title: 'Mutation: Keyboard Nav Accessibility',
+        expected: ['tabindex', 'outline']
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 4,
+        title: 'Hidden: Screen Reader Text',
+        isHidden: true,
+        expected: ['sr-only']
+      }
+    ]
+  },
+
+  'html-skeleton-loader': {
+    entrypoint: 'htmlcss',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Shimmer Animation Keyframe',
+        expected: ['@keyframes', 'animation']
+      },
+      {
+        id: 2,
+        title: 'Test Case 2: Linear Gradient Sweep',
+        expected: ['linear-gradient', 'background-size']
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 3,
+        title: 'Mutation: Cumulative Layout Shift Protection',
+        expected: ['height', 'border-radius']
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 4,
+        title: 'Hidden: Reduced Motion Accessibility Guard',
+        isHidden: true,
+        expected: ['prefers-reduced-motion']
+      }
+    ]
+  },
+
+  // -------------------------------------------------------------
+  // 8. FRONTEND CONCEPTS
+  // -------------------------------------------------------------
+  'react-async-search': {
+    entrypoint: 'useEffect',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Effect Query Dependency',
+        input: ['React'],
+        expected: true
+      },
+      {
+        id: 2,
+        title: 'Test Case 2: Cancellation Cleanup',
+        input: ['Python'],
+        expected: true
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 3,
+        title: 'Mutation: Rapid Keystroke Debouncing',
+        input: [''],
+        expected: true
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 4,
+        title: 'Hidden: Network Race Condition Shield',
+        isHidden: true,
+        input: ['Data'],
+        expected: true
+      }
+    ]
+  },
+
+  'react-virtual-list': {
+    entrypoint: 'getVisibleRange',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Top of List Scroll',
+        input: [0, 400, 1000, 40],
+        expected: { startIndex: 0, endIndex: 10 }
+      },
+      {
+        id: 2,
+        title: 'Test Case 2: Scrolled Mid-way',
+        input: [800, 400, 1000, 40],
+        expected: { startIndex: 20, endIndex: 30 }
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 3,
+        title: 'Mutation: Zero Viewport Height',
+        input: [0, 0, 100, 40],
+        expected: { startIndex: 0, endIndex: 0 }
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 4,
+        title: 'Hidden: Bottom Boundary Clamping',
+        isHidden: true,
+        input: [3900, 400, 100, 40],
+        expected: { startIndex: 97, endIndex: 100 }
+      }
+    ]
+  },
+
+  'react-undo-redo': {
+    entrypoint: 'useUndoRedo',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Initial State & History Pointer',
+        input: ['Initial'],
+        expected: 'Initial'
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Undo Beyond Empty History',
+        input: ['State 1'],
+        expected: 'State 1'
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Max History Ring Buffer Truncation',
+        isHidden: true,
+        input: ['State 2'],
+        expected: 'State 2'
+      }
+    ]
+  },
+
+  // -------------------------------------------------------------
+  // 9. BACKEND CONCEPTS
+  // -------------------------------------------------------------
+  'backend-rest-controller': {
+    entrypoint: 'router',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Express Router & Route Handler Registration',
+        input: ['/api/v1/metrics'],
+        expected: true
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Malformed Payload Validation (400 Bad Request)',
+        input: ['/api/v1/bad-request'],
+        expected: true
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: 500 Internal Error Catching Middleware',
+        isHidden: true,
+        input: ['/api/v1/error'],
+        expected: true
+      }
+    ]
+  },
+
+  'backend-idempotency': {
+    entrypoint: 'idempotencyMiddleware',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Idempotency Key Processing',
+        input: ['IDEMP-KEY-001'],
+        expected: true
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Duplicate Request Cache Replay',
+        input: ['IDEMP-KEY-001'],
+        expected: true
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Concurrent In-Flight Key Lock',
+        isHidden: true,
+        input: ['IDEMP-KEY-LOCKED'],
+        expected: true
+      }
+    ]
+  },
+
+  'backend-jwt-refresh': {
+    entrypoint: 'authenticateJWT',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Valid Bearer Token Authorization',
+        input: ['Bearer valid_token_string'],
+        expected: true
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Expired Token 401 Rejection',
+        input: ['Bearer expired_token'],
+        expected: false
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Malformed Missing Bearer Header',
+        isHidden: true,
+        input: [''],
+        expected: false
+      }
+    ]
+  },
+
+  // -------------------------------------------------------------
+  // 10. DATA ANALYTICS CONCEPTS
   // -------------------------------------------------------------
   'analytics-churn-arpu': {
     entrypoint: 'analyze_retention_and_churn',
@@ -341,6 +1018,35 @@ export const conceptExecutableSpecs = {
     ]
   },
 
+  'analytics-iqr-outliers': {
+    entrypoint: 'detect_outliers_iqr',
+    sampleTestCases: [
+      {
+        id: 1,
+        title: 'Test Case 1: Simple Outlier Boundary',
+        input: [[10, 12, 14, 15, 16, 18, 100]],
+        expected: { outliers: [100] }
+      }
+    ],
+    mutationTestCases: [
+      {
+        id: 2,
+        title: 'Mutation: Zero Variance Dataset',
+        input: [[5, 5, 5, 5, 5]],
+        expected: { outliers: [] }
+      }
+    ],
+    hiddenTestCases: [
+      {
+        id: 3,
+        title: 'Hidden: Negative Outliers',
+        isHidden: true,
+        input: [[-100, 10, 11, 12, 13, 14]],
+        expected: { outliers: [-100] }
+      }
+    ]
+  },
+
   'analytics-rolling-avg': {
     entrypoint: 'compute_rolling_averages',
     sampleTestCases: [
@@ -368,44 +1074,6 @@ export const conceptExecutableSpecs = {
         expected: [5.0, 15.0, 25.0]
       }
     ]
-  },
-
-  // -------------------------------------------------------------
-  // FRONTEND / REACT CONCEPTS
-  // -------------------------------------------------------------
-  'react-virtual-list': {
-    entrypoint: 'getVisibleRange',
-    sampleTestCases: [
-      {
-        id: 1,
-        title: 'Test Case 1: Top of List Scroll',
-        input: [0, 400, 1000, 40],
-        expected: { startIndex: 0, endIndex: 10 }
-      },
-      {
-        id: 2,
-        title: 'Test Case 2: Scrolled Mid-way',
-        input: [800, 400, 1000, 40],
-        expected: { startIndex: 20, endIndex: 30 }
-      }
-    ],
-    mutationTestCases: [
-      {
-        id: 3,
-        title: 'Mutation: Zero Viewport Height',
-        input: [0, 0, 100, 40],
-        expected: { startIndex: 0, endIndex: 0 }
-      }
-    ],
-    hiddenTestCases: [
-      {
-        id: 4,
-        title: 'Hidden: Bottom Boundary Clamping',
-        isHidden: true,
-        input: [3900, 400, 100, 40],
-        expected: { startIndex: 97, endIndex: 100 }
-      }
-    ]
   }
 };
 
@@ -423,8 +1091,10 @@ export function getExecutableSpec(conceptId, skillId, starterCode) {
   if (starterCode) {
     const pyMatch = starterCode.match(/def\s+([a-zA-Z0-9_]+)\s*\(/);
     const jsMatch = starterCode.match(/(?:function\s+([a-zA-Z0-9_]+)|const\s+([a-zA-Z0-9_]+)\s*=\s*(?:async\s*)?\()/);
+    const classMatch = starterCode.match(/(?:class\s+([a-zA-Z0-9_]+))/);
     if (pyMatch) entrypoint = pyMatch[1];
     else if (jsMatch) entrypoint = jsMatch[1] || jsMatch[2];
+    else if (classMatch) entrypoint = classMatch[1];
   }
 
   return {

@@ -4649,7 +4649,7 @@
     },
     {
       "id": "app_1788991833367_2rgoz",
-      "status": "Interview",
+      "status": "Selected",
       "statusHistory": [
         {
           "status": "Applied",
@@ -4660,10 +4660,15 @@
           "status": "Interview",
           "timestamp": "2026-09-09T22:10:33.408Z",
           "note": "Scheduled Round 1 Technical Screening"
+        },
+        {
+          "status": "Selected",
+          "timestamp": "2026-09-09T22:13:47.426Z",
+          "note": "Recruiter updated stage to Selected"
         }
       ],
       "createdAt": "2026-09-09T22:10:33.368Z",
-      "lastUpdated": "2026-09-09T22:10:33.408Z",
+      "lastUpdated": "2026-09-09T22:13:47.426Z",
       "userId": "usr_1788991833205_ohp1az",
       "candidateName": "Priya Sharma",
       "candidateEmail": "priya.1788991833010@university.edu",
@@ -4681,7 +4686,7 @@
       "interviewDate": null,
       "followUpDate": null,
       "isExternal": true,
-      "statusChangeNote": "Scheduled Round 1 Technical Screening"
+      "statusChangeNote": "Recruiter updated stage to Selected"
     },
     {
       "id": "app_1788956081912_j9dqh",
