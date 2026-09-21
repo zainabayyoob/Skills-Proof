@@ -40,3 +40,36 @@ export const optionalAuth = (req, res, next) => {
   }
   next();
 };
+
+export const requireRole = (allowedRoles) => {
+  const roles = (Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles]).map((r) => r.toLowerCase());
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized: Authentication required' });
+    }
+    const userRole = (req.user.role || '').toLowerCase();
+
+    // Check match including backward compatible pairs and admin / host override
+    const isAllowed =
+      roles.includes(userRole) ||
+      (roles.includes('faculty') && userRole === 'college') ||
+      (roles.includes('college') && userRole === 'faculty') ||
+      (roles.includes('candidate') && userRole === 'student') ||
+      (roles.includes('student') && userRole === 'candidate') ||
+      (roles.includes('industry') && userRole === 'recruiter') ||
+      (roles.includes('recruiter') && userRole === 'industry') ||
+      userRole === 'admin' ||
+      userRole === 'host';
+
+    if (!isAllowed) {
+      return res.status(403).json({ error: 'Forbidden: Insufficient role privileges for this operation' });
+    }
+    next();
+  };
+};
+
+export const requireFaculty = [requireAuth, requireRole(['faculty', 'college'])];
+export const requireStudent = [requireAuth, requireRole(['candidate', 'student'])];
+export const requireIndustry = [requireAuth, requireRole(['industry', 'recruiter'])];
+export const requireAdmin = [requireAuth, requireRole(['admin', 'host'])];
+

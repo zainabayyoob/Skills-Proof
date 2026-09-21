@@ -16,7 +16,7 @@ export const RoleSwitcher = ({ currentRole, onSwitchRole }) => {
             ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
             : 'text-slate-300 hover:text-white hover:bg-slate-800'
         }`}
-        title="Student: Aarav Sharma (B.Tech CS 2026)"
+        title="Student Portal"
       >
         <GraduationCap className="w-3.5 h-3.5" />
         <span>Student</span>
@@ -29,23 +29,23 @@ export const RoleSwitcher = ({ currentRole, onSwitchRole }) => {
             ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
             : 'text-slate-300 hover:text-white hover:bg-slate-800'
         }`}
-        title="Industry Recruiter: Apex Data Systems"
+        title="Industry Recruiter Portal"
       >
         <Building2 className="w-3.5 h-3.5" />
         <span>Industry</span>
       </button>
 
       <button
-        onClick={() => onSwitchRole('COLLEGE')}
+        onClick={() => onSwitchRole('FACULTY')}
         className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
-          currentRole === 'COLLEGE'
+          currentRole === 'FACULTY' || currentRole === 'COLLEGE'
             ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30'
             : 'text-slate-300 hover:text-white hover:bg-slate-800'
         }`}
-        title="College Placement Cell: ABC Institute of Technology"
+        title="Faculty & Academia Portal"
       >
         <School className="w-3.5 h-3.5" />
-        <span>College</span>
+        <span>Faculty</span>
       </button>
     </div>
   );

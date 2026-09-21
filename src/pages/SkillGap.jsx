@@ -15,12 +15,14 @@ import {
   Award,
   Video,
 } from 'lucide-react';
-import { roleTracks, famousMentorsCourses } from '../data/mockData';
+import { famousMentorsCourses } from '../data/mockData';
+import { getCareerRoleByTitle } from '../data/careerRolesData';
 import { storageService } from '../services/storageService';
+import { getSkillById } from '../data/skillsRegistry';
 
 export const SkillGap = ({ student }) => {
   const targetRoleTitle = student?.targetRole || "Full Stack Web Developer";
-  const currentTrack = roleTracks.find((r) => r.title === targetRoleTitle) || roleTracks[0];
+  const currentTrack = getCareerRoleByTitle(targetRoleTitle);
 
   // Dynamically calculate gaps based on target role and verified skills
   const gapsAnalysis = storageService.calculateSkillGapsForRole(targetRoleTitle, student?.verifiedSkills || []);
@@ -96,6 +98,8 @@ export const SkillGap = ({ student }) => {
           {gapsAnalysis.map((item) => {
             const hasNoGap = item.gap === 0;
             const mentorCourses = famousMentorsCourses[item.skillId] || [];
+            const skillMeta = getSkillById(item.skillId);
+            const isAssessmentAvailable = skillMeta ? skillMeta.hasAssessment : true;
 
             return (
               <div
@@ -131,17 +135,33 @@ export const SkillGap = ({ student }) => {
                       </span>
                     </div>
 
-                    <Link
-                      to={`/build-break-adapt?skill=${item.skillId}`}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
-                        hasNoGap
-                          ? 'bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 border border-emerald-500/30'
-                          : 'bg-brand-600 hover:bg-brand-500 text-white shadow-lg shadow-brand-600/30'
-                      }`}
-                    >
-                      <span>{hasNoGap ? 'Retake Test' : `Prove ${item.skill}`}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
+                    {hasNoGap ? (
+                      <Link
+                        to={`/build-break-adapt?skill=${item.skillId}`}
+                        className="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 border border-emerald-500/30"
+                      >
+                        <span>Retake Test</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    ) : !isAssessmentAvailable ? (
+                      <Link
+                        to={`/assessment?skill=${item.skillId}`}
+                        className="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700/70 hover:border-brand-500/40"
+                        title="Coding assessment for this skill is in development"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                        <span>In Dev • View Skill</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/build-break-adapt?skill=${item.skillId}`}
+                        className="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 bg-brand-600 hover:bg-brand-500 text-white shadow-lg shadow-brand-600/30"
+                      >
+                        <span>Prove {item.skill}</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    )}
                   </div>
                 </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { storageService } from './services/storageService';
+import { api } from './services/api';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './pages/Dashboard';
@@ -16,10 +17,12 @@ import { Applications } from './pages/Applications';
 import { IndustryDashboard } from './pages/IndustryDashboard';
 import { CollegeDashboard } from './pages/CollegeDashboard';
 import { Profile } from './pages/Profile';
+import { AdminDashboard } from './pages/AdminDashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AuthModal } from './components/AuthModal';
 
 const AppContent = () => {
+  const navigate = useNavigate();
   const { user, isAuthenticated, refreshUser } = useAuth();
   const [localStudent, setLocalStudent] = useState(storageService.getStudentData());
   const [currentRole, setCurrentRole] = useState(storageService.getActiveRole());
@@ -31,16 +34,49 @@ const AppContent = () => {
 
   const refreshState = async () => {
     setLocalStudent(storageService.getStudentData());
-    setOpportunities(storageService.getOpportunities());
-    setApplications(storageService.getApplications());
-    if (isAuthenticated) {
+
+    try {
+      const oppRes = await api.opportunities.list();
+      if (oppRes && Array.isArray(oppRes.opportunities) && oppRes.opportunities.length > 0) {
+        setOpportunities(oppRes.opportunities);
+      } else {
+        setOpportunities(storageService.getOpportunities());
+      }
+    } catch {
+      setOpportunities(storageService.getOpportunities());
+    }
+
+    if (api.auth.isAuthenticated()) {
+      try {
+        const appRes = await api.applications.list();
+        if (appRes && Array.isArray(appRes.applications)) {
+          setApplications(appRes.applications);
+        } else {
+          setApplications(storageService.getApplications());
+        }
+      } catch {
+        setApplications(storageService.getApplications());
+      }
       await refreshUser();
+    } else {
+      setApplications(storageService.getApplications());
     }
   };
+
+  useEffect(() => {
+    refreshState();
+  }, [isAuthenticated]);
 
   const handleSwitchRole = (newRole) => {
     storageService.setActiveRole(newRole);
     setCurrentRole(newRole);
+    if (newRole === 'INDUSTRY') {
+      navigate('/industry');
+    } else if (newRole === 'FACULTY' || newRole === 'COLLEGE') {
+      navigate('/faculty');
+    } else {
+      navigate('/');
+    }
   };
 
   const handleResetDemo = () => {
@@ -48,15 +84,15 @@ const AppContent = () => {
       storageService.resetDemoData();
       refreshState();
       setCurrentRole('STUDENT');
-      window.location.hash = '#/';
+      navigate('/');
     }
   };
 
   return (
-    <Router>
-      <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col selection:bg-brand-500 selection:text-white">
-        {/* Auth Modal for Sign In / Sign Up */}
-        <AuthModal />
+    <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col selection:bg-brand-500 selection:text-white">
+      {/* Auth Modal for Sign In / Sign Up */}
+      <AuthModal />
+
 
         {/* Navigation Bar */}
         <Navbar
@@ -103,6 +139,7 @@ const AppContent = () => {
               />
               <Route path="/applications" element={<Applications />} />
               <Route path="/industry" element={<IndustryDashboard student={student} />} />
+              <Route path="/faculty" element={<CollegeDashboard />} />
               <Route path="/college" element={<CollegeDashboard />} />
               <Route
                 path="/profile"
@@ -114,19 +151,22 @@ const AppContent = () => {
                   />
                 }
               />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
         </div>
       </div>
-    </Router>
   );
 };
 
 export const App = () => {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
   );
 };
+

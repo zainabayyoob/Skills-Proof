@@ -58,6 +58,80 @@ export const api = {
       });
       return handleResponse(res);
     },
+
+    verifyEmail: async (payload) => {
+      const res = await fetch(`${API_BASE}/auth/verify-email`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    resendEmailVerification: async (payload = {}) => {
+      const res = await fetch(`${API_BASE}/auth/resend-email-verification`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    sendPhoneOtp: async (payload = {}) => {
+      const res = await fetch(`${API_BASE}/auth/send-phone-otp`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    verifyPhone: async (payload) => {
+      const res = await fetch(`${API_BASE}/auth/verify-phone`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    forgotPassword: async (email) => {
+      const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      return handleResponse(res);
+    },
+
+    resetPassword: async (payload) => {
+      const res = await fetch(`${API_BASE}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    changePassword: async (payload) => {
+      const res = await fetch(`${API_BASE}/auth/change-password`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    getOAuthUrl: async (provider, params = {}) => {
+      const searchParams = new URLSearchParams(params);
+      const query = searchParams.toString();
+      const res = await fetch(`${API_BASE}/auth/oauth/${provider}${query ? `?${query}` : ''}`);
+      return handleResponse(res);
+    },
+
+    isAuthenticated: () => {
+      return Boolean(localStorage.getItem('skillproof_jwt_token'));
+    },
   },
 
   // Dynamic Assessment Tests API
@@ -139,6 +213,59 @@ export const api = {
         method: 'PUT',
         headers: getAuthHeaders(),
         body: JSON.stringify(profileData),
+      });
+      return handleResponse(res);
+    },
+
+    uploadPhoto: async (payload) => {
+      const res = await fetch(`${API_BASE}/profile/photo`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    uploadResume: async (payload) => {
+      const res = await fetch(`${API_BASE}/profile/resume`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      return handleResponse(res);
+    },
+
+    deleteResume: async () => {
+      const res = await fetch(`${API_BASE}/profile/resume`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    downloadResumeBlob: async () => {
+      const res = await fetch(`${API_BASE}/profile/resume/download`, {
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to download resume');
+      }
+      return res.blob();
+    },
+
+    getPortfolio: async () => {
+      const res = await fetch(`${API_BASE}/profile/portfolio`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    updatePortfolio: async (portfolioData) => {
+      const res = await fetch(`${API_BASE}/profile/portfolio`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(portfolioData),
       });
       return handleResponse(res);
     },
@@ -268,6 +395,24 @@ export const api = {
       });
       return handleResponse(res);
     },
+
+    downloadCandidateResumeBlob: async (candidateId) => {
+      const res = await fetch(`${API_BASE}/industry/candidates/${candidateId}/resume`, {
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to download candidate resume');
+      }
+      return res.blob();
+    },
+
+    getCandidateById: async (candidateId) => {
+      const res = await fetch(`${API_BASE}/industry/candidates/${candidateId}`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
   },
 
   // College & Academia API
@@ -275,6 +420,28 @@ export const api = {
     getAnalytics: async () => {
       const res = await fetch(`${API_BASE}/college/analytics`);
       return handleResponse(res);
+    },
+
+    getStudents: async (filters = {}) => {
+      const params = new URLSearchParams(filters).toString();
+      const res = await fetch(`${API_BASE}/college/students?${params}`);
+      return handleResponse(res);
+    },
+
+    getStudentById: async (studentId) => {
+      const res = await fetch(`${API_BASE}/college/students/${studentId}`);
+      return handleResponse(res);
+    },
+
+    downloadStudentResumeBlob: async (studentId) => {
+      const res = await fetch(`${API_BASE}/college/students/${studentId}/resume`, {
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to download student resume');
+      }
+      return res.blob();
     },
 
     getGroups: async () => {
@@ -300,6 +467,11 @@ export const api = {
       return handleResponse(res);
     },
 
+    getAssignments: async () => {
+      const res = await fetch(`${API_BASE}/college/assignments`);
+      return handleResponse(res);
+    },
+
     getFaculty: async () => {
       const res = await fetch(`${API_BASE}/college/faculty`);
       return handleResponse(res);
@@ -314,4 +486,59 @@ export const api = {
       return handleResponse(res);
     },
   },
+
+  // Host / Admin API
+  admin: {
+    getStats: async () => {
+      const res = await fetch(`${API_BASE}/admin/stats`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    getUsers: async (params = {}) => {
+      const query = new URLSearchParams();
+      if (params.search) query.append('search', params.search);
+      if (params.role) query.append('role', params.role);
+      if (params.status) query.append('status', params.status);
+      const qStr = query.toString();
+      const res = await fetch(`${API_BASE}/admin/users${qStr ? '?' + qStr : ''}`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    getUserById: async (userId) => {
+      const res = await fetch(`${API_BASE}/admin/users/${userId}`, {
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    deactivateUser: async (userId) => {
+      const res = await fetch(`${API_BASE}/admin/users/${userId}/deactivate`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    reactivateUser: async (userId) => {
+      const res = await fetch(`${API_BASE}/admin/users/${userId}/reactivate`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+
+    deleteUser: async (userId) => {
+      const res = await fetch(`${API_BASE}/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      return handleResponse(res);
+    },
+  },
 };
+
+api.faculty = api.college;

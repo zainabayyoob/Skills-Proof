@@ -1,7 +1,9 @@
-import { initialStudentData, unverifiedStudentData, roadmapsData, roleTracks } from '../data/mockData';
-import { initialOpportunities, initialApplications } from '../data/opportunitiesData';
-import { skillsCatalogue } from '../data/assessmentsData';
-import { collegeStats } from '../data/collegeData';
+import { initialStudentData, unverifiedStudentData, roadmapsData } from '../data/mockData.js';
+import { initialOpportunities, initialApplications } from '../data/opportunitiesData.js';
+import { skillsCatalogue } from '../data/assessmentsData.js';
+import { collegeStats } from '../data/collegeData.js';
+import { comprehensiveCareerRoles, getCareerRoleByTitle } from '../data/careerRolesData.js';
+import { getDomainByIdOrName, defaultPrimaryDomainId, defaultPrimaryDomain } from '../data/domainsData.js';
 
 const STORAGE_KEYS = {
   STUDENT: 'skillproof_student_data_v4',
@@ -12,11 +14,9 @@ const STORAGE_KEYS = {
 };
 
 export const storageService = {
-  // Helper: Calculate skill gaps based on chosen career track
-  calculateSkillGapsForRole: (targetRoleTitle, verifiedSkills = []) => {
-    const track = roleTracks.find(
-      (r) => r.title.toLowerCase() === (targetRoleTitle || '').toLowerCase()
-    ) || roleTracks[0];
+  // Helper: Calculate skill gaps based on chosen career track (supports canonical ID or title)
+  calculateSkillGapsForRole: (targetRoleOrId, verifiedSkills = []) => {
+    const track = getCareerRoleByTitle(targetRoleOrId);
 
     return track.requiredSkills.map((req) => {
       const verified = verifiedSkills.find(
@@ -45,12 +45,27 @@ export const storageService = {
     if (!data) {
       const initial = {
         ...unverifiedStudentData,
+        domainId: defaultPrimaryDomainId,
+        primaryDomain: defaultPrimaryDomain,
+        targetRoleId: 'track-fullstack',
+        targetRole: 'Full Stack Web Developer',
         skillGaps: storageService.calculateSkillGapsForRole(unverifiedStudentData.targetRole, [])
       };
       localStorage.setItem(STORAGE_KEYS.STUDENT, JSON.stringify(initial));
       return initial;
     }
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+
+    // Safe Backward Compatibility Layer: ensure domainId and targetRoleId are always populated
+    const canonicalRole = getCareerRoleByTitle(parsed.targetRoleId || parsed.targetRole || 'track-fullstack');
+    const canonicalDomain = getDomainByIdOrName(parsed.domainId || parsed.primaryDomain || defaultPrimaryDomainId);
+
+    parsed.targetRoleId = canonicalRole ? canonicalRole.id : 'track-fullstack';
+    parsed.targetRole = canonicalRole ? canonicalRole.title : (parsed.targetRole || 'Full Stack Developer');
+    parsed.domainId = canonicalDomain ? canonicalDomain.id : defaultPrimaryDomainId;
+    parsed.primaryDomain = canonicalDomain ? canonicalDomain.name : (parsed.primaryDomain || defaultPrimaryDomain);
+
+    return parsed;
   },
 
   createStudentProfile: (profile) => {
@@ -59,17 +74,29 @@ export const storageService = {
 
   updateStudentProfile: (profile) => {
     const current = storageService.getStudentData();
-    const targetRole = profile.targetRole || current.targetRole || "Full Stack Web Developer";
+
+    // Canonical Career Track resolution
+    const rawRoleIdentifier = profile.targetRoleId || profile.targetRole || current.targetRoleId || current.targetRole || "track-fullstack";
+    const canonicalRole = getCareerRoleByTitle(rawRoleIdentifier);
+    const targetRoleId = canonicalRole ? canonicalRole.id : "track-fullstack";
+    const targetRole = canonicalRole ? canonicalRole.title : (profile.targetRole || current.targetRole || "Full Stack Developer");
+
+    // Canonical Domain resolution
+    const rawDomainIdentifier = profile.domainId || profile.primaryDomain || current.domainId || current.primaryDomain || defaultPrimaryDomainId;
+    const canonicalDomain = getDomainByIdOrName(rawDomainIdentifier);
+    const domainId = canonicalDomain ? canonicalDomain.id : defaultPrimaryDomainId;
+    const primaryDomain = canonicalDomain ? canonicalDomain.name : defaultPrimaryDomain;
+
     const verifiedSkills = current.verifiedSkills || [];
-    const skillGaps = storageService.calculateSkillGapsForRole(targetRole, verifiedSkills);
+    const skillGaps = storageService.calculateSkillGapsForRole(targetRoleId, verifiedSkills);
 
     // Update role match scores
-    const recommendedRoles = roleTracks.map((track) => {
+    const recommendedRoles = comprehensiveCareerRoles.map((track) => {
       let matchedCount = 0;
       let totalReq = track.requiredSkills.length;
       track.requiredSkills.forEach((req) => {
         const found = verifiedSkills.find(
-          (v) => v.name.toLowerCase() === req.name.toLowerCase() || v.skillId === req.id
+          (v) => (v.skillId && v.skillId.toLowerCase() === req.id.toLowerCase()) || v.name.toLowerCase() === req.name.toLowerCase()
         );
         if (found && found.score >= req.minScore) {
           matchedCount++;
@@ -78,10 +105,11 @@ export const storageService = {
       const matchPct = Math.min(98, Math.round((matchedCount / totalReq) * 85 + (current.careerReadiness * 0.15)));
       return {
         role: track.title,
+        roleId: track.id,
         match: matchPct,
         demand: track.demand,
         topMissing: track.requiredSkills
-          .filter((req) => !verifiedSkills.some((v) => v.name.toLowerCase() === req.name.toLowerCase() && v.score >= req.minScore))
+          .filter((req) => !verifiedSkills.some((v) => (v.skillId && v.skillId.toLowerCase() === req.id.toLowerCase()) || (v.name.toLowerCase() === req.name.toLowerCase() && v.score >= req.minScore)))
           .map((req) => req.name)
       };
     });
@@ -98,6 +126,10 @@ export const storageService = {
       bio: profile.bio !== undefined ? profile.bio : (current.bio || ""),
       github: profile.github !== undefined ? profile.github : (current.github || ""),
       linkedin: profile.linkedin !== undefined ? profile.linkedin : (current.linkedin || ""),
+      domainId,
+      primaryDomain,
+      secondaryDomains: profile.secondaryDomains !== undefined ? profile.secondaryDomains : (current.secondaryDomains || []),
+      targetRoleId,
       targetRole,
       isProfileCreated: true,
       careerReadiness: verifiedSkills.length > 0 ? current.careerReadiness : 0,
@@ -114,14 +146,17 @@ export const storageService = {
     return updated;
   },
 
-  // Active Role ('STUDENT' | 'INDUSTRY' | 'COLLEGE')
+  // Active Role ('STUDENT' | 'INDUSTRY' | 'FACULTY')
   getActiveRole: () => {
-    return localStorage.getItem(STORAGE_KEYS.ACTIVE_ROLE) || 'STUDENT';
+    const role = localStorage.getItem(STORAGE_KEYS.ACTIVE_ROLE) || 'STUDENT';
+    if (role === 'COLLEGE') return 'FACULTY';
+    return role;
   },
 
   setActiveRole: (role) => {
-    localStorage.setItem(STORAGE_KEYS.ACTIVE_ROLE, role);
-    return role;
+    const normalized = role === 'COLLEGE' ? 'FACULTY' : role;
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_ROLE, normalized);
+    return normalized;
   },
 
   // Applications
@@ -369,7 +404,7 @@ export const storageService = {
     student.skillGaps = storageService.calculateSkillGapsForRole(student.targetRole, student.verifiedSkills);
 
     // Update role match scores
-    student.recommendedRoles = roleTracks.map((track) => {
+    student.recommendedRoles = comprehensiveCareerRoles.map((track) => {
       let matchedCount = 0;
       let totalReq = track.requiredSkills.length;
       track.requiredSkills.forEach((req) => {

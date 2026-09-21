@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -11,15 +12,46 @@ import {
   QrCode,
   Calendar,
   ExternalLink,
+  Loader2,
 } from 'lucide-react';
 import { Modal } from '../components/Modal';
 import { storageService } from '../services/storageService';
+import { api } from '../services/api';
 
 export const SkillProofPassport = ({ student: propStudent }) => {
+  const [searchParams] = useSearchParams();
+  const hashParam = searchParams.get('hash');
+
   const [copied, setCopied] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [remoteStudent, setRemoteStudent] = useState(null);
+  const [loadingRemote, setLoadingRemote] = useState(false);
 
-  const student = propStudent || storageService.getStudentData();
+  useEffect(() => {
+    if (hashParam) {
+      let isMounted = true;
+      setLoadingRemote(true);
+      fetch(`/api/tests/passport/${encodeURIComponent(hashParam)}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (isMounted && data && (data.user || data.passport)) {
+            setRemoteStudent(data.user || data.passport);
+          }
+        })
+        .catch((err) => console.warn('Could not load remote passport:', err))
+        .finally(() => {
+          if (isMounted) setLoadingRemote(false);
+        });
+      return () => {
+        isMounted = false;
+      };
+    } else {
+      setRemoteStudent(null);
+    }
+  }, [hashParam]);
+
+  const activeStudent = remoteStudent || propStudent || storageService.getStudentData();
+  const student = activeStudent;
   const verifiedSkills = student?.verifiedSkills || [];
   const passportHash = student?.passportHash || "SKP-2026-INITIAL";
   const assessmentEvidence = student?.assessmentEvidence || {
@@ -28,7 +60,8 @@ export const SkillProofPassport = ({ student: propStudent }) => {
     adaptability: verifiedSkills.length > 0 ? "85% Dynamic" : "Pending"
   };
 
-  const shareUrl = `https://skillproof.app/verify/${passportHash}`;
+  const shareUrl = `${window.location.origin}${window.location.pathname}#/passport?hash=${passportHash}`;
+
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);

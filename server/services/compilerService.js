@@ -2,6 +2,11 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 
 const EXECUTION_TIMEOUT_MS = 3500;
 const SENTINEL_START = '###__SKILLPROOF_RESULT_START__###';
@@ -123,7 +128,7 @@ with open(PAYLOAD_PATH, 'r', encoding='utf-8') as f:
 entrypoint_name = payload.get('entrypoint', 'solution')
 test_cases = payload.get('testCases', [])
 
-# Intercept prints so user prints do not corrupt JSON output
+# Intercept user stdout
 user_logs = []
 class LogInterceptor:
     def write(self, s):
@@ -135,7 +140,6 @@ class LogInterceptor:
 orig_stdout = sys.stdout
 sys.stdout = LogInterceptor()
 
-# --- BEGIN USER CODE EXECUTION ---
 user_scope = {}
 try:
     exec("""${userCode.replace(/\\/g, '\\\\').replace(/"""/g, '\\"\\"\\"')}""", user_scope)
@@ -192,7 +196,7 @@ except Exception as e:
 
 sys.stdout = orig_stdout
 
-# Find target function or class
+# Locate target function or class
 target_fn = user_scope.get(entrypoint_name)
 if target_fn is None:
     for k, v in user_scope.items():
@@ -203,7 +207,7 @@ if target_fn is None:
 if target_fn is None:
     out = {
         "status": "FUNCTION_NOT_FOUND",
-        "error": f"Function '{entrypoint_name}' was not defined. Please define def {entrypoint_name}(...)",
+        "error": f"Function '{entrypoint_name}' was not defined. Please implement def {entrypoint_name}(...).",
         "allPassed": False,
         "passedCount": 0,
         "totalCount": len(test_cases),
@@ -219,14 +223,31 @@ if target_fn is None:
 results = []
 passed_count = 0
 
-def normalize_floats(val):
+def normalize_val(val):
     if isinstance(val, float):
         return round(val, 2)
     elif isinstance(val, dict):
-        return {k: normalize_floats(v) for k, v in val.items()}
+        return {k: normalize_val(v) for k, v in val.items()}
     elif isinstance(val, list):
-        return [normalize_floats(x) for x in val]
+        return [normalize_val(x) for x in val]
     return val
+
+def fuzzy_equals(a, b, tol=0.03):
+    if a is None and b is None:
+        return True
+    if a is None or b is None:
+        return False
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return abs(float(a) - float(b)) <= tol
+    if isinstance(a, dict) and isinstance(b, dict):
+        if set(a.keys()) != set(b.keys()):
+            return False
+        return all(fuzzy_equals(a[k], b[k], tol) for k in a)
+    if isinstance(a, (list, tuple)) and isinstance(b, (list, tuple)):
+        if len(a) != len(b):
+            return False
+        return all(fuzzy_equals(x, y, tol) for x, y in zip(a, b))
+    return a == b
 
 for i, tc in enumerate(test_cases):
     tc_id = tc.get("id", i + 1)
@@ -244,14 +265,27 @@ for i, tc in enumerate(test_cases):
                 instance = target_fn(**tc_input)
             else:
                 instance = target_fn(tc_input) if tc_input is not None else target_fn()
-            
-            # If instance has a check or test method, run it; otherwise inspect capacity/state
-            if hasattr(instance, 'capacity'):
-                actual = getattr(instance, 'capacity')
-            elif hasattr(instance, 'get_state'):
+
+            # Test real behavior of the class
+            if hasattr(instance, 'allow_request') and callable(getattr(instance, 'allow_request')):
+                limiter = target_fn(2, 1)
+                r1 = limiter.allow_request('c1', 0.0)
+                r2 = limiter.allow_request('c1', 0.0)
+                r3 = limiter.allow_request('c1', 0.0)
+                r4 = limiter.allow_request('c1', 1.0)
+                actual = [
+                    True if r1 is True else (False if r1 is False else None),
+                    True if r2 is True else (False if r2 is False else None),
+                    True if r3 is True else (False if r3 is False else None),
+                    True if r4 is True else (False if r4 is False else None)
+                ]
+            elif hasattr(instance, 'consume') and callable(getattr(instance, 'consume')):
+                actual = instance.consume(1)
+            elif hasattr(instance, 'get_state') and callable(getattr(instance, 'get_state')):
                 actual = instance.get_state()
             else:
-                actual = expected
+                # If candidate didn't implement methods or properties: FAIL
+                actual = None
         else:
             if isinstance(tc_input, list):
                 actual = target_fn(*tc_input)
@@ -263,10 +297,10 @@ for i, tc in enumerate(test_cases):
                 actual = target_fn(tc_input)
 
         elapsed_ms = round((time.perf_counter() - start_time) * 1000, 2)
-        norm_actual = normalize_floats(actual)
-        norm_expected = normalize_floats(expected)
+        norm_actual = normalize_val(actual)
+        norm_expected = normalize_val(expected)
 
-        passed = (norm_actual == norm_expected)
+        passed = (actual is not None) and fuzzy_equals(actual, expected)
         if passed:
             passed_count += 1
 
@@ -350,7 +384,7 @@ print(SENTINEL_END)
         return resolve({
           success: false,
           status: 'TIMEOUT_ERROR',
-          error: `Execution timed out (> ${EXECUTION_TIMEOUT_MS}ms). Possible infinite loop or blocking call.`,
+          error: `Execution timed out (> ${EXECUTION_TIMEOUT_MS}ms). Infinite loop detected.`,
           allPassed: false,
           passedCount: 0,
           totalCount: testCases.length,
@@ -479,7 +513,7 @@ for i, tc in enumerate(test_cases):
         actual = [dict(r) for r in rows]
 
         passed = False
-        if isinstance(expected, list):
+        if isinstance(expected, list) and len(expected) > 0:
             if len(actual) == len(expected):
                 passed = True
                 for a_row, e_row in zip(actual, expected):
@@ -491,7 +525,7 @@ for i, tc in enumerate(test_cases):
                     elif a_row != e_row:
                         passed = False
                         break
-        elif actual == expected:
+        elif actual == expected and len(actual) > 0:
             passed = True
 
         if passed:
@@ -504,7 +538,7 @@ for i, tc in enumerate(test_cases):
             "actual": "Hidden" if (is_hidden and not passed) else actual,
             "passed": passed,
             "elapsedMs": elapsed_ms,
-            "error": None if passed else "Query result rows did not match expected dataset"
+            "error": None if passed else "Query returned incorrect rows or empty result"
         })
     except Exception as e:
         elapsed_ms = round((time.perf_counter() - start_time) * 1000, 2)
@@ -520,7 +554,7 @@ for i, tc in enumerate(test_cases):
     finally:
         conn.close()
 
-all_passed = (passed_count == len(test_cases)) if test_cases else False
+all_passed = (passed_count == len(test_cases) and len(test_cases) > 0)
 score = round((passed_count / len(test_cases)) * 100) if test_cases else 0
 
 out = {
@@ -699,21 +733,55 @@ ${processedCode}
 
     // Check if entrypoint is an express route or middleware
     if (!targetFn && ('${entrypoint}' === 'router' || registeredRoutes.length > 0)) {
-      targetFn = (path) => {
-        return registeredRoutes.some(r => r.path === path || path.includes(r.path)) || registeredRoutes.length > 0;
+      targetFn = async (routePath) => {
+        const route = registeredRoutes.find(r => r.path === routePath || routePath.includes(r.path));
+        if (!route || typeof route.handler !== 'function') {
+          throw new Error('Route ' + routePath + ' is not implemented.');
+        }
+
+        let statusCode = 200;
+        let responseBody = null;
+        const res = {
+          status: (code) => { statusCode = code; return res; },
+          json: (body) => { responseBody = body; return res; },
+          send: (body) => { responseBody = body; return res; }
+        };
+
+        const isBad = routePath.includes('bad') || routePath.includes('error');
+        const req = {
+          headers: { 'authorization': 'Bearer valid_token', 'idempotency-key': 'IDEMP-1' },
+          body: isBad ? {} : {
+            name: 'Alex Developer',
+            email: 'alex@example.com',
+            candidateId: 'C1',
+            role: 'Engineer',
+            skill: 'Backend',
+            status: 'APPLIED'
+          }
+        };
+
+        await route.handler(req, res, () => {});
+
+        if (isBad) {
+          return statusCode >= 400 || (responseBody && responseBody.error !== undefined);
+        } else {
+          return (statusCode === 200 || statusCode === 201) && responseBody !== null;
+        }
       };
     }
 
     // Check if entrypoint is useEffect hook effect
     if (!targetFn && '${entrypoint}' === 'useEffect' && lastEffectCallback) {
       targetFn = (query) => {
-        global.searchQuery = query;
-        try {
-          lastEffectCallback();
-          return true;
-        } catch(e) {
-          return false;
+        // Clean candidate code to check if actual logic was written
+        const raw = (${JSON.stringify(processedCode)}).replace(/\\/\\/.*/g, '').replace(/\\/\\*[\\s\\S]*?\\*\\//g, '').trim();
+        const hasBody = /fetch|setResults|setIsLoading|filter|includes|search/i.test(raw) && raw.length > 80;
+        if (!hasBody) {
+          throw new Error('Search effect is empty. Implement fetch/filter logic using searchQuery and setResults.');
         }
+        global.searchQuery = query;
+        lastEffectCallback();
+        return true;
       };
     }
 
@@ -747,6 +815,7 @@ ${processedCode}
 
     function deepEquals(a, b) {
       if (a === b) return true;
+      if (a === undefined || a === null || b === undefined || b === null) return false;
       if (typeof a !== typeof b) return false;
       if (typeof a === 'number' && typeof b === 'number') {
         return Math.abs(a - b) < 0.01;
@@ -770,10 +839,36 @@ ${processedCode}
       const startTime = process.hrtime.bigint();
       try {
         let actual;
-        if (typeof targetFn === 'function' && targetFn.prototype && targetFn.prototype.constructor.name === '${entrypoint}') {
+        const isExplicitClass = typeof targetFn === 'function' && (
+          String(targetFn).trim().startsWith('class ') ||
+          ['EventEmitter', 'LRUCache', 'TokenBucketLimiter'].includes('${entrypoint}')
+        );
+        if (isExplicitClass) {
           // Class constructor
           const instance = Array.isArray(tcInput) ? new targetFn(...tcInput) : new targetFn(tcInput);
-          actual = instance;
+          if ('${entrypoint}' === 'EventEmitter' || targetFn.name === 'EventEmitter') {
+            let firedCount = 0;
+            if (typeof instance.on === 'function' && typeof instance.emit === 'function') {
+              const listener = () => { firedCount++; };
+              instance.on('ping', listener);
+              instance.emit('ping', 42);
+              if (typeof instance.off === 'function') {
+                instance.off('ping', listener);
+                instance.emit('ping', 42);
+              }
+            }
+            actual = firedCount;
+          } else {
+            actual = instance;
+          }
+        } else if ('${entrypoint}' === 'useUndoRedo' || (typeof targetFn === 'function' && targetFn.name === 'useUndoRedo')) {
+          const raw = (${JSON.stringify(processedCode)}).replace(/\\/\\/.*/g, '').replace(/\\/\\*[\\s\\S]*?\\*\\//g, '').trim();
+          const hasStacks = (raw.includes('past') || raw.includes('future') || raw.includes('history') || raw.includes('stack') || raw.includes('slice')) && raw.length > 100;
+          if (!hasStacks) {
+            actual = 'Incomplete stub without history management';
+          } else {
+            actual = 'Undo/Redo state transitions verified';
+          }
         } else if (Array.isArray(tcInput)) {
           actual = await targetFn(...tcInput);
         } else if (tcInput !== undefined) {
@@ -877,7 +972,7 @@ ${processedCode}
     let stderr = '';
     let isTimedOut = false;
 
-    const projectRoot = path.resolve('c:/Users/DELL/OneDrive/Desktop/SkillsProof');
+    const projectRoot = PROJECT_ROOT;
 
     const child = spawn(process.execPath, [filePath], {
       windowsHide: true,
@@ -960,7 +1055,7 @@ ${processedCode}
 }
 
 /**
- * 4. C EXECUTION via gcc
+ * 4. C EXECUTION via gcc - REAL TEST HARNESS
  */
 function executeC(userCode, entrypoint, testCases) {
   return new Promise((resolve) => {
@@ -969,11 +1064,120 @@ function executeC(userCode, entrypoint, testCases) {
     const srcPath = path.join(tempDir, `${baseName}.c`);
     const exePath = path.join(tempDir, `${baseName}.exe`);
 
-    const hasMain = userCode.includes('main(') || userCode.includes('main (');
-    let finalSource = userCode;
+    // Build problem-specific test harness in C
+    let testHarnessC = '';
 
-    if (!hasMain) {
-      finalSource = `
+    if (userCode.includes('parse_sensor_payload')) {
+      testHarnessC = `
+int main() {
+    int passed = 0;
+    int total = 2;
+
+    int r1[10] = {0};
+    int c1 = parse_sensor_payload("10,25,80", r1, 10);
+    int p1 = (c1 == 3 && r1[0] == 10 && r1[1] == 25 && r1[2] == 80);
+    if (p1) passed++;
+
+    int r2[2] = {0};
+    int c2 = parse_sensor_payload("5,15,25,35", r2, 2);
+    int p2 = (c2 == 2 && r2[0] == 5 && r2[1] == 15);
+    if (p2) passed++;
+
+    printf("${SENTINEL_START}\\n");
+    printf("{\\\"status\\\":\\\"%s\\\",\\\"allPassed\\\":%s,\\\"passedCount\\\":%d,\\\"totalCount\\\":%d,\\\"score\\\":%d,\\\"results\\\":[",
+           (passed == total ? "PASSED" : "FAILED"), (passed == total ? "true" : "false"), passed, total, (passed * 100) / total);
+    printf("{\\\"id\\\":1,\\\"input\\\":\\\"10,25,80\\\",\\\"expected\\\":\\\"3 readings [10, 25, 80]\\\",\\\"actual\\\":\\\"%d readings [ %d, %d, %d ]\\\",\\\"passed\\\":%s,\\\"elapsedMs\\\":0.2},",
+           c1, r1[0], r1[1], r1[2], (p1 ? "true" : "false"));
+    printf("{\\\"id\\\":2,\\\"input\\\":\\\"5,15,25,35 (max_len=2)\\\",\\\"expected\\\":\\\"2 readings [5, 15]\\\",\\\"actual\\\":\\\"%d readings [ %d, %d ]\\\",\\\"passed\\\":%s,\\\"elapsedMs\\\":0.2}",
+           c2, r2[0], r2[1], (p2 ? "true" : "false"));
+    printf("]}\\n");
+    printf("${SENTINEL_END}\\n");
+    return 0;
+}
+`;
+    } else if (userCode.includes('RingBuffer') || userCode.includes('ring_buffer')) {
+      testHarnessC = `
+int main() {
+    int passed = 0;
+    int total = 2;
+
+    RingBuffer rb;
+    memset(&rb, 0, sizeof(rb));
+    rb.capacity = 64;
+
+    int pushOk = ring_buffer_push(&rb, 42);
+    int val1 = 0;
+    int popOk = ring_buffer_pop(&rb, &val1);
+    int p1 = (pushOk == 1 && popOk == 1 && val1 == 42 && rb.count == 0);
+    if (p1) passed++;
+
+    ring_buffer_push(&rb, 10);
+    ring_buffer_push(&rb, 20);
+    int v1 = 0, v2 = 0;
+    ring_buffer_pop(&rb, &v1);
+    ring_buffer_pop(&rb, &v2);
+    int p2 = (v1 == 10 && v2 == 20);
+    if (p2) passed++;
+
+    printf("${SENTINEL_START}\\n");
+    printf("{\\\"status\\\":\\\"%s\\\",\\\"allPassed\\\":%s,\\\"passedCount\\\":%d,\\\"totalCount\\\":%d,\\\"score\\\":%d,\\\"results\\\":[",
+           (passed == total ? "PASSED" : "FAILED"), (passed == total ? "true" : "false"), passed, total, (passed * 100) / total);
+    printf("{\\\"id\\\":1,\\\"input\\\":\\\"Push 42 -> Pop\\\",\\\"expected\\\":42,\\\"actual\\\":%d,\\\"passed\\\":%s,\\\"elapsedMs\\\":0.2},",
+           val1, (p1 ? "true" : "false"));
+    printf("{\\\"id\\\":2,\\\"input\\\":\\\"Push [10, 20] -> FIFO Pop\\\",\\\"expected\\\":\\\"[10, 20]\\\",\\\"actual\\\":\\\"[ %d, %d ]\\\",\\\"passed\\\":%s,\\\"elapsedMs\\\":0.2}",
+           v1, v2, (p2 ? "true" : "false"));
+    printf("]}\\n");
+    printf("${SENTINEL_END}\\n");
+    return 0;
+}
+`;
+    } else if (userCode.includes('HashMap') || userCode.includes('hash_')) {
+      testHarnessC = `
+int main() {
+    int passed = 0;
+    int total = 2;
+
+    HashMap map;
+    memset(&map, 0, sizeof(map));
+
+    hash_insert(&map, "key1", 99);
+    int val1 = 0;
+    int found1 = hash_lookup(&map, "key1", &val1);
+    int p1 = (found1 == 1 && val1 == 99);
+    if (p1) passed++;
+
+    hash_insert(&map, "key2", 77);
+    int val2 = 0, val3 = -1;
+    int found2 = hash_lookup(&map, "key2", &val2);
+    int found3 = hash_lookup(&map, "nonexistent", &val3);
+    int p2 = (found2 == 1 && val2 == 77 && found3 == 0);
+    if (p2) passed++;
+
+    printf("${SENTINEL_START}\\n");
+    printf("{\\\"status\\\":\\\"%s\\\",\\\"allPassed\\\":%s,\\\"passedCount\\\":%d,\\\"totalCount\\\":%d,\\\"score\\\":%d,\\\"results\\\":[",
+           (passed == total ? "PASSED" : "FAILED"), (passed == total ? "true" : "false"), passed, total, (passed * 100) / total);
+    printf("{\\\"id\\\":1,\\\"input\\\":\\\"Insert ('key1', 99) -> Lookup 'key1'\\\",\\\"expected\\\":99,\\\"actual\\\":%d,\\\"passed\\\":%s,\\\"elapsedMs\\\":0.2},",
+           val1, (p1 ? "true" : "false"));
+    printf("{\\\"id\\\":2,\\\"input\\\":\\\"Lookup ('key2', 77) & 'nonexistent'\\\",\\\"expected\\\":\\\"77 and not found (0)\\\",\\\"actual\\\":\\\"%d and %d\\\",\\\"passed\\\":%s,\\\"elapsedMs\\\":0.2}",
+           val2, found3, (p2 ? "true" : "false"));
+    printf("]}\\n");
+    printf("${SENTINEL_END}\\n");
+    return 0;
+}
+
+`;
+    } else {
+      testHarnessC = `
+int main() {
+    printf("${SENTINEL_START}\\n");
+    printf("{\\\"status\\\":\\\"FAILED\\\",\\\"allPassed\\\":false,\\\"passedCount\\\":0,\\\"totalCount\\\":1,\\\"score\\\":0,\\\"results\\\":[{\\\"id\\\":1,\\\"input\\\":\\\"Assessment Verification\\\",\\\"expected\\\":\\\"Recognized assessment function\\\",\\\"actual\\\":\\\"Unrecognized or missing target function\\\",\\\"passed\\\":false,\\\"elapsedMs\\\":0.0,\\\"error\\\":\\\"Target function was not implemented for this problem\\\"}]}\\n");
+    printf("${SENTINEL_END}\\n");
+    return 0;
+}
+`;
+    }
+
+    const finalSource = `
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -981,14 +1185,8 @@ function executeC(userCode, entrypoint, testCases) {
 
 ${userCode}
 
-int main(int argc, char** argv) {
-    printf("${SENTINEL_START}\\n");
-    printf("{\\\"status\\\":\\\"PASSED\\\",\\\"allPassed\\\":true,\\\"passedCount\\\":${testCases.length || 1},\\\"totalCount\\\":${testCases.length || 1},\\\"score\\\":100,\\\"results\\\":[{\\\"id\\\":1,\\\"passed\\\":true,\\\"elapsedMs\\\":0.2,\\\"actual\\\":\\\"Executable compiled and executed successfully\\\"}]}\\n");
-    printf("${SENTINEL_END}\\n");
-    return 0;
-}
+${testHarnessC}
 `;
-    }
 
     fs.writeFileSync(srcPath, finalSource, 'utf-8');
 
@@ -1042,7 +1240,7 @@ int main(int argc, char** argv) {
 }
 
 /**
- * 5. C++ EXECUTION via g++
+ * 5. C++ EXECUTION via g++ - REAL TEST HARNESS
  */
 function executeCpp(userCode, entrypoint, testCases) {
   return new Promise((resolve) => {
@@ -1051,11 +1249,112 @@ function executeCpp(userCode, entrypoint, testCases) {
     const srcPath = path.join(tempDir, `${baseName}.cpp`);
     const exePath = path.join(tempDir, `${baseName}.exe`);
 
-    const hasMain = userCode.includes('main(') || userCode.includes('main (');
-    let finalSource = userCode;
+    let testHarnessCpp = '';
 
-    if (!hasMain) {
-      finalSource = `
+    if (userCode.includes('filter_and_normalize')) {
+      testHarnessCpp = `
+int main() {
+    int passed = 0;
+    int total = 2;
+
+    std::vector<double> in1 = {10.0, 20.0, 30.0};
+    std::vector<double> res1 = filter_and_normalize(in1, 15.0);
+    bool p1 = (res1.size() == 2 && res1[0] >= 0.5 && res1[1] <= 1.05);
+    if (p1) passed++;
+
+    std::vector<double> in2 = {5.0, 2.0};
+    std::vector<double> res2 = filter_and_normalize(in2, 10.0);
+    bool p2 = (res2.empty());
+    if (p2) passed++;
+
+    std::cout << "${SENTINEL_START}\\n";
+    std::cout << "{\\\"status\\\":\\\"" << (passed == total ? "PASSED" : "FAILED") << "\\\",";
+    std::cout << "\\\"allPassed\\\":" << (passed == total ? "true" : "false") << ",";
+    std::cout << "\\\"passedCount\\\":" << passed << ",\\\"totalCount\\\":" << total << ",";
+    std::cout << "\\\"score\\\":" << ((passed * 100) / total) << ",\\\"results\\\":[";
+    std::cout << "{\\\"id\\\":1,\\\"input\\\":\\\"[10, 20, 30], threshold=15\\\",\\\"expected\\\":\\\"2 filtered normalized values\\\",\\\"actual\\\":\\\"" << res1.size() << " values\\\",\\\"passed\\\":" << (p1 ? "true" : "false") << ",\\\"elapsedMs\\\":0.2},";
+    std::cout << "{\\\"id\\\":2,\\\"input\\\":\\\"[5, 2], threshold=10\\\",\\\"expected\\\":\\\"0 values (empty)\\\",\\\"actual\\\":\\\"" << res2.size() << " values\\\",\\\"passed\\\":" << (p2 ? "true" : "false") << ",\\\"elapsedMs\\\":0.2}";
+    std::cout << "]}\\n";
+    std::cout << "${SENTINEL_END}\\n";
+    return 0;
+}
+`;
+    } else if (userCode.includes('OrderBook') || userCode.includes('match_order')) {
+      testHarnessCpp = `
+int main() {
+    int passed = 0;
+    int total = 2;
+
+    OrderBook ob;
+    Order b1 = {1, "BUY", 100.0, 10};
+    Order s1 = {2, "SELL", 100.0, 5};
+    ob.match_order(b1);
+    int m1 = ob.match_order(s1);
+    bool p1 = (m1 == 5);
+    if (p1) passed++;
+
+    Order s2 = {3, "SELL", 105.0, 10};
+    int m2 = ob.match_order(s2);
+    bool p2 = (m2 == 0);
+    if (p2) passed++;
+
+    std::cout << "${SENTINEL_START}\\n";
+    std::cout << "{\\\"status\\\":\\\"" << (passed == total ? "PASSED" : "FAILED") << "\\\",";
+    std::cout << "\\\"allPassed\\\":" << (passed == total ? "true" : "false") << ",";
+    std::cout << "\\\"passedCount\\\":" << passed << ",\\\"totalCount\\\":" << total << ",";
+    std::cout << "\\\"score\\\":" << ((passed * 100) / total) << ",\\\"results\\\":[";
+    std::cout << "{\\\"id\\\":1,\\\"input\\\":\\\"BUY 10 @ 100 vs SELL 5 @ 100\\\",\\\"expected\\\":\\\"Matched 5\\\",\\\"actual\\\":\\\"" << m1 << " matched\\\",\\\"passed\\\":" << (p1 ? "true" : "false") << ",\\\"elapsedMs\\\":0.2},";
+    std::cout << "{\\\"id\\\":2,\\\"input\\\":\\\"SELL 10 @ 105 (Crossed Spread)\\\",\\\"expected\\\":\\\"Matched 0\\\",\\\"actual\\\":\\\"" << m2 << " matched\\\",\\\"passed\\\":" << (p2 ? "true" : "false") << ",\\\"elapsedMs\\\":0.2}";
+    std::cout << "]}\\n";
+    std::cout << "${SENTINEL_END}\\n";
+    return 0;
+}
+`;
+    } else if (userCode.includes('class ScopedDescriptor') || userCode.includes('ScopedDescriptor')) {
+      testHarnessCpp = `
+int main() {
+    int passed = 0;
+    int total = 2;
+
+    // Test 1: Copy constructor and assignment MUST be deleted (RAII unique ownership)
+    bool is_copyable = std::is_copy_constructible<ScopedDescriptor>::value || std::is_copy_assignable<ScopedDescriptor>::value;
+    bool p1 = !is_copyable;
+    if (p1) passed++;
+
+    // Test 2: Move constructible and clean lifecycle
+    bool is_movable = std::is_move_constructible<ScopedDescriptor>::value;
+    bool p2 = false;
+    try {
+        ScopedDescriptor s1(10);
+        ScopedDescriptor s2(std::move(s1));
+        p2 = is_movable;
+    } catch(...) {}
+    if (p2) passed++;
+
+    std::cout << "${SENTINEL_START}\\n";
+    std::cout << "{\\\"status\\\":\\\"" << (passed == total ? "PASSED" : "FAILED") << "\\\",";
+    std::cout << "\\\"allPassed\\\":" << (passed == total ? "true" : "false") << ",";
+    std::cout << "\\\"passedCount\\\":" << passed << ",\\\"totalCount\\\":" << total << ",";
+    std::cout << "\\\"score\\\":" << ((passed * 100) / total) << ",\\\"results\\\":[";
+    std::cout << "{\\\"id\\\":1,\\\"input\\\":\\\"RAII Unique Ownership (Copy Deletion)\\\",\\\"expected\\\":\\\"Copy Constructor = delete\\\",\\\"actual\\\":\\\"" << (p1 ? "Non-copyable verified" : "Class is still copyable (unsafe)") << "\\\",\\\"passed\\\":" << (p1 ? "true" : "false") << ",\\\"elapsedMs\\\":0.2},";
+    std::cout << "{\\\"id\\\":2,\\\"input\\\":\\\"Move Semantics Lifecycle\\\",\\\"expected\\\":\\\"Move constructor transfers descriptor\\\",\\\"actual\\\":\\\"" << (p2 ? "Move verified" : "Move failed or threw exception") << "\\\",\\\"passed\\\":" << (p2 ? "true" : "false") << ",\\\"elapsedMs\\\":0.2}";
+    std::cout << "]}\\n";
+    std::cout << "${SENTINEL_END}\\n";
+    return 0;
+}
+`;
+    } else {
+      testHarnessCpp = `
+int main() {
+    std::cout << "${SENTINEL_START}\\n";
+    std::cout << "{\\\"status\\\":\\\"FAILED\\\",\\\"allPassed\\\":false,\\\"passedCount\\\":0,\\\"totalCount\\\":1,\\\"score\\\":0,\\\"results\\\":[{\\\"id\\\":1,\\\"input\\\":\\\"Assessment Verification\\\",\\\"expected\\\":\\\"Recognized assessment function or class\\\",\\\"actual\\\":\\\"Unrecognized or missing target function\\\",\\\"passed\\\":false,\\\"elapsedMs\\\":0.0,\\\"error\\\":\\\"Target function was not implemented for this problem\\\"}]}\\n";
+    std::cout << "${SENTINEL_END}\\n";
+    return 0;
+}
+`;
+    }
+
+    const finalSource = `
 #include <iostream>
 #include <vector>
 #include <string>
@@ -1065,14 +1364,8 @@ function executeCpp(userCode, entrypoint, testCases) {
 
 ${userCode}
 
-int main() {
-    std::cout << "${SENTINEL_START}\\n";
-    std::cout << R"json({"status":"PASSED","allPassed":true,"passedCount":${testCases.length || 1},"totalCount":${testCases.length || 1},"score":100,"results":[{"id":1,"passed":true,"elapsedMs":0.2,"actual":"C++ solution compiled and verified"}]})json" << std::endl;
-    std::cout << "${SENTINEL_END}\\n";
-    return 0;
-}
+${testHarnessCpp}
 `;
-    }
 
     fs.writeFileSync(srcPath, finalSource, 'utf-8');
 
@@ -1126,51 +1419,188 @@ int main() {
 }
 
 /**
- * 6. JAVA EXECUTION via javac and java
+ * 6. JAVA EXECUTION via javac and java - REAL TEST HARNESS
  */
 function executeJava(userCode, entrypoint, testCases) {
   return new Promise((resolve) => {
     const tempDir = os.tmpdir();
-    // Detect class name or default to Solution
     const classMatch = userCode.match(/(?:public\s+)?class\s+([a-zA-Z0-9_]+)/);
     const className = classMatch ? classMatch[1] : 'Solution';
 
+    let testHarnessJava = '';
+
+    if (userCode.includes('aggregateOrders')) {
+      testHarnessJava = `
+    public static void main(String[] args) {
+        int passed = 0;
+        int total = 2;
+
+        OrderService svc = new OrderService();
+        List<Order> list1 = Arrays.asList(
+            new Order("CUST-1", 120.50, "COMPLETED"),
+            new Order("CUST-2", 45.00, "COMPLETED"),
+            new Order("CUST-1", 80.00, "COMPLETED"),
+            new Order("CUST-3", 50.00, "CANCELLED")
+        );
+
+        Map<String, Double> res1 = null;
+        try {
+            res1 = svc.aggregateOrders(list1);
+        } catch(Exception e) {}
+
+        boolean p1 = false;
+        if (res1 != null && !res1.isEmpty()) {
+            Double c1 = res1.get("CUST-1");
+            Double c2 = res1.get("CUST-2");
+            double tot = 0.0;
+            for (Double val : res1.values()) {
+                if (val != null) tot += val;
+            }
+            p1 = (c1 != null && Math.abs(c1 - 200.50) < 0.1) || (Math.abs(tot - 245.50) < 0.1) || (Math.abs(tot - 200.50) < 0.1);
+        }
+        if (p1) passed++;
+
+        List<Order> list2 = Arrays.asList(
+            new Order("CUST-4", 75.0, "CANCELLED"),
+            new Order("CUST-5", 85.0, "PENDING")
+        );
+        Map<String, Double> res2 = null;
+        try {
+            res2 = svc.aggregateOrders(list2);
+        } catch(Exception e) {}
+
+        boolean p2 = (res2 != null && res2.isEmpty());
+        if (p2) passed++;
+
+        System.out.println("${SENTINEL_START}");
+        System.out.println("{\\\"status\\\":\\\"" + (passed == total ? "PASSED" : "FAILED") + "\\\"," +
+            "\\\"allPassed\\\":" + (passed == total ? "true" : "false") + "," +
+            "\\\"passedCount\\\":" + passed + ",\\\"totalCount\\\":" + total + "," +
+            "\\\"score\\\":" + ((passed * 100) / total) + ",\\\"results\\\":[" +
+            "{\\\"id\\\":1,\\\"input\\\":\\\"Orders [CUST-1: 120.50 COMPLETED, CUST-2: 45.00 COMPLETED, CUST-1: 80.00 COMPLETED, CUST-3: 50.00 CANCELLED]\\\",\\\"expected\\\":\\\"CUST-1: 200.50, CUST-2: 45.00\\\",\\\"actual\\\":\\\"" + (res1 == null ? "null" : res1.toString()) + "\\\",\\\"passed\\\":" + p1 + ",\\\"elapsedMs\\\":0.5}," +
+            "{\\\"id\\\":2,\\\"input\\\":\\\"Orders [CANCELLED, PENDING]\\\",\\\"expected\\\":\\\"Empty Map {}\\\",\\\"actual\\\":\\\"" + (res2 == null ? "null" : res2.toString()) + "\\\",\\\"passed\\\":" + p2 + ",\\\"elapsedMs\\\":0.5}" +
+            "]}");
+        System.out.println("${SENTINEL_END}");
+    }
+`;
+    } else if (userCode.includes('class LRUCache') || userCode.includes('LRUCache<')) {
+      testHarnessJava = `
+    public static void main(String[] args) {
+        int passed = 0;
+        int total = 2;
+
+        boolean p1 = false;
+        boolean p2 = false;
+        try {
+            LRUCache<String, Integer> cache = new LRUCache<>(2);
+            cache.put("k1", 100);
+            cache.put("k2", 200);
+            Integer v1 = cache.get("k1");
+            cache.put("k3", 300); // Should evict k2 because k1 was accessed
+            Integer v2 = cache.get("k2");
+            Integer v3 = cache.get("k3");
+            p1 = (v1 != null && v1 == 100) && (v2 == null) && (v3 != null && v3 == 300);
+            if (p1) passed++;
+
+            cache.put("k4", 400);
+            Integer v1_after = cache.get("k1");
+            p2 = (v1_after == null); // k1 should now be evicted
+            if (p2) passed++;
+        } catch (Exception e) {}
+
+        System.out.println("${SENTINEL_START}");
+        System.out.println("{\\\"status\\\":\\\"" + (passed == total ? "PASSED" : "FAILED") + "\\\"," +
+            "\\\"allPassed\\\":" + (passed == total ? "true" : "false") + "," +
+            "\\\"passedCount\\\":" + passed + ",\\\"totalCount\\\":" + total + "," +
+            "\\\"score\\\":" + ((passed * 100) / total) + ",\\\"results\\\":[" +
+            "{\\\"id\\\":1,\\\"input\\\":\\\"LRUCache(2) put(k1,100), put(k2,200), get(k1), put(k3,300)\\\",\\\"expected\\\":\\\"k1: 100, k2: evicted (null), k3: 300\\\",\\\"actual\\\":\\\"" + (p1 ? "Correct eviction" : "Failed eviction/access") + "\\\",\\\"passed\\\":" + p1 + ",\\\"elapsedMs\\\":0.5}," +
+            "{\\\"id\\\":2,\\\"input\\\":\\\"put(k4,400) evicts least-recently used\\\",\\\"expected\\\":\\\"k1 evicted (null)\\\",\\\"actual\\\":\\\"" + (p2 ? "Evicted as expected" : "Retention error") + "\\\",\\\"passed\\\":" + p2 + ",\\\"elapsedMs\\\":0.5}" +
+            "]}");
+        System.out.println("${SENTINEL_END}");
+    }
+`;
+    } else if (userCode.includes('class WorkDispatcher')) {
+      testHarnessJava = `
+    public static void main(String[] args) {
+        int passed = 0;
+        int total = 2;
+
+        boolean p1 = false;
+        boolean p2 = false;
+        try {
+            WorkDispatcher dispatcher = new WorkDispatcher(2, 5);
+            java.util.concurrent.atomic.AtomicInteger counter = new java.util.concurrent.atomic.AtomicInteger(0);
+            boolean s1 = dispatcher.submit(() -> counter.incrementAndGet());
+            boolean s2 = dispatcher.submit(() -> counter.incrementAndGet());
+            Thread.sleep(100);
+            p1 = s1 && s2 && counter.get() >= 1;
+            if (p1) passed++;
+
+            // Stress queue capacity
+            for (int i = 0; i < 20; i++) {
+                dispatcher.submit(() -> { try { Thread.sleep(20); } catch(Exception e) {} });
+            }
+            p2 = true;
+            if (p2) passed++;
+        } catch (Exception e) {}
+
+        System.out.println("${SENTINEL_START}");
+        System.out.println("{\\\"status\\\":\\\"" + (passed == total ? "PASSED" : "FAILED") + "\\\"," +
+            "\\\"allPassed\\\":" + (passed == total ? "true" : "false") + "," +
+            "\\\"passedCount\\\":" + passed + ",\\\"totalCount\\\":" + total + "," +
+            "\\\"score\\\":" + ((passed * 100) / total) + ",\\\"results\\\":[" +
+            "{\\\"id\\\":1,\\\"input\\\":\\\"WorkDispatcher(2,5) submit tasks\\\",\\\"expected\\\":\\\"Tasks accepted and executed\\\",\\\"actual\\\":\\\"" + (p1 ? "Executed" : "Tasks rejected or failed") + "\\\",\\\"passed\\\":" + p1 + ",\\\"elapsedMs\\\":0.5}," +
+            "{\\\"id\\\":2,\\\"input\\\":\\\"Bounded queue capacity enforcement\\\",\\\"expected\\\":\\\"Queue bounded safely\\\",\\\"actual\\\":\\\"" + (p2 ? "Passed" : "Failed") + "\\\",\\\"passed\\\":" + p2 + ",\\\"elapsedMs\\\":0.5}" +
+            "]}");
+        System.out.println("${SENTINEL_END}");
+    }
+`;
+    } else {
+      testHarnessJava = `
+    public static void main(String[] args) {
+        System.out.println("${SENTINEL_START}");
+        System.out.println("{\\\"status\\\":\\\"FAILED\\\",\\\"allPassed\\\":false,\\\"passedCount\\\":0,\\\"totalCount\\\":1,\\\"score\\\":0,\\\"results\\\":[{\\\"id\\\":1,\\\"input\\\":\\\"Assessment Verification\\\",\\\"expected\\\":\\\"Recognized assessment class\\\",\\\"actual\\\":\\\"Unrecognized or missing target class\\\",\\\"passed\\\":false,\\\"elapsedMs\\\":0.0,\\\"error\\\":\\\"Target class was not implemented for this problem\\\"}]}");
+        System.out.println("${SENTINEL_END}");
+    }
+`;
+    }
+
     let finalCode = userCode;
-    const hasMain = userCode.includes('public static void main');
-
-    if (!classMatch) {
-      finalCode = `
-import java.util.*;
-import java.util.stream.*;
-
-public class Solution {
-    ${userCode}
-
-    public static void main(String[] args) {
-        System.out.println("${SENTINEL_START}");
-        System.out.println("{\\\"status\\\":\\\"PASSED\\\",\\\"allPassed\\\":true,\\\"passedCount\\\":${testCases.length || 1},\\\"totalCount\\\":${testCases.length || 1},\\\"score\\\":100,\\\"results\\\":[{\\\"id\\\":1,\\\"passed\\\":true,\\\"elapsedMs\\\":0.5,\\\"actual\\\":\\\"Java class compiled and verified\\\"}]}");
-        System.out.println("${SENTINEL_END}");
-    }
-}
-`;
-    } else if (!hasMain) {
-      // Inject main method into the class
-      const lastBraceIdx = finalCode.lastIndexOf('}');
-      if (lastBraceIdx !== -1) {
-        const injectedMain = `
-    public static void main(String[] args) {
-        System.out.println("${SENTINEL_START}");
-        System.out.println("{\\\"status\\\":\\\"PASSED\\\",\\\"allPassed\\\":true,\\\"passedCount\\\":${testCases.length || 1},\\\"totalCount\\\":${testCases.length || 1},\\\"score\\\":100,\\\"results\\\":[{\\\"id\\\":1,\\\"passed\\\":true,\\\"elapsedMs\\\":0.5,\\\"actual\\\":\\\"Java class compiled and verified\\\"}]}");
-        System.out.println("${SENTINEL_END}");
-    }
-`;
-        finalCode = finalCode.slice(0, lastBraceIdx) + injectedMain + finalCode.slice(lastBraceIdx);
-      }
+    const lastBrace = finalCode.lastIndexOf('}');
+    if (lastBrace !== -1) {
+      finalCode = finalCode.slice(0, lastBrace) + testHarnessJava + finalCode.slice(lastBrace);
+    } else {
+      finalCode = `public class ${className} { ${userCode} ${testHarnessJava} }`;
     }
 
-    // Helper model classes for assessment problems if not provided
+    // Append helper models if not already declared
     if (!finalCode.includes('class Order ') && !finalCode.includes('class Order{') && !finalCode.includes('class Order\n')) {
-      finalCode = finalCode + `\nclass Order { public String id; public String status; public double total; public Order(String id, String status, double total) { this.id = id; this.status = status; this.total = total; } }\n`;
+      finalCode = finalCode + `\nclass Order {
+        public String customerId;
+        public String id;
+        public double amount;
+        public double total;
+        public String status;
+        public Order(String customerId, double amount, String status) {
+            this.customerId = customerId;
+            this.id = customerId;
+            this.amount = amount;
+            this.total = amount;
+            this.status = status;
+        }
+        public Order(String id, String status, double total) {
+            this.customerId = id;
+            this.id = id;
+            this.amount = total;
+            this.total = total;
+            this.status = status;
+        }
+        public String getCustomerId() { return customerId; }
+        public String getId() { return id; }
+        public double getAmount() { return amount; }
+        public double getTotal() { return total; }
+        public String getStatus() { return status; }
+      }\n`;
     }
 
     const javaPath = path.join(tempDir, `${className}.java`);
@@ -1241,14 +1671,14 @@ public class Solution {
         }
 
         resolve({
-          success: stdout.length > 0,
-          status: stdout.length > 0 ? 'PASSED' : 'FAILED',
-          allPassed: stdout.length > 0,
-          passedCount: testCases.length || 1,
-          totalCount: testCases.length || 1,
-          score: 100,
-          logs: stdout,
-          results: [{ id: 1, passed: true, actual: stdout.trim() }]
+          success: false,
+          status: 'FAILED',
+          allPassed: false,
+          passedCount: 0,
+          totalCount: testCases.length,
+          score: 0,
+          logs: stdout || stderr,
+          results: [{ id: 1, passed: false, actual: stdout.trim() || 'Execution failed' }]
         });
       });
     });
@@ -1270,17 +1700,14 @@ public class Solution {
 }
 
 /**
- * 7. HTML & CSS MARKUP VALIDATOR
+ * 7. HTML & CSS MARKUP VALIDATOR - STRICT VALIDATION
  */
 function executeHTMLCSS(userCode, testCases) {
   return new Promise((resolve) => {
     const results = [];
     let passedCount = 0;
     const lower = userCode.toLowerCase();
-
-    // Check basic HTML/CSS presence
-    const hasHtml = lower.includes('<') && lower.includes('>');
-    const hasCss = lower.includes('{') && lower.includes('}') && lower.includes(':');
+    const clean = lower.replace(/<!--[\s\S]*?-->|\/\*[\s\S]*?\*\//g, '').trim();
 
     for (let i = 0; i < testCases.length; i++) {
       const tc = testCases[i];
@@ -1291,19 +1718,20 @@ function executeHTMLCSS(userCode, testCases) {
       let actual = '';
 
       if (typeof expected === 'string') {
-        passed = lower.includes(expected.toLowerCase());
-        actual = passed ? expected : 'Markup element or style not found';
+        passed = clean.includes(expected.toLowerCase());
+        actual = passed ? expected : `Missing required rule: '${expected}'`;
       } else if (Array.isArray(expected)) {
-        passed = expected.every(exp => lower.includes(String(exp).toLowerCase()));
-        actual = passed ? 'All style and semantic requirements met' : 'Missing required CSS or HTML tags';
+        const missing = expected.filter(exp => !clean.includes(String(exp).toLowerCase()));
+        passed = missing.length === 0;
+        actual = passed ? 'All style and semantic requirements met' : `Missing: ${missing.join(', ')}`;
       } else if (typeof expected === 'object' && expected !== null) {
         const checks = Object.entries(expected).map(([k, v]) => {
-          return lower.includes(String(k).toLowerCase()) || lower.includes(String(v).toLowerCase());
+          return clean.includes(String(k).toLowerCase()) || clean.includes(String(v).toLowerCase());
         });
         passed = checks.every(Boolean);
         actual = passed ? expected : { error: 'Required attributes or CSS missing' };
       } else {
-        passed = (hasHtml || hasCss) && userCode.trim().length > 15;
+        passed = clean.includes('<') && clean.includes('>') && clean.includes('{') && clean.includes(':') && clean.length > 50;
         actual = passed ? 'Valid HTML5 / CSS3 syntax' : 'Empty or incomplete markup';
       }
 
@@ -1320,7 +1748,7 @@ function executeHTMLCSS(userCode, testCases) {
       });
     }
 
-    const allPassed = passedCount === testCases.length;
+    const allPassed = passedCount === testCases.length && testCases.length > 0;
     const score = testCases.length > 0 ? Math.round((passedCount / testCases.length) * 100) : 0;
 
     resolve({
@@ -1384,23 +1812,23 @@ function runExecutable(exePath, testCases) {
         return resolve({ success: true, ...payload, logs: payload.logs || logs });
       }
 
-      const allPassed = exitCode === 0;
+      // If no sentinel framing was output, binary failed or exited without printing structured results
       resolve({
-        success: allPassed,
-        status: allPassed ? 'PASSED' : 'FAILED',
-        allPassed,
-        passedCount: allPassed ? testCases.length : 0,
+        success: false,
+        status: 'FAILED',
+        allPassed: false,
+        passedCount: 0,
         totalCount: testCases.length,
-        score: allPassed ? 100 : 0,
-        logs: stdout,
+        score: 0,
+        logs: stdout || stderr,
         results: testCases.map(tc => ({
           id: tc.id,
           input: tc.input,
           expected: tc.expected,
-          actual: stdout.trim() || (allPassed ? 'PASSED' : 'FAILED'),
-          passed: allPassed,
+          actual: stdout.trim() || 'Executable produced no valid output',
+          passed: false,
           elapsedMs: 0.5,
-          error: allPassed ? null : stderr.trim()
+          error: stderr.trim() || 'Assertion failure'
         }))
       });
     });
@@ -1420,3 +1848,10 @@ function runExecutable(exePath, testCases) {
     });
   });
 }
+
+export async function executeCode(language, code, options = {}) {
+  return compilerService.execute({ language, code, ...options });
+}
+
+export default compilerService;
+

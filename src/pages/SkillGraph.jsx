@@ -15,13 +15,14 @@ import {
   ExternalLink,
   Target
 } from 'lucide-react';
-import { roleTracks, famousMentorsCourses } from '../data/mockData';
+import { famousMentorsCourses } from '../data/mockData';
+import { getCareerRoleByTitle } from '../data/careerRolesData';
 import { storageService } from '../services/storageService';
 
 export const SkillGraph = ({ student: propStudent }) => {
   const student = propStudent || storageService.getStudentData();
   const targetRoleTitle = student?.targetRole || "Full Stack Web Developer";
-  const currentTrack = roleTracks.find((r) => r.title === targetRoleTitle) || roleTracks[0];
+  const currentTrack = getCareerRoleByTitle(targetRoleTitle);
 
   const gapsAnalysis = storageService.calculateSkillGapsForRole(targetRoleTitle, student?.verifiedSkills || []);
   const verifiedList = student?.verifiedSkills || [];

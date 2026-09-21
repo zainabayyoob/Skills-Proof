@@ -9,6 +9,8 @@
   },
   "scripts": {
     "dev": "concurrently -k -p \"[{name}]\" -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"node server/index.js\" \"vite --host\"",
+    "dev:tunnel": "concurrently -k -p \"[{name}]\" -n \"BACKEND,FRONTEND,TUNNEL\" -c \"cyan,magenta,yellow\" \"node server/index.js\" \"vite --host\" \"node scripts/start-tunnel.mjs\"",
+    "tunnel": "node scripts/start-tunnel.mjs",
     "client": "vite --host",
     "server": "node server/index.js",
     "start": "node server/index.js",
@@ -23,6 +25,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.439.0",
+    "pg": "^8.23.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1"

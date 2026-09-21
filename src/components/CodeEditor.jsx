@@ -1,6 +1,17 @@
 import React from 'react';
 import { Code2, Copy, Check } from 'lucide-react';
 
+const LANGUAGE_DISPLAY_NAMES = {
+  python: 'Python',
+  sql: 'SQL',
+  javascript: 'JavaScript',
+  c: 'C',
+  cpp: 'C++',
+  java: 'Java',
+  html: 'HTML/CSS',
+  typescript: 'TypeScript',
+};
+
 export const CodeEditor = ({
   code,
   onChange,
@@ -19,7 +30,24 @@ export const CodeEditor = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Tab' && !readOnly) {
+      e.preventDefault();
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      const val = e.target.value;
+      const updated = val.substring(0, start) + '  ' + val.substring(end);
+      onChange && onChange(updated);
+      setTimeout(() => {
+        if (e.target) {
+          e.target.selectionStart = e.target.selectionEnd = start + 2;
+        }
+      }, 0);
+    }
+  };
+
   const lineCount = code.split('\n').length;
+  const displayLang = LANGUAGE_DISPLAY_NAMES[language?.toLowerCase()] || language;
 
   return (
     <div className="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden flex flex-col shadow-xl">
@@ -28,8 +56,8 @@ export const CodeEditor = ({
         <div className="flex items-center gap-2">
           <Code2 className="w-4 h-4 text-brand-400" />
           <span className="font-semibold text-slate-200">{title}</span>
-          <span className="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 py-0.5 rounded">
-            {language}
+          <span className="text-[10px] text-slate-300 font-bold bg-slate-800 border border-slate-700 px-2 py-0.5 rounded">
+            {displayLang}
           </span>
         </div>
 
@@ -63,6 +91,7 @@ export const CodeEditor = ({
         <textarea
           value={code}
           onChange={(e) => onChange && onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
           readOnly={readOnly}
           spellCheck={false}
           className="w-full h-full p-4 bg-transparent text-slate-200 focus:outline-none resize-none leading-relaxed font-mono selection:bg-brand-600/40"

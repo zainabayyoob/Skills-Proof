@@ -7988,3 +7988,12 @@ export const questionBank = {
     }
   ]
 };
+
+// Skill ID aliases so both frontend/backend and react/node, c++/cpp, html/css match seamlessly
+questionBank.frontend = questionBank.react;
+questionBank.backend = questionBank.node;
+questionBank['c++'] = questionBank.cpp;
+questionBank.html = questionBank.htmlcss;
+questionBank.css = questionBank.htmlcss;
+questionBank.js = questionBank.javascript;
+questionBank.py = questionBank.python;

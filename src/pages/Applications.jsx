@@ -71,20 +71,20 @@ export const Applications = () => {
     statusChangeNote: '',
   });
 
-  // Load applications from API (or fallback to storageService)
+  // Load applications from API (or fallback to storageService for guest)
   const loadApplications = async () => {
     try {
       setLoading(true);
       if (api.auth.isAuthenticated()) {
         const res = await api.applications.list();
-        if (res && res.applications && res.applications.length > 0) {
+        if (res && Array.isArray(res.applications)) {
           setApplications(res.applications);
           setLoading(false);
           return;
         }
       }
     } catch (e) {
-      console.warn('Could not load from API, using local storage:', e);
+      console.warn('Could not load from API, falling back:', e);
     }
     const local = storageService.getApplications();
     setApplications(local);
@@ -575,7 +575,7 @@ export const Applications = () => {
                     {(app.isExternal || app.applicationUrl) && (
                       <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 text-[11px] font-medium flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        Application submitted on external platform.
+                        Applied externally
                       </span>
                     )}
                   </div>

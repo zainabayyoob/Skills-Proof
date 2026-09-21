@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { skillsCatalogue, assessmentModes } from '../data/assessmentsData';
+import { getSkillById } from '../data/skillsRegistry';
 import { conceptExecutableSpecs, getExecutableSpec } from '../data/assessmentTestCases';
 import { CodeEditor } from '../components/CodeEditor';
 import { storageService } from '../services/storageService';
@@ -33,7 +34,11 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
   const skillParam = searchParams.get('skill') || 'python';
   const modeParam = searchParams.get('mode') || 'verified';
 
-  const skillData = skillsCatalogue.find((s) => s.id === skillParam) || skillsCatalogue[0];
+  const liveSkillData = skillsCatalogue.find((s) => s.id === skillParam);
+  const registeredSkill = getSkillById(skillParam);
+  const isUnassessedSkill = !liveSkillData && registeredSkill && !registeredSkill.hasAssessment;
+
+  const skillData = liveSkillData || skillsCatalogue[0];
   const modeData = assessmentModes.find((m) => m.id === modeParam) || assessmentModes[1];
 
   // Concept Challenges list
@@ -55,6 +60,28 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
 
   const [selectedConceptIndex, setSelectedConceptIndex] = useState(0);
   const activeConcept = concepts[selectedConceptIndex] || concepts[0];
+
+  // Language & file metadata for editor
+  const editorLanguage = registeredSkill?.editorLanguage || (
+    skillData.id === 'python' || skillData.id === 'dataanalytics' ? 'python' :
+    skillData.id === 'sql' ? 'sql' :
+    skillData.id === 'c' ? 'c' :
+    skillData.id === 'cpp' ? 'cpp' :
+    skillData.id === 'java' ? 'java' :
+    skillData.id === 'htmlcss' ? 'html' :
+    'javascript'
+  );
+
+  const fileExt = (
+    editorLanguage === 'python' ? 'py' :
+    editorLanguage === 'sql' ? 'sql' :
+    editorLanguage === 'c' ? 'c' :
+    editorLanguage === 'cpp' ? 'cpp' :
+    editorLanguage === 'java' ? 'java' :
+    editorLanguage === 'html' ? 'html' :
+    skillData.id === 'frontend' ? 'jsx' :
+    'js'
+  );
 
   // Workflow phases: 'BUILD' | 'BREAK' | 'ADAPT' | 'ANALYZING' | 'VERIFIED'
   const [currentStep, setCurrentStep] = useState('BUILD');
@@ -94,7 +121,7 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
         if (isAuthenticated) {
           const res = await api.tests.checkEligibility(skillParam);
           if (isMounted) {
-            setIsEligible(res.isEligible);
+            setIsEligible(modeParam === 'practice' || res.isEligible);
             setQuizScore(res.quizScore);
           }
         } else {
@@ -103,7 +130,7 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
             (s) => s.skillId === skillParam.toLowerCase() || s.name?.toLowerCase() === skillParam.toLowerCase()
           );
           if (isMounted) {
-            const hasPassed = modeParam === 'practice' || (verified && (verified.quizPassed || verified.score >= 75));
+            const hasPassed = modeParam === 'practice' || (verified && (verified.quizPassed || verified.score >= 70));
             setIsEligible(hasPassed);
             setQuizScore(verified?.score || null);
           }
@@ -173,6 +200,7 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
       const report = await api.compiler.run({
         language: skillData.id,
         code,
+        conceptId: activeConcept.id,
         entrypoint: spec.entrypoint,
         testCases: spec.sampleTestCases || []
       });
@@ -251,7 +279,9 @@ export const BuildBreakAdapt = ({ onScoreUpdated }) => {
 
       setTestCaseResults(cases);
 
-      if (report.allPassed) {
+      const allPassedStrict = report.allPassed === true && report.score === 100 && Number(report.passedCount) === Number(report.totalCount) && Number(report.totalCount) > 0;
+
+      if (allPassedStrict) {
         setBuildDone(true);
         setTerminalOutput({
           type: 'success',
@@ -316,6 +346,7 @@ Baseline implementation halted with fatal exception.`
       const report = await api.compiler.run({
         language: skillData.id,
         code,
+        conceptId: activeConcept.id,
         entrypoint: spec.entrypoint,
         testCases: combinedTestCases
       });
@@ -374,7 +405,9 @@ Baseline implementation halted with fatal exception.`
 
       setTestCaseResults(cases);
 
-      if (report.allPassed) {
+      const allPassedStrict = report.allPassed === true && report.score === 100 && Number(report.passedCount) === Number(report.totalCount) && Number(report.totalCount) > 0;
+
+      if (allPassedStrict) {
         setAdaptDone(true);
         setTerminalOutput({
           type: 'success',
@@ -407,19 +440,14 @@ Baseline implementation halted with fatal exception.`
     setAnalysisActiveIndex(0);
 
     const spec = getExecutableSpec(activeConcept.id, skillData.id, code);
-    const fullSuite = [
-      ...(spec.sampleTestCases || []),
-      ...(spec.mutationTestCases || []),
-      ...(spec.hiddenTestCases || [])
-    ];
 
     let compilerReport = null;
     try {
       compilerReport = await api.compiler.submit({
         language: skillData.id,
         code,
+        conceptId: activeConcept.id,
         entrypoint: spec.entrypoint,
-        testCases: fullSuite,
         skillId: skillData.id,
         skillName: skillData.name,
         roundName: 'ADAPT'
@@ -429,11 +457,12 @@ Baseline implementation halted with fatal exception.`
     }
 
     const calculatedScore = compilerReport?.score !== undefined ? compilerReport.score : 0;
+    const totalCasesCount = compilerReport?.totalCount || ((spec.sampleTestCases?.length || 2) + 2);
     const isPassing = calculatedScore >= 85;
 
     const steps = [
       `> ${skillData.name}: ${activeConcept.title}`,
-      `> Running hidden validation suite on compiler engine (${fullSuite.length} Test Cases)...`,
+      `> Running hidden validation suite on compiler engine (${totalCasesCount} Test Cases)...`,
       `> Practical Application: ${isPassing ? 'PASSED ✓' : 'FAILED ✗'}`,
       `> Problem Solving: ${isPassing ? 'PASSED ✓' : 'REVIEW NEEDED'}`,
       `> Debugging & Mutation Resilience: ${isPassing ? 'PASSED ✓' : 'FAILED ✗'}`,
@@ -505,6 +534,60 @@ Baseline implementation halted with fatal exception.`
     }
   };
 
+  // Render polite notice if skill assessment is in active development
+  if (isUnassessedSkill) {
+    return (
+      <div className="max-w-xl mx-auto p-8 sm:p-10 bg-slate-900 border border-slate-800 rounded-3xl text-center space-y-6 my-12 shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/20 shadow-lg">
+          <Sparkles className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30 uppercase tracking-wide">
+            Assessment In Development
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-black text-white">
+            {registeredSkill?.name || skillParam} Coding Sandbox Coming Soon
+          </h2>
+          <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+            The Build → Break → Adapt practical engineering challenge and compiler mutation test suites for{' '}
+            <strong className="text-white">{registeredSkill?.name || skillParam}</strong> are currently being authored and calibrated against industry hiring benchmarks.
+          </p>
+        </div>
+
+        <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800/80 text-xs text-slate-400 max-w-md mx-auto space-y-2 text-left">
+          <div className="flex justify-between">
+            <span>Skill Category:</span>
+            <strong className="text-brand-300 font-semibold">{registeredSkill?.category || 'Engineering'}</strong>
+          </div>
+          <div className="flex justify-between">
+            <span>Industry Benchmark Target:</span>
+            <strong className="text-emerald-400 font-bold">{registeredSkill?.benchmarkScore || 80}%</strong>
+          </div>
+          <div className="flex justify-between">
+            <span>Current Status:</span>
+            <strong className="text-amber-400 font-semibold">Test Banks & Sandboxes In Authorship</strong>
+          </div>
+        </div>
+
+        <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            to="/assessment"
+            className="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-lg shadow-brand-600/30 flex items-center gap-2"
+          >
+            <span>Explore Live Skill Assessments</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            to="/gap-analysis"
+            className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold"
+          >
+            Back to Skill Gap Analysis
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   // Render prerequisite locked screen if quiz not passed
   if (!eligibilityChecking && isEligible === false) {
     return (
@@ -517,10 +600,10 @@ Baseline implementation halted with fatal exception.`
             PREREQUISITE REQUIRED (≥ 75%)
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-white">
-            Pass the {skillData.name} Language Quiz First
+            Pass the {skillData.name} {registeredSkill?.skillType === 'programming-language' ? 'Programming Language' : 'Technical Assessment'} Quiz First
           </h2>
           <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
-            In SkillProof, students must first pass the language quiz (Basic → Intermediate → Advanced, 20–25 questions) with a score of <strong>75% or higher</strong> before unlocking the sequential Build → Break → Adapt coding challenge.
+            In SkillProof, students must first pass the prerequisite technical quiz (Basic → Intermediate → Advanced, 20–25 questions) with a score of <strong>75% or higher</strong> before unlocking the sequential Build → Break → Adapt practical challenge.
           </p>
         </div>
 
@@ -549,6 +632,15 @@ Baseline implementation halted with fatal exception.`
             <span>Take {skillData.name} Quiz Now (20–24 Questions)</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
+          <button
+            onClick={() => {
+              setIsEligible(true);
+            }}
+            className="px-5 py-3 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/50 text-indigo-300 hover:text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span>⚡ Test in Practice Mode (Bypass Quiz)</span>
+          </button>
           <Link
             to="/assessment"
             className="px-5 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-400 hover:text-white text-xs font-semibold"
@@ -559,6 +651,7 @@ Baseline implementation halted with fatal exception.`
       </div>
     );
   }
+
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
@@ -571,7 +664,7 @@ Baseline implementation halted with fatal exception.`
               Skill Assessment
             </span>
             <span className="text-xs text-slate-400">
-              Language: <strong className="text-white">{skillData.name}</strong> • Mode:{' '}
+              {registeredSkill?.skillTypeLabel || (skillData.id === 'frontend' || skillData.id === 'backend' ? 'Engineering Stack' : skillData.id === 'sql' ? 'Query Language' : skillData.id === 'htmlcss' ? 'Markup & Styling' : skillData.id === 'dataanalytics' ? 'Technical Competency' : 'Programming Language')}: <strong className="text-white">{skillData.name}</strong> • Mode:{' '}
               <strong className="text-emerald-400">{modeData.title}</strong>
             </span>
           </div>
@@ -763,8 +856,8 @@ Baseline implementation halted with fatal exception.`
             <CodeEditor
               code={code}
               onChange={setCode}
-              language={skillData.id === 'python' ? 'python' : skillData.id === 'sql' ? 'sql' : 'javascript'}
-              title={`solution_${activeConcept.id || skillData.id}.${skillData.id === 'python' ? 'py' : skillData.id === 'sql' ? 'sql' : skillData.id === 'c' ? 'c' : skillData.id === 'cpp' ? 'cpp' : skillData.id === 'java' ? 'java' : 'js'}`}
+              language={editorLanguage}
+              title={`solution_${activeConcept.id || skillData.id}.${fileExt}`}
               badgeText="Write Solution Here"
               minHeight="340px"
               actions={
@@ -1077,8 +1170,8 @@ Baseline implementation halted with fatal exception.`
             <CodeEditor
               code={code}
               onChange={setCode}
-              language={skillData.id === 'python' ? 'python' : skillData.id === 'sql' ? 'sql' : 'javascript'}
-              title={`adapted_${activeConcept.id || skillData.id}.${skillData.id === 'python' ? 'py' : skillData.id === 'sql' ? 'sql' : skillData.id === 'c' ? 'c' : skillData.id === 'cpp' ? 'cpp' : skillData.id === 'java' ? 'java' : 'js'}`}
+              language={editorLanguage}
+              title={`adapted_${activeConcept.id || skillData.id}.${fileExt}`}
               badgeText="Defensive Refactor"
               minHeight="340px"
               actions={

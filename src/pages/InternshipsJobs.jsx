@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Briefcase,
@@ -13,6 +13,7 @@ import {
   Clock,
   Send,
   Lock,
+  ExternalLink,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { calculateOpportunityMatch } from '../utils/matchingAlgorithm';
@@ -33,6 +34,35 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
   const [typeFilter, setTypeFilter] = useState('All');
   const [workModeFilter, setWorkModeFilter] = useState('All');
 
+  // Fetch opportunities and applications from backend if available
+  useEffect(() => {
+    let isMounted = true;
+    const loadBackendData = async () => {
+      try {
+        const oppRes = await api.opportunities.list();
+        if (isMounted && oppRes && oppRes.opportunities && oppRes.opportunities.length > 0) {
+          setOpportunities(oppRes.opportunities);
+        }
+      } catch (err) {
+        console.warn('Using local opportunities:', err);
+      }
+
+      try {
+        if (api.auth.isAuthenticated()) {
+          const appRes = await api.applications.list();
+          if (isMounted && appRes && Array.isArray(appRes.applications)) {
+            setApplications(appRes.applications);
+          }
+        }
+      } catch (err) {
+        console.warn('Using local applications:', err);
+      }
+    };
+
+    loadBackendData();
+    return () => { isMounted = false; };
+  }, [isAuthenticated]);
+
   // Compute smart match for all listings
   const enrichedOpportunities = opportunities.map((opp) => {
     const matchAnalysis = calculateOpportunityMatch(opp, student);
@@ -49,12 +79,13 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
 
   const filteredOpportunities = enrichedOpportunities.filter((opp) => {
     if (typeFilter !== 'All') {
-      const t = (opp.type || '').toLowerCase();
-      if (typeFilter === 'Job' && !t.includes('job') && !t.includes('placement') && !t.includes('full-time')) return false;
+      const t = (opp.type || opp.opportunityType || '').toLowerCase();
+      if (typeFilter === 'Full-Time Job' && !t.includes('full-time') && !t.includes('job') && !t.includes('placement')) return false;
+      if (typeFilter === 'Part-Time Job' && !t.includes('part-time')) return false;
       if (typeFilter === 'Internship' && !t.includes('internship')) return false;
-      if (typeFilter === 'Part-time' && !t.includes('part-time')) return false;
-      if (typeFilter === 'Startup' && !t.includes('startup')) return false;
-      if (typeFilter === 'Project' && !t.includes('project')) return false;
+      if (typeFilter === 'Freelance / Contract' && !t.includes('freelance') && !t.includes('contract')) return false;
+      if (typeFilter === 'Apprenticeship' && !t.includes('apprenticeship')) return false;
+      if (typeFilter === 'Project / Live Project' && !t.includes('project')) return false;
     }
     if (workModeFilter !== 'All') {
       const loc = (opp.location || '').toLowerCase();
@@ -81,7 +112,7 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
       window.open(selectedOpp.officialUrl, '_blank', 'noopener,noreferrer');
     }
 
-    const isExternal = selectedOpp.applicationType === 'External Application';
+    const isExternal = selectedOpp.applicationType === 'External Application' || Boolean(selectedOpp.officialUrl);
 
     // Track in database
     if (isAuthenticated) {
@@ -112,21 +143,37 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
 
     setAppliedSuccess(true);
     
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+    // Only fire confetti for internal direct partner applications, never for external redirects
+    if (!isExternal) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
 
     if (onApplicationSubmitted) onApplicationSubmitted();
   };
 
   const getSkillIdByName = (name) => {
+    if (!name) return 'python';
+    const n = name.toLowerCase().trim();
+    if (n.includes('react') || n.includes('frontend')) return 'frontend';
+    if (n.includes('node') || n.includes('backend') || n.includes('express')) return 'backend';
+    if (n.includes('html') || n.includes('css')) return 'htmlcss';
+    if (n.includes('c++') || n === 'cpp') return 'cpp';
+    if (n === 'c' || n.includes('embedded')) return 'c';
+    if (n.includes('java')) return 'java';
+    if (n.includes('python')) return 'python';
+    if (n.includes('sql') || n.includes('database')) return 'sql';
+    if (n.includes('analytic') || n.includes('data')) return 'dataanalytics';
+    if (n.includes('script') || n.includes('js')) return 'javascript';
     const item = skillsCatalogue.find(
-      (s) => s.name.toLowerCase() === name.toLowerCase() || s.id.toLowerCase() === name.toLowerCase()
+      (s) => s.name.toLowerCase() === n || s.id.toLowerCase() === n
     );
     return item ? item.id : 'python';
   };
+
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-12">
@@ -185,7 +232,7 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
           {/* Opportunity Type Filters */}
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-[11px] font-bold text-slate-400 uppercase mr-1">Type:</span>
-            {['All', 'Job', 'Internship', 'Part-time', 'Startup', 'Project'].map((t) => {
+            {['All', 'Internship', 'Full-Time Job', 'Part-Time Job', 'Freelance / Contract', 'Apprenticeship', 'Project / Live Project'].map((t) => {
               const active = typeFilter === t;
               return (
                 <button
@@ -261,6 +308,16 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
                     <span className="text-xs font-bold text-emerald-400">
                       {opp.stipend}
                     </span>
+                    {opp.officialUrl ? (
+                      <span className="px-2 py-0.5 rounded-md bg-blue-950/80 text-blue-300 border border-blue-800/50 text-[10px] font-mono font-bold flex items-center gap-1">
+                        <ExternalLink className="w-3 h-3 text-blue-400" />
+                        EXTERNAL APPLICATION • {opp.source || 'Official Career Portal'}
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-800/50 text-[10px] font-mono font-bold">
+                        DIRECT PARTNER
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-3 text-xs text-slate-400">
@@ -295,7 +352,7 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
                       className="px-4 py-2.5 rounded-xl bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 cursor-default"
                     >
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                      <span>Applied ✓</span>
+                      <span>{opp.officialUrl ? 'Tracked Externally ✓' : 'Applied ✓'}</span>
                     </button>
                   ) : !isVerified ? (
                     <Link
@@ -310,50 +367,63 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
                       onClick={() => handleOpenApplyModal(opp)}
                       className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-lg shadow-brand-600/30 flex items-center gap-1.5 transition-all cursor-pointer"
                     >
-                      <Zap className="w-3.5 h-3.5 text-amber-300" />
-                      <span>1-Click Apply</span>
+                      {opp.officialUrl ? (
+                        <>
+                          <ExternalLink className="w-3.5 h-3.5 text-blue-200" />
+                          <span>Apply on Company Portal ↗</span>
+                        </>
+                      ) : (
+                        <>
+                          <Zap className="w-3.5 h-3.5 text-amber-300" />
+                          <span>1-Click Apply</span>
+                        </>
+                      )}
                     </button>
                   )}
                 </div>
               </div>
 
               {/* Match Rationale Callout */}
-              <div className="p-3 bg-slate-950/90 rounded-xl border border-slate-800 space-y-2 text-xs">
+              <div className="p-3.5 bg-slate-950/90 rounded-xl border border-slate-800 space-y-2.5 text-xs">
                 <div className="flex items-center justify-between text-[11px] text-slate-400">
-                  <span className="font-semibold text-slate-300 flex items-center gap-1">
-                    <Info className="w-3 h-3 text-brand-400" /> Matching Analysis:
+                  <span className="font-semibold text-slate-200 flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5 text-brand-400" /> WHY THIS OPPORTUNITY MATCHES:
                   </span>
-                  <span>{opp.description}</span>
+                  <span className="text-[11px] text-slate-400">{opp.description}</span>
                 </div>
-                <p className="text-slate-300 italic text-[11px] leading-relaxed">
+                <p className="text-slate-300 italic text-[11px] leading-relaxed bg-slate-900/50 p-2.5 rounded-lg border border-slate-800/60">
                   "{opp.rationale}"
                 </p>
 
-                {/* Matching Skills vs Missing Skills Tags with Direct Links */}
-                <div className="pt-2 flex flex-wrap items-center gap-2 border-t border-slate-900">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Matching:</span>
-                  {opp.matchingSkills.map((m) => (
-                    <span
-                      key={m.name}
-                      className="px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-800/40 text-emerald-300 text-[11px] font-mono flex items-center gap-1"
-                    >
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400" /> {m.name} ({m.studentScore}%)
-                    </span>
-                  ))}
+                {/* Explicit Sections: MATCHED SKILLS vs MISSING SKILLS */}
+                <div className="pt-2 flex flex-wrap items-center gap-2 border-t border-slate-800/80">
+                  <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">MATCHED SKILLS:</span>
+                  {opp.matchingSkills.length > 0 ? (
+                    opp.matchingSkills.map((m) => (
+                      <span
+                        key={m.name}
+                        className="px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-800/40 text-emerald-300 text-[11px] font-mono flex items-center gap-1"
+                      >
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" /> {m.name} ({m.studentScore}%)
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-[11px] text-slate-500 italic">None verified yet</span>
+                  )}
 
                   {opp.missingSkills.length > 0 && (
                     <>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase ml-2">Missing:</span>
+                      <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider ml-2">MISSING SKILLS:</span>
                       {opp.missingSkills.map((mis) => (
                         <Link
                           key={mis.name}
-                          to={`/build-break-adapt?skill=${getSkillIdByName(mis.name)}`}
+                          to={`/build-break-adapt?skill=${mis.skillId || getSkillIdByName(mis.name)}`}
                           className="px-2 py-0.5 rounded-md bg-amber-950/60 hover:bg-amber-900/60 border border-amber-800/40 text-amber-300 hover:text-amber-200 text-[11px] font-mono flex items-center gap-1 transition-colors"
                           title={`Click to take practical assessment for ${mis.name}`}
                         >
                           <AlertCircle className="w-3 h-3 text-amber-400" />
                           <span>{mis.name} (Need {mis.minRequired}%)</span>
-                          <span className="text-[9px] underline text-brand-300">Take Test →</span>
+                          <span className="text-[9px] underline text-brand-300 ml-0.5">Take Test →</span>
                         </Link>
                       ))}
                     </>
@@ -370,7 +440,7 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
         <Modal
           isOpen={applyModalOpen}
           onClose={() => setApplyModalOpen(false)}
-          title={`Apply to ${selectedOpp.title} at ${selectedOpp.company}`}
+          title={selectedOpp.officialUrl ? `Track External Application: ${selectedOpp.title} at ${selectedOpp.company}` : `Apply to ${selectedOpp.title} at ${selectedOpp.company}`}
           maxWidth="max-w-lg"
         >
           {appliedSuccess ? (
@@ -378,9 +448,19 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
               <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h4 className="text-lg font-bold text-white">Application Pipeline Updated!</h4>
+              <h4 className="text-lg font-bold text-white">
+                {selectedOpp.officialUrl ? 'External Career Portal Opened & Tracked!' : 'Application Submitted Successfully!'}
+              </h4>
               <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-                The official career application portal for <strong>{selectedOpp.company}</strong> has been opened in a new tab. This opportunity is now tracked in your personal <strong>Application Tracker</strong> under "Applied" with the status: <em>"Application submitted on external platform."</em>
+                {selectedOpp.officialUrl ? (
+                  <>
+                    The official career application portal for <strong>{selectedOpp.company}</strong> has been opened in a new tab. This opportunity is now tracked in your personal <strong>Application Tracker</strong> under "Applied" with the status: <em>"Application submitted on external platform."</em>
+                  </>
+                ) : (
+                  <>
+                    Your application for <strong>{selectedOpp.company}</strong> has been delivered directly to the recruitment team with your verified cryptographic SkillProof credential.
+                  </>
+                )}
               </p>
               <div className="pt-3 flex justify-center gap-3">
                 <Link
@@ -403,7 +483,7 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-white text-sm">{selectedOpp.title}</span>
                   <span className="px-2.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-bold border border-indigo-500/30">
-                    {selectedOpp.applicationType || 'External Application'}
+                    {selectedOpp.officialUrl ? `External Portal: ${selectedOpp.source || 'Official'}` : 'Direct Partner Application'}
                   </span>
                 </div>
                 <p className="text-slate-400">{selectedOpp.company} • {selectedOpp.stipend} • {selectedOpp.location}</p>
@@ -414,12 +494,21 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
                 )}
               </div>
 
-              <div className="p-3 bg-blue-950/30 border border-blue-500/30 rounded-xl space-y-1 text-slate-300 text-[11px]">
-                <strong className="text-blue-300 block font-semibold">Official Application Workflow:</strong>
-                <p>
-                  Clicking <strong>"Open Official Portal & Track"</strong> will launch the genuine career application page for {selectedOpp.company}. SkillProof will log this application in your personal Application Tracker so you can track interviews, notes, and follow-up deadlines.
-                </p>
-              </div>
+              {selectedOpp.officialUrl ? (
+                <div className="p-3 bg-blue-950/30 border border-blue-500/30 rounded-xl space-y-1 text-slate-300 text-[11px]">
+                  <strong className="text-blue-300 block font-semibold">Official Application Workflow:</strong>
+                  <p>
+                    Clicking <strong>"Apply on Company Portal ↗"</strong> will launch the genuine career application page for {selectedOpp.company}. SkillProof will log this application in your personal Application Tracker so you can track interviews, notes, and follow-up deadlines.
+                  </p>
+                </div>
+              ) : (
+                <div className="p-3 bg-emerald-950/30 border border-emerald-500/30 rounded-xl space-y-1 text-slate-300 text-[11px]">
+                  <strong className="text-emerald-300 block font-semibold">Direct Partner Application:</strong>
+                  <p>
+                    This application will be submitted directly to {selectedOpp.company}'s recruiting portal along with your verified SkillProof score certificate.
+                  </p>
+                </div>
+              )}
 
               <div className="space-y-1.5">
                 <label className="font-bold text-slate-300 uppercase tracking-wider text-[10px]">
@@ -444,8 +533,17 @@ export const InternshipsJobs = ({ student, onApplicationSubmitted }) => {
                   onClick={handleConfirmApply}
                   className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold shadow-lg shadow-brand-600/30 flex items-center gap-1.5 cursor-pointer"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Open Official Portal & Track</span>
+                  {selectedOpp.officialUrl ? (
+                    <>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Apply on Company Portal ↗</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Submit Direct Application</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

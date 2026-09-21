@@ -21,7 +21,13 @@ import {
   Edit,
   Mail,
   Globe,
-  MapPin
+  MapPin,
+  FileText,
+  Download,
+  Layers,
+  Tag,
+  GraduationCap,
+  Github
 } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { api } from '../services/api';
@@ -49,12 +55,15 @@ export const IndustryDashboard = ({ student }) => {
   const [filterSkill, setFilterSkill] = useState('');
   const [minScore, setMinScore] = useState(70);
   const [filterRole, setFilterRole] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Modals
   const [postModalOpen, setPostModalOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [inspectModalOpen, setInspectModalOpen] = useState(false);
   const [inspectedCandidate, setInspectedCandidate] = useState(null);
+  const [viewProfileOpen, setViewProfileOpen] = useState(false);
+  const [viewCandidate, setViewCandidate] = useState(null);
 
   // Post Opportunity Form
   const [oppTitle, setOppTitle] = useState('');
@@ -70,6 +79,7 @@ export const IndustryDashboard = ({ student }) => {
   // Load Data on Mount
   useEffect(() => {
     loadCompanyProfile();
+    loadOpportunities();
     loadCandidates();
     loadApplications();
   }, []);
@@ -85,38 +95,32 @@ export const IndustryDashboard = ({ student }) => {
     }
   };
 
-  const loadCandidates = async (skill = filterSkill, score = minScore, role = filterRole) => {
+  const loadOpportunities = async () => {
+    try {
+      const res = await api.industry.getOpportunities();
+      if (res && Array.isArray(res.opportunities)) {
+        setOpportunities(res.opportunities);
+      }
+    } catch (e) {
+      console.warn('Could not load opportunities from API:', e);
+    }
+  };
+
+  const loadCandidates = async (skill = filterSkill, score = minScore, role = filterRole, search = searchQuery) => {
     try {
       setLoadingCandidates(true);
       const res = await api.industry.getCandidates({
-        skill: skill.trim(),
+        search: (search || '').trim(),
+        skill: (skill || '').trim(),
         minScore: score,
-        targetRole: role.trim()
+        targetRole: (role || '').trim()
       });
       if (res && res.candidates) {
         setCandidates(res.candidates);
       }
     } catch (e) {
       console.warn('Could not load candidates from API:', e);
-      // Fallback: build from student + seeded candidate
-      const fallbackList = [
-        {
-          id: student.id || 'std-1',
-          name: student.name || 'Aarav Sharma',
-          email: student.email || 'aarav.sharma@university.edu',
-          college: student.college || 'National Institute of Technology',
-          degree: student.degree || 'B.Tech in Computer Science',
-          targetRole: student.targetRole || 'Full Stack Web Developer',
-          careerReadiness: student.careerReadiness || 86,
-          verifiedSkills: student.verifiedSkills || [
-            { name: 'Python', score: 86, level: 'Advanced' },
-            { name: 'SQL', score: 81, level: 'Proficient' },
-            { name: 'React', score: 74, level: 'Intermediate' },
-          ],
-          passportHash: 'SKP-2026-ARV7429',
-        }
-      ];
-      setCandidates(fallbackList);
+      setCandidates([]);
     } finally {
       setLoadingCandidates(false);
     }
@@ -125,19 +129,19 @@ export const IndustryDashboard = ({ student }) => {
   const loadApplications = async () => {
     try {
       const res = await api.industry.getApplications();
-      if (res && res.applications) {
+      if (res && Array.isArray(res.applications)) {
         setApplications(res.applications);
-      } else {
-        setApplications(storageService.getApplications());
+        return;
       }
     } catch (e) {
-      setApplications(storageService.getApplications());
+      console.warn('Could not load applications from API:', e);
     }
+    setApplications(storageService.getApplications());
   };
 
   const handleSearchCandidates = (e) => {
     e.preventDefault();
-    loadCandidates(filterSkill, minScore, filterRole);
+    loadCandidates(filterSkill, minScore, filterRole, searchQuery);
   };
 
   const handleToggleShortlist = async (cand) => {
@@ -157,6 +161,20 @@ export const IndustryDashboard = ({ student }) => {
       }
       return next;
     });
+  };
+
+  const handleDownloadCandidateResume = async (cand) => {
+    try {
+      const blob = await api.industry.downloadCandidateResumeBlob(cand.id);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = cand.resumeFileName || `${cand.name.replace(/\s+/g, '_')}_Resume.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(e.message || 'Could not download candidate resume');
+    }
   };
 
   const handlePostOpportunity = async (e) => {
@@ -220,7 +238,19 @@ export const IndustryDashboard = ({ student }) => {
     );
   };
 
-  const handleOpenInspect = (cand) => {
+  const handleOpenInspect = async (cand) => {
+    if (cand && cand.id) {
+      try {
+        const res = await api.industry.getCandidateById(cand.id);
+        if (res && res.candidate) {
+          setInspectedCandidate(res.candidate);
+          setInspectModalOpen(true);
+          return;
+        }
+      } catch (e) {
+        console.warn('Could not fetch single candidate detail:', e);
+      }
+    }
     setInspectedCandidate(cand || student);
     setInspectModalOpen(true);
   };
@@ -251,15 +281,15 @@ export const IndustryDashboard = ({ student }) => {
             onClick={() => setEditProfileOpen(true)}
             className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <Edit className="w-3.5 h-3.5" />
-            <span>Edit Profile</span>
+            <Edit className="w-3.5 h-3.5 text-brand-400" />
+            <span>Company Profile</span>
           </button>
 
           <button
             onClick={() => setPostModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 flex items-center gap-2 transition-all cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-1.5 cursor-pointer"
           >
-            <PlusCircle className="w-4 h-4" />
+            <PlusCircle className="w-3.5 h-3.5" />
             <span>Post Opportunity</span>
           </button>
         </div>
@@ -292,13 +322,13 @@ export const IndustryDashboard = ({ student }) => {
         </div>
       </div>
 
-      {/* Candidate Search by Verified Skills & Score */}
+      {/* Recruiter Verified Candidate Search Filter Box */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-5 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-4">
           <div>
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Users className="w-4 h-4 text-emerald-400" />
-              Find Registered Candidates by Verified Skill & Score
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              Direct Student & Candidate Search
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               Query registered students in the SkillProof database filtered by live verified benchmark scores.
@@ -308,7 +338,18 @@ export const IndustryDashboard = ({ student }) => {
         </div>
 
         {/* Search Filters Form */}
-        <form onSubmit={handleSearchCandidates} className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+        <form onSubmit={handleSearchCandidates} className="grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs">
+          <div>
+            <label className="block text-slate-300 font-semibold mb-1">Student ID / Name / Tag</label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="e.g. usr_..., SKP-..., Name"
+              className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+            />
+          </div>
+
           <div>
             <label className="block text-slate-300 font-semibold mb-1">Skill Filter</label>
             <input
@@ -378,25 +419,80 @@ export const IndustryDashboard = ({ student }) => {
                   className="bg-slate-950 border border-slate-800 hover:border-emerald-500/40 rounded-xl p-5 space-y-4 transition-all"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       <div className="flex flex-wrap items-center gap-2">
                         <h4 className="font-bold text-white text-base">{cand.name}</h4>
                         <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-black border border-emerald-500/30">
                           Readiness: {cand.careerReadiness}%
                         </span>
                         <span className="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
-                          {cand.passportHash || `SKP-${cand.id.substring(0, 8)}`}
+                          ID: {cand.id}
                         </span>
+                        {cand.emailVerified && (
+                          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950 px-1.5 py-0.2 rounded border border-emerald-800 flex items-center gap-0.5">
+                            <Check className="w-2.5 h-2.5" /> Email
+                          </span>
+                        )}
+                        {cand.phoneVerified && (
+                          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950 px-1.5 py-0.2 rounded border border-emerald-800 flex items-center gap-0.5">
+                            <Check className="w-2.5 h-2.5" /> Mobile
+                          </span>
+                        )}
                       </div>
+
+                      {cand.professionalHeadline && (
+                        <p className="text-xs font-semibold text-brand-300">
+                          {cand.professionalHeadline}
+                        </p>
+                      )}
+
                       <p className="text-xs text-slate-400">
-                        {cand.degree} • <strong className="text-slate-300">{cand.college}</strong>
+                        {cand.degree} • {cand.semester || '6th Semester'} ({cand.academicYear || '3rd Year'}) • <strong className="text-slate-300">{cand.college}</strong>
                       </p>
-                      <p className="text-[11px] text-brand-300 font-medium">
-                        Target Track: {cand.targetRole || 'Full Stack Web Developer'}
-                      </p>
+
+                      <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                        <span className="px-2.5 py-0.5 rounded-lg bg-brand-500/15 border border-brand-500/30 text-brand-300 text-[11px] font-bold flex items-center gap-1">
+                          <Layers className="w-3 h-3" />
+                          <span>{cand.primaryDomain || 'Computer Science / Software Development'}</span>
+                        </span>
+                        <span className="text-[11px] text-slate-300">
+                          Target: <strong className="text-white">{cand.targetRole || 'Full Stack Web Developer'}</strong>
+                        </span>
+                        {cand.secondaryDomains && cand.secondaryDomains.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {cand.secondaryDomains.slice(0, 3).map((sec, sIdx) => (
+                              <span key={sIdx} className="text-[10px] px-2 py-0.2 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 font-mono">
+                                #{sec}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
+                      <button
+                        onClick={() => {
+                          setViewCandidate(cand);
+                          setViewProfileOpen(true);
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>View Profile</span>
+                      </button>
+
+                      {cand.hasResume && (
+                        <button
+                          onClick={() => handleDownloadCandidateResume(cand)}
+                          className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-brand-300 text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+                          title="Download Candidate Verified Resume"
+                        >
+                          <FileText className="w-3.5 h-3.5 text-brand-400" />
+                          <span>Resume</span>
+                        </button>
+                      )}
+
                       <button
                         onClick={() => handleOpenInspect(cand)}
                         className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
@@ -428,23 +524,26 @@ export const IndustryDashboard = ({ student }) => {
                     </div>
                   </div>
 
-                  {/* Verified Skill Badges */}
+                  {/* Verified Skill Badges (Never fake/mock) */}
                   <div className="pt-2 border-t border-slate-900 flex flex-wrap items-center gap-2">
                     <span className="text-[10px] uppercase font-bold text-slate-400">
                       Verified Technical Skills:
                     </span>
-                    {(cand.verifiedSkills && cand.verifiedSkills.length > 0
-                      ? cand.verifiedSkills
-                      : [{ name: 'Python', score: 86 }, { name: 'SQL', score: 81 }]
-                    ).map((vs, vsIdx) => (
-                      <span
-                        key={vsIdx}
-                        className="px-2.5 py-0.5 rounded-lg bg-slate-900 border border-slate-800 text-emerald-300 text-xs font-mono flex items-center gap-1"
-                      >
-                        <span className="text-emerald-400 font-bold">✓</span>
-                        <span>{vs.name}: {vs.score}%</span>
+                    {cand.verifiedSkills && cand.verifiedSkills.length > 0 ? (
+                      cand.verifiedSkills.map((vs, vsIdx) => (
+                        <span
+                          key={vsIdx}
+                          className="px-2.5 py-0.5 rounded-lg bg-slate-900 border border-slate-800 text-emerald-300 text-xs font-mono flex items-center gap-1"
+                        >
+                          <span className="text-emerald-400 font-bold">✓</span>
+                          <span>{vs.name}: {vs.score}%</span>
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-xs text-slate-500 italic">
+                        No verified skill assessments completed yet (Readiness: 0%).
                       </span>
-                    ))}
+                    )}
                   </div>
                 </div>
               );
@@ -482,7 +581,7 @@ export const IndustryDashboard = ({ student }) => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h4 className="font-bold text-sm text-white">
-                      {app.candidateName || 'Aarav Sharma'}
+                      {app.candidateName || 'Candidate'}
                     </h4>
                     <span className="text-slate-500">•</span>
                     <span className="text-slate-300 font-medium">{app.opportunityTitle || app.role}</span>
@@ -593,8 +692,10 @@ export const IndustryDashboard = ({ student }) => {
               >
                 <option value="Internship">Internship</option>
                 <option value="Full-Time Job">Full-Time Job</option>
-                <option value="Capstone Project">Capstone Project</option>
+                <option value="Part-Time Job">Part-Time Job</option>
+                <option value="Freelance / Contract">Freelance / Contract</option>
                 <option value="Apprenticeship">Apprenticeship</option>
+                <option value="Project / Live Project">Project / Live Project</option>
               </select>
             </div>
             <div>
@@ -804,6 +905,142 @@ def analyze_sales_data(transactions):
             "Candidate Fix Rationale: Quarantined NoneType records, stripped contaminated currency symbols, deduplicated transactions using a Set, and prevented zero-division on AOV."
           </div>
         </div>
+      </Modal>
+
+      {/* Candidate Professional Identity Inspection Modal */}
+      <Modal
+        isOpen={viewProfileOpen}
+        onClose={() => setViewProfileOpen(false)}
+        title={`Candidate Professional Profile: ${viewCandidate?.name || 'Candidate'}`}
+        maxWidth="max-w-3xl"
+      >
+        {viewCandidate && (
+          <div className="space-y-6 text-xs text-slate-300">
+            {/* Top Identity Card */}
+            <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row items-center sm:items-start gap-4">
+              <div className="w-16 h-16 rounded-2xl ring-2 ring-brand-500/30 bg-slate-900 flex items-center justify-center text-brand-400 font-bold text-xl shrink-0">
+                {viewCandidate.name ? viewCandidate.name.charAt(0).toUpperCase() : 'C'}
+              </div>
+              <div className="flex-1 text-center sm:text-left space-y-1.5">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <h4 className="text-base font-bold text-white">{viewCandidate.name}</h4>
+                  <span className="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                    ID: {viewCandidate.id}
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800 font-bold">
+                    Readiness: {viewCandidate.careerReadiness}%
+                  </span>
+                </div>
+                {viewCandidate.professionalHeadline && (
+                  <p className="text-xs font-semibold text-brand-300">
+                    {viewCandidate.professionalHeadline}
+                  </p>
+                )}
+                <p className="text-slate-400 text-[11px]">
+                  {viewCandidate.degree} • {viewCandidate.semester || '6th Semester'} ({viewCandidate.academicYear || '3rd Year'}) • <strong className="text-slate-200">{viewCandidate.college}</strong>
+                </p>
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-brand-500/20 text-brand-300 text-[10px] font-bold border border-brand-500/30 flex items-center gap-1">
+                    <Layers className="w-3 h-3" />
+                    <span>{viewCandidate.primaryDomain || 'Computer Science / Software Development'}</span>
+                  </span>
+                  <span className="text-[10px] text-slate-300">
+                    Target Track: <strong className="text-white">{viewCandidate.targetRole}</strong>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* About & Bio */}
+            {viewCandidate.bio && (
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Professional Summary:</span>
+                <p className="p-3.5 bg-slate-950 rounded-xl border border-slate-800/80 leading-relaxed text-slate-200">
+                  {viewCandidate.bio}
+                </p>
+              </div>
+            )}
+
+            {/* Secondary Interests */}
+            {viewCandidate.secondaryDomains && viewCandidate.secondaryDomains.length > 0 && (
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Secondary Areas of Interest:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {viewCandidate.secondaryDomains.map((sec, idx) => (
+                    <span key={idx} className="px-2 py-0.5 rounded bg-indigo-950/60 border border-indigo-800/50 text-indigo-300 text-[11px] font-mono">
+                      #{sec}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Verified Skills */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Verified Technical Skills:</span>
+              {viewCandidate.verifiedSkills && viewCandidate.verifiedSkills.length > 0 ? (
+                <div className="grid grid-cols-2 gap-2.5">
+                  {viewCandidate.verifiedSkills.map((vs, idx) => (
+                    <div key={idx} className="p-3 bg-slate-950 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+                      <div>
+                        <p className="font-bold text-white text-xs">{vs.name}</p>
+                        <p className="text-[10px] text-slate-400">{vs.level || 'Verified'} Level</p>
+                      </div>
+                      <span className="text-emerald-400 font-bold font-mono text-sm">{vs.score}%</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-500 italic text-[11px]">
+                  No verified skill assessments completed yet.
+                </p>
+              )}
+            </div>
+
+            {/* Projects */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Portfolio Projects:</span>
+              {viewCandidate.projects && viewCandidate.projects.length > 0 ? (
+                <div className="space-y-2">
+                  {viewCandidate.projects.map((proj, idx) => (
+                    <div key={idx} className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-white">{proj.title}</span>
+                        {proj.githubUrl && (
+                          <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="text-brand-400 hover:underline flex items-center gap-1 text-[10px]">
+                            <Github className="w-3 h-3" /> Code
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && <p className="text-slate-400 text-[11px]">{proj.description}</p>}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-500 italic text-[11px]">
+                  Not added yet.
+                </p>
+              )}
+            </div>
+
+            {/* Resume Download Action */}
+            {viewCandidate.hasResume && (
+              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-brand-400" />
+                  <span>Verified Resume Document ({viewCandidate.resumeFileSize || 'PDF'})</span>
+                </div>
+                <button
+                  onClick={() => handleDownloadCandidateResume(viewCandidate)}
+                  className="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>Download Resume</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </Modal>
     </div>
   );

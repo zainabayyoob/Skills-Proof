@@ -12,16 +12,33 @@ import compilerRoutes from './routes/compilerRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import industryRoutes from './routes/industryRoutes.js';
 import collegeRoutes from './routes/collegeRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load environment variables from .env if present (Node 20+)
+const envPath = path.resolve(process.cwd(), '.env');
+if (fs.existsSync(envPath) && typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile(envPath);
+  } catch (err) {
+    console.warn('[SkillProof] Warning loading .env file:', err.message);
+  }
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Ensure uploads/resumes directory exists
+const RESUMES_DIR = path.join(__dirname, 'uploads', 'resumes');
+if (!fs.existsSync(RESUMES_DIR)) {
+  fs.mkdirSync(RESUMES_DIR, { recursive: true });
+}
+
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -32,6 +49,8 @@ app.use('/api/compiler', compilerRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/industry', industryRoutes);
 app.use('/api/college', collegeRoutes);
+app.use('/api/faculty', collegeRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -54,7 +73,12 @@ if (fs.existsSync(distPath)) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`[SkillProof] Backend server running on http://localhost:${PORT}`);
-  console.log(`[SkillProof] Healthcheck available at http://localhost:${PORT}/api/health`);
-});
+export { app };
+
+const isMainModule = process.argv[1] && process.argv[1].replace(/\\/g, '/').endsWith('server/index.js');
+if (isMainModule) {
+  app.listen(PORT, () => {
+    console.log(`[SkillProof] Backend server running on http://localhost:${PORT}`);
+    console.log(`[SkillProof] Healthcheck available at http://localhost:${PORT}/api/health`);
+  });
+}

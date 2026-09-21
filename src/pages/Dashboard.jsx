@@ -29,7 +29,7 @@ import {
 import { SkillCard } from '../components/SkillCard';
 import { CandidateProfileModal } from '../components/CandidateProfileModal';
 import { skillsCatalogue } from '../data/assessmentsData';
-import { roleTracks } from '../data/mockData';
+import { comprehensiveCareerRoles, getCareerRoleByTitle } from '../data/careerRolesData';
 import { storageService } from '../services/storageService';
 
 export const Dashboard = ({ student: propStudent, opportunities = [], applications = [], onProfileUpdated }) => {
@@ -40,7 +40,7 @@ export const Dashboard = ({ student: propStudent, opportunities = [], applicatio
   const verifiedSkills = student?.verifiedSkills || [];
   const isVerified = verifiedSkills.length > 0;
   const targetRoleTitle = student?.targetRole || "Full Stack Web Developer";
-  const currentTrack = roleTracks.find((r) => r.title === targetRoleTitle) || roleTracks[0];
+  const currentTrack = getCareerRoleByTitle(targetRoleTitle);
 
   const skillGaps = (student?.skillGaps && student.skillGaps.length > 0)
     ? student.skillGaps
@@ -70,9 +70,9 @@ export const Dashboard = ({ student: propStudent, opportunities = [], applicatio
     }
   ];
 
-  const defaultRecommendedRoles = roleTracks.slice(0, 3).map((track) => ({
+  const defaultRecommendedRoles = comprehensiveCareerRoles.slice(0, 3).map((track) => ({
     role: track.title,
-    match: Math.max(50, student?.careerReadiness || 0),
+    match: student?.careerReadiness ? Math.round(student.careerReadiness * 0.9) : 0,
     demand: track.demand,
     topMissing: track.requiredSkills.slice(0, 2).map((s) => `${s.name} (${s.minScore}%)`)
   }));
@@ -156,7 +156,7 @@ export const Dashboard = ({ student: propStudent, opportunities = [], applicatio
                 className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-colors flex items-center gap-1.5"
               >
                 <Award className="w-4 h-4 text-amber-400" />
-                <span>{isVerified ? 'View SkillProof Passport' : 'Choose Different Language'}</span>
+                <span>{isVerified ? 'View SkillProof Passport' : 'Explore All Skills'}</span>
               </Link>
             </div>
           </div>
@@ -250,9 +250,9 @@ export const Dashboard = ({ student: propStudent, opportunities = [], applicatio
                   <span className="text-xs font-bold text-brand-400">STEP 2 (CURRENT)</span>
                   <Sparkles className="w-4 h-4 text-amber-400" />
                 </div>
-                <h4 className="font-bold text-white text-sm">Choose Language</h4>
+                <h4 className="font-bold text-white text-sm">Choose Skill or Language</h4>
                 <p className="text-[11px] text-slate-300">
-                  Select Python, SQL, or Web Development below to start.
+                  Select a programming language, stack, or domain assessment below.
                 </p>
               </div>
 
@@ -284,7 +284,7 @@ export const Dashboard = ({ student: propStudent, opportunities = [], applicatio
 
           {/* Target Role Technical Skill Battery Checklist */}
           {(() => {
-            const trackForBattery = roleTracks.find((r) => r.title === targetRoleTitle) || roleTracks[0];
+            const trackForBattery = getCareerRoleByTitle(targetRoleTitle);
             const verifiedCount = trackForBattery.requiredSkills.filter((req) =>
               verifiedSkills.some(
                 (v) => v.name.toLowerCase() === req.name.toLowerCase() || (v.skillId && v.skillId.toLowerCase() === req.id.toLowerCase())
@@ -387,10 +387,10 @@ export const Dashboard = ({ student: propStudent, opportunities = [], applicatio
               <div>
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
                   <Code2 className="w-4 h-4 text-brand-400" />
-                  All Available Languages & Technical Domain Assessments ({skillsCatalogue.length})
+                  All Available Technical Assessments & Programming Languages ({skillsCatalogue.length})
                 </h3>
                 <p className="text-xs text-slate-400">
-                  Select any language below to prove your problem solving under production breaking mutations:
+                  Select any technical assessment or programming language below to prove your problem solving under production breaking mutations:
                 </p>
               </div>
             </div>

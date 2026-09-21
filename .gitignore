@@ -40,3 +40,8 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Cloudflare Tunnel credentials & runtime status
+.cloudflared/
+.tunnel-status.json
+

@@ -6,9 +6,9 @@ const router = express.Router();
 
 // GET /api/opportunities
 // Returns opportunities with computed match scores for authenticated user
-router.get('/', optionalAuth, (req, res) => {
+router.get('/', optionalAuth, async (req, res) => {
   try {
-    const opps = db.getOpportunities();
+    const opps = await db.getOpportunities();
     const user = req.user || null;
     const verifiedSkills = user?.verifiedSkills || [];
 
@@ -20,7 +20,8 @@ router.get('/', optionalAuth, (req, res) => {
 
       (opp.requiredSkills || []).forEach((reqSkill) => {
         const found = verifiedSkills.find(
-          (v) => v.name.toLowerCase() === reqSkill.name.toLowerCase()
+          (v) => (v.skillId && reqSkill.skillId && v.skillId.toLowerCase() === reqSkill.skillId.toLowerCase()) ||
+                 v.name.toLowerCase() === reqSkill.name.toLowerCase()
         );
         if (found && found.score >= reqSkill.minScore) {
           matchedCount++;
@@ -32,13 +33,13 @@ router.get('/', optionalAuth, (req, res) => {
         }
       });
 
-      const matchScore = totalReq > 0
+      const matchScore = verifiedSkills.length > 0 && totalReq > 0 && matchedCount > 0
         ? Math.min(98, Math.round((matchedCount / totalReq) * 85 + ((user?.careerReadiness || 0) * 0.15)))
-        : (user?.careerReadiness || 60);
+        : 0;
 
       return {
         ...opp,
-        matchScore: Math.max(matchScore, user?.careerReadiness ? Math.round(user.careerReadiness * 0.9) : 55),
+        matchScore,
         matchingSkills,
         missingSkills
       };
@@ -52,19 +53,20 @@ router.get('/', optionalAuth, (req, res) => {
 });
 
 // POST /api/opportunities/apply
-router.post('/apply', requireAuth, (req, res) => {
+router.post('/apply', requireAuth, async (req, res) => {
   try {
     const { opportunityId, candidateNote } = req.body;
     if (!opportunityId) {
       return res.status(400).json({ error: 'opportunityId is required' });
     }
 
-    const opp = db.getOpportunities().find((o) => o.id === opportunityId);
+    const allOpps = await db.getOpportunities();
+    const opp = allOpps.find((o) => o.id === opportunityId);
     if (!opp) {
       return res.status(404).json({ error: 'Opportunity not found' });
     }
 
-    const userApps = db.getApplicationsByUser(req.user.id);
+    const userApps = await db.getApplicationsByUser(req.user.id);
     const alreadyApplied = userApps.find((a) => a.opportunityId === opportunityId);
     if (alreadyApplied) {
       return res.status(409).json({ error: 'You have already submitted an application for this role' });
@@ -85,7 +87,9 @@ router.post('/apply', requireAuth, (req, res) => {
       }
     });
 
-    const application = db.createApplication({
+    const isExternal = opp.applicationType === 'External Application';
+
+    const application = await db.createApplication({
       userId: req.user.id,
       candidateName: req.user.name,
       candidateEmail: req.user.email,
@@ -94,17 +98,20 @@ router.post('/apply', requireAuth, (req, res) => {
       company: opp.company,
       location: opp.location,
       stipend: opp.stipend,
-      matchScore: Math.max(65, req.user.careerReadiness),
+      source: opp.source || 'Official Career Portal',
+      applicationUrl: opp.officialUrl || '',
+      matchScore: req.user.careerReadiness || 0,
       status: 'Applied',
       appliedDate: new Date().toISOString().split('T')[0],
       matchingSkills: matching,
       missingSkills: missing,
       passportHash: req.user.passportHash || null,
-      notes: candidateNote ? candidateNote.trim() : `Applied with verified SkillProof Passport (Readiness: ${req.user.careerReadiness}%)`
+      notes: candidateNote ? candidateNote.trim() : (isExternal ? 'Application tracked for external submission on official careers portal.' : `Applied with verified SkillProof Passport (Readiness: ${req.user.careerReadiness}%)`),
+      isExternal
     });
 
     return res.status(201).json({
-      message: 'Application submitted successfully',
+      message: isExternal ? 'External application tracked successfully' : 'Application submitted successfully',
       application
     });
   } catch (err) {
@@ -114,9 +121,9 @@ router.post('/apply', requireAuth, (req, res) => {
 });
 
 // GET /api/applications
-router.get('/applications', requireAuth, (req, res) => {
+router.get('/applications', requireAuth, async (req, res) => {
   try {
-    const apps = db.getApplicationsByUser(req.user.id);
+    const apps = await db.getApplicationsByUser(req.user.id);
     return res.json({ applications: apps });
   } catch (err) {
     console.error('Applications error:', err);

@@ -47,6 +47,17 @@ export const Navbar = ({ currentRole, onSwitchRole, onResetData, student: propSt
           {/* If Authenticated: Profile Info & Logout */}
           {isAuthenticated ? (
             <div className="flex items-center gap-2.5 pl-2 border-l border-slate-800">
+              {(user?.role === 'admin' || user?.role === 'host') && (
+                <Link
+                  to="/admin"
+                  title="Host & Administrator Console"
+                  className="px-2.5 py-1.5 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-800 text-purple-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span className="hidden md:inline">Admin Console</span>
+                </Link>
+              )}
+
               <Link
                 to="/profile"
                 title="View & Edit Student Profile"
@@ -65,11 +76,15 @@ export const Navbar = ({ currentRole, onSwitchRole, onResetData, student: propSt
                 />
                 <div className="hidden lg:block text-left">
                   <p className="text-xs font-bold text-slate-200 leading-tight group-hover:text-brand-300 transition-colors max-w-[120px] truncate">
-                    {currentRole === 'STUDENT'
+                    {user?.role === 'admin'
+                      ? user?.name || 'Administrator'
+                      : currentRole === 'STUDENT'
                       ? activeStudent?.name || 'Candidate'
                       : currentRole === 'INDUSTRY'
                       ? 'Apex Data Systems'
-                      : 'Placement Cell (ABC Tech)'}
+                      : ((user?.role === 'faculty' || user?.role === 'college') && user?.name)
+                      ? user.name
+                      : 'Faculty Member (ABC Tech)'}
                   </p>
                   <p className={`text-[10px] font-semibold flex items-center gap-1 ${
                     currentRole === 'STUDENT' && (!activeStudent?.verifiedSkills || activeStudent?.verifiedSkills?.length === 0)

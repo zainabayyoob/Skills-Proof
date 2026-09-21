@@ -11,10 +11,10 @@ export const initialOpportunities = [
     targetRole: "Software Engineer",
     eligibility: "Currently pursuing Bachelor's or Master's degree in Computer Science or related technical field.",
     requiredSkills: [
-      { name: "Python", weight: 0.3, minScore: 80 },
-      { name: "C++", weight: 0.3, minScore: 80 },
-      { name: "Java", weight: 0.2, minScore: 75 },
-      { name: "JavaScript", weight: 0.2, minScore: 75 }
+      { skillId: "python", name: "Python", weight: 0.3, minScore: 80 },
+      { skillId: "cpp", name: "C++", weight: 0.3, minScore: 80 },
+      { skillId: "java", name: "Java", weight: 0.2, minScore: 75 },
+      { skillId: "javascript", name: "JavaScript", weight: 0.2, minScore: 75 }
     ],
     description: "Work on core search infrastructure, distributed systems, machine learning pipelines, and cloud services under mentorship of Google senior engineers.",
     openings: 25,
@@ -35,10 +35,10 @@ export const initialOpportunities = [
     targetRole: "Software Engineer",
     eligibility: "Pre-final or final year B.Tech/BE/M.Tech students with strong fundamentals in algorithms and computer systems.",
     requiredSkills: [
-      { name: "C++", weight: 0.35, minScore: 80 },
-      { name: "Java", weight: 0.3, minScore: 75 },
-      { name: "Python", weight: 0.2, minScore: 75 },
-      { name: "SQL", weight: 0.15, minScore: 70 }
+      { skillId: "cpp", name: "C++", weight: 0.35, minScore: 80 },
+      { skillId: "java", name: "Java", weight: 0.3, minScore: 75 },
+      { skillId: "python", name: "Python", weight: 0.2, minScore: 75 },
+      { skillId: "sql", name: "SQL", weight: 0.15, minScore: 70 }
     ],
     description: "Build reliable cloud-native services for Microsoft Azure, Developer Tools, or Office 365. Write production-grade code and run automated integration tests.",
     openings: 20,
@@ -59,10 +59,10 @@ export const initialOpportunities = [
     targetRole: "Graduate Trainee Engineer",
     eligibility: "B.Tech / BE / MCA / M.Sc / BCA 2025 / 2026 graduating batches with minimum 60% aggregate.",
     requiredSkills: [
-      { name: "C", weight: 0.25, minScore: 70 },
-      { name: "Java", weight: 0.25, minScore: 70 },
-      { name: "Python", weight: 0.25, minScore: 70 },
-      { name: "SQL", weight: 0.25, minScore: 70 }
+      { skillId: "c", name: "C", weight: 0.25, minScore: 70 },
+      { skillId: "java", name: "Java", weight: 0.25, minScore: 70 },
+      { skillId: "python", name: "Python", weight: 0.25, minScore: 70 },
+      { skillId: "sql", name: "SQL", weight: 0.25, minScore: 70 }
     ],
     description: "Official campus recruitment gateway for TCS Ninja, Digital, and Prime engineering tracks. Evaluates foundational coding, system design, and quantitative acumen.",
     openings: 500,
@@ -83,10 +83,10 @@ export const initialOpportunities = [
     targetRole: "Systems Engineer",
     eligibility: "All engineering branches and computer applications students graduating in 2025 or 2026.",
     requiredSkills: [
-      { name: "Java", weight: 0.35, minScore: 75 },
-      { name: "Python", weight: 0.25, minScore: 70 },
-      { name: "SQL", weight: 0.2, minScore: 70 },
-      { name: "HTML / CSS", weight: 0.2, minScore: 70 }
+      { skillId: "java", name: "Java", weight: 0.35, minScore: 75 },
+      { skillId: "python", name: "Python", weight: 0.25, minScore: 70 },
+      { skillId: "sql", name: "SQL", weight: 0.2, minScore: 70 },
+      { skillId: "htmlcss", name: "HTML / CSS", weight: 0.2, minScore: 70 }
     ],
     description: "Industry readiness program and hiring pipeline. Focuses on full-stack web applications, microservices, cloud deployments, and enterprise software engineering.",
     openings: 350,
@@ -107,10 +107,10 @@ export const initialOpportunities = [
     targetRole: "Backend Engineer",
     eligibility: "Currently enrolled in Bachelor's or Master's in Computer Science or related degree.",
     requiredSkills: [
-      { name: "Java", weight: 0.35, minScore: 80 },
-      { name: "Backend", weight: 0.35, minScore: 80 },
-      { name: "SQL", weight: 0.15, minScore: 75 },
-      { name: "Python", weight: 0.15, minScore: 75 }
+      { skillId: "java", name: "Java", weight: 0.35, minScore: 80 },
+      { skillId: "backend", name: "Backend", weight: 0.35, minScore: 80 },
+      { skillId: "sql", name: "SQL", weight: 0.15, minScore: 75 },
+      { skillId: "python", name: "Python", weight: 0.15, minScore: 75 }
     ],
     description: "Build highly scalable, distributed backend architectures supporting millions of Amazon customers worldwide with high availability and defensive fault-tolerance.",
     openings: 30,
@@ -131,10 +131,10 @@ export const initialOpportunities = [
     targetRole: "Full Stack Web Developer",
     eligibility: "Final-year B.Tech / BE with strong problem-solving skills and hands-on full-stack or mobile projects.",
     requiredSkills: [
-      { name: "Frontend", weight: 0.3, minScore: 80 },
-      { name: "JavaScript", weight: 0.3, minScore: 80 },
-      { name: "Backend", weight: 0.25, minScore: 75 },
-      { name: "SQL", weight: 0.15, minScore: 75 }
+      { skillId: "frontend", name: "Frontend", weight: 0.3, minScore: 80 },
+      { skillId: "javascript", name: "JavaScript", weight: 0.3, minScore: 80 },
+      { skillId: "backend", name: "Backend", weight: 0.25, minScore: 75 },
+      { skillId: "sql", name: "SQL", weight: 0.15, minScore: 75 }
     ],
     description: "Ship features for customer-facing order flows, delivery partner dispatch telemetry, real-time tracking systems, and high-concurrency microservices.",
     openings: 8,
@@ -155,10 +155,10 @@ export const initialOpportunities = [
     targetRole: "Backend Engineer",
     eligibility: "Pre-final / Final year students in CS, IT, or related fields with solid understanding of concurrency and databases.",
     requiredSkills: [
-      { name: "Java", weight: 0.35, minScore: 80 },
-      { name: "Backend", weight: 0.3, minScore: 75 },
-      { name: "SQL", weight: 0.2, minScore: 75 },
-      { name: "Python", weight: 0.15, minScore: 70 }
+      { skillId: "java", name: "Java", weight: 0.35, minScore: 80 },
+      { skillId: "backend", name: "Backend", weight: 0.3, minScore: 75 },
+      { skillId: "sql", name: "SQL", weight: 0.2, minScore: 75 },
+      { skillId: "python", name: "Python", weight: 0.15, minScore: 70 }
     ],
     description: "Architect low-latency event-driven microservices handling millions of transactions, restaurant catalogs, and delivery fleet optimization algorithms.",
     openings: 10,
@@ -179,10 +179,10 @@ export const initialOpportunities = [
     targetRole: "Systems Engineer",
     eligibility: "Students pursuing Bachelor's in CS, Information Science, or Electronics graduating in 2026/2027.",
     requiredSkills: [
-      { name: "Python", weight: 0.35, minScore: 80 },
-      { name: "C", weight: 0.3, minScore: 75 },
-      { name: "C++", weight: 0.2, minScore: 75 },
-      { name: "Backend", weight: 0.15, minScore: 70 }
+      { skillId: "python", name: "Python", weight: 0.35, minScore: 80 },
+      { skillId: "c", name: "C", weight: 0.3, minScore: 75 },
+      { skillId: "cpp", name: "C++", weight: 0.2, minScore: 75 },
+      { skillId: "backend", name: "Backend", weight: 0.15, minScore: 70 }
     ],
     description: "Develop enterprise networking software, secure telemetry agents, cloud edge gateways, and automated SDN pipelines on Linux platforms.",
     openings: 12,
@@ -203,10 +203,10 @@ export const initialOpportunities = [
     targetRole: "Backend Engineer",
     eligibility: "Penultimate or final-year undergraduate students with demonstrable interest in payment gateways and transactional integrity.",
     requiredSkills: [
-      { name: "Backend", weight: 0.35, minScore: 80 },
-      { name: "SQL", weight: 0.3, minScore: 75 },
-      { name: "Python", weight: 0.2, minScore: 75 },
-      { name: "JavaScript", weight: 0.15, minScore: 70 }
+      { skillId: "backend", name: "Backend", weight: 0.35, minScore: 80 },
+      { skillId: "sql", name: "SQL", weight: 0.3, minScore: 75 },
+      { skillId: "python", name: "Python", weight: 0.2, minScore: 75 },
+      { skillId: "javascript", name: "JavaScript", weight: 0.15, minScore: 70 }
     ],
     description: "Design idempotent payment reconciliation workflows, secure webhook processors, and fault-tolerant banking integrations under strict regulatory standards.",
     openings: 6,
@@ -227,10 +227,10 @@ export const initialOpportunities = [
     targetRole: "Open Source Contributor",
     eligibility: "Active students who hold a validated GitHub Student Developer Pack and demonstrate genuine git commits.",
     requiredSkills: [
-      { name: "JavaScript", weight: 0.3, minScore: 75 },
-      { name: "Python", weight: 0.3, minScore: 75 },
-      { name: "Frontend", weight: 0.2, minScore: 75 },
-      { name: "Backend", weight: 0.2, minScore: 75 }
+      { skillId: "javascript", name: "JavaScript", weight: 0.3, minScore: 75 },
+      { skillId: "python", name: "Python", weight: 0.3, minScore: 75 },
+      { skillId: "frontend", name: "Frontend", weight: 0.2, minScore: 75 },
+      { skillId: "backend", name: "Backend", weight: 0.2, minScore: 75 }
     ],
     description: "Work directly on high-impact production open-source partner repositories with GitHub mentorship, code reviews, and remote compensation.",
     openings: 40,
@@ -251,10 +251,10 @@ export const initialOpportunities = [
     targetRole: "Full Stack Web Developer",
     eligibility: "College students of all academic years. Filterable by stipend, location, and required tech stack.",
     requiredSkills: [
-      { name: "Frontend", weight: 0.3, minScore: 70 },
-      { name: "JavaScript", weight: 0.3, minScore: 70 },
-      { name: "HTML / CSS", weight: 0.2, minScore: 70 },
-      { name: "SQL", weight: 0.2, minScore: 65 }
+      { skillId: "frontend", name: "Frontend", weight: 0.3, minScore: 70 },
+      { skillId: "javascript", name: "JavaScript", weight: 0.3, minScore: 70 },
+      { skillId: "htmlcss", name: "HTML / CSS", weight: 0.2, minScore: 70 },
+      { skillId: "sql", name: "SQL", weight: 0.2, minScore: 65 }
     ],
     description: "Curated catalog of accredited Indian startup internships across MERN stack, Python Django, mobile apps, and technical client delivery.",
     openings: 1200,
@@ -275,10 +275,10 @@ export const initialOpportunities = [
     targetRole: "Full Stack Web Developer",
     eligibility: "High-agency builders with live deployed portfolio projects and active GitHub repositories.",
     requiredSkills: [
-      { name: "Frontend", weight: 0.35, minScore: 75 },
-      { name: "JavaScript", weight: 0.35, minScore: 75 },
-      { name: "Backend", weight: 0.15, minScore: 75 },
-      { name: "SQL", weight: 0.15, minScore: 70 }
+      { skillId: "frontend", name: "Frontend", weight: 0.35, minScore: 75 },
+      { skillId: "javascript", name: "JavaScript", weight: 0.35, minScore: 75 },
+      { skillId: "backend", name: "Backend", weight: 0.15, minScore: 75 },
+      { skillId: "sql", name: "SQL", weight: 0.15, minScore: 70 }
     ],
     description: "Connect directly with startup founders and engineering leads. Fast-moving teams building generative AI, web platforms, and creator economy tools.",
     openings: 80,
@@ -299,10 +299,10 @@ export const initialOpportunities = [
     targetRole: "Competitive Programmer / SDE",
     eligibility: "Open to all engineering students nationwide. Solves timed algorithmic and engineering challenges.",
     requiredSkills: [
-      { name: "C++", weight: 0.3, minScore: 80 },
-      { name: "Python", weight: 0.3, minScore: 80 },
-      { name: "Java", weight: 0.2, minScore: 75 },
-      { name: "SQL", weight: 0.2, minScore: 70 }
+      { skillId: "cpp", name: "C++", weight: 0.3, minScore: 80 },
+      { skillId: "python", name: "Python", weight: 0.3, minScore: 80 },
+      { skillId: "java", name: "Java", weight: 0.2, minScore: 75 },
+      { skillId: "sql", name: "SQL", weight: 0.2, minScore: 70 }
     ],
     description: "Participate in sponsored hiring challenges from Fortune 500 tech companies. High-scoring algorithmic submissions directly qualify for interview rounds.",
     openings: 150,
@@ -323,9 +323,9 @@ export const initialOpportunities = [
     targetRole: "Data & Software Intern",
     eligibility: "Undergraduate and postgraduate students enrolled in recognized Indian universities.",
     requiredSkills: [
-      { name: "Data Analytics", weight: 0.35, minScore: 75 },
-      { name: "Python", weight: 0.35, minScore: 75 },
-      { name: "SQL", weight: 0.3, minScore: 70 }
+      { skillId: "dataanalytics", name: "Data Analytics", weight: 0.35, minScore: 75 },
+      { skillId: "python", name: "Python", weight: 0.35, minScore: 75 },
+      { skillId: "sql", name: "SQL", weight: 0.3, minScore: 70 }
     ],
     description: "National student hackathons, corporate challenges, and direct internship listings hosted by leading organizations and unicorn startups.",
     openings: 300,
@@ -346,10 +346,10 @@ export const initialOpportunities = [
     targetRole: "Systems Engineer",
     eligibility: "B.Tech / BE / MCA / M.Tech in CS, IT, Software or Electrical Engineering.",
     requiredSkills: [
-      { name: "Java", weight: 0.3, minScore: 75 },
-      { name: "Python", weight: 0.3, minScore: 75 },
-      { name: "Backend", weight: 0.2, minScore: 70 },
-      { name: "SQL", weight: 0.2, minScore: 70 }
+      { skillId: "java", name: "Java", weight: 0.3, minScore: 75 },
+      { skillId: "python", name: "Python", weight: 0.3, minScore: 75 },
+      { skillId: "backend", name: "Backend", weight: 0.2, minScore: 70 },
+      { skillId: "sql", name: "SQL", weight: 0.2, minScore: 70 }
     ],
     description: "Design cloud architecture on Red Hat OpenShift and IBM Cloud. Work on enterprise modernization, microservices, and AI data engineering solutions.",
     openings: 60,

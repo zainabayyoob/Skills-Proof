@@ -101,6 +101,7 @@ export const CollegeDashboard = () => {
   useEffect(() => {
     loadCollegeAnalytics();
     loadCollegeGroups();
+    loadCollegeAssignments();
     loadFacultyData();
   }, []);
 
@@ -123,6 +124,17 @@ export const CollegeDashboard = () => {
       }
     } catch (e) {
       console.warn('Could not load groups:', e);
+    }
+  };
+
+  const loadCollegeAssignments = async () => {
+    try {
+      const res = await api.college.getAssignments();
+      if (res && Array.isArray(res.assignments) && res.assignments.length > 0) {
+        setAssignments(res.assignments);
+      }
+    } catch (e) {
+      console.warn('Could not load assignments:', e);
     }
   };
 
@@ -216,7 +228,7 @@ export const CollegeDashboard = () => {
           <div className="flex items-center gap-2">
             <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30 flex items-center gap-1.5">
               <School className="w-3.5 h-3.5" />
-              COLLEGE / ACADEMIA MODULE
+              FACULTY & ACADEMIA MODULE
             </span>
             <span className="text-xs text-slate-400">{analytics.institutionName}</span>
           </div>

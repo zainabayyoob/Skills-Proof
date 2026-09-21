@@ -14,9 +14,14 @@ import {
   School,
   User,
   Sparkles,
+  ShieldCheck,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export const Sidebar = ({ currentRole }) => {
+  const { user } = useAuth();
+  const isAdmin = user && ['admin', 'host'].includes(String(user.role || '').toLowerCase());
+
   const navItems = [
     { to: '/', label: 'Dashboard', icon: LayoutDashboard, category: 'Core' },
     { to: '/assessment', label: 'Skill Assessment', icon: Cpu, category: 'Evaluation' },
@@ -28,8 +33,9 @@ export const Sidebar = ({ currentRole }) => {
     { to: '/opportunities', label: 'Internships & Jobs', icon: Briefcase, badge: 'Matched', category: 'Matching' },
     { to: '/applications', label: 'Applications', icon: FileCheck2, category: 'Matching' },
     { to: '/industry', label: 'Industry Module', icon: Building2, highlight: currentRole === 'INDUSTRY', category: 'Portals' },
-    { to: '/college', label: 'College / Academia', icon: School, highlight: currentRole === 'COLLEGE', category: 'Portals' },
+    { to: '/faculty', label: 'Faculty / Academia', icon: School, highlight: currentRole === 'FACULTY' || currentRole === 'COLLEGE', category: 'Portals' },
     { to: '/profile', label: 'Student Profile', icon: User, category: 'Portals' },
+    ...(isAdmin ? [{ to: '/admin', label: 'Admin Console', icon: ShieldCheck, badge: 'Host', highlight: true, category: 'Admin' }] : []),
   ];
 
   return (
