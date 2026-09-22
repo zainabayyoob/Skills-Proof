@@ -22,6 +22,7 @@ import {
   Layers,
   Compass,
   Tag,
+  RefreshCw,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { countryCodes, defaultCountryCode, validatePhoneNumber } from '../data/countryCodesData';
@@ -111,6 +112,22 @@ export const AuthModal = () => {
   const [phoneVerifiedDone, setPhoneVerifiedDone] = useState(false);
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
   const [isVerifyingPhone, setIsVerifyingPhone] = useState(false);
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
+  const [isResendingPhone, setIsResendingPhone] = useState(false);
+  const [emailDeliveryInfo, setEmailDeliveryInfo] = useState(null);
+  const [phoneDeliveryInfo, setPhoneDeliveryInfo] = useState(null);
+  const [emailCooldown, setEmailCooldown] = useState(0);
+  const [phoneCooldown, setPhoneCooldown] = useState(0);
+
+  // Cooldown countdown interval
+  useEffect(() => {
+    if (!showVerifyStep) return;
+    const interval = setInterval(() => {
+      setEmailCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+      setPhoneCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [showVerifyStep]);
 
   // Close college dropdown on outside click
   useEffect(() => {
@@ -202,7 +219,7 @@ export const AuthModal = () => {
     setIsSubmitting(true);
 
     try {
-      await register({
+      const regRes = await register({
         name: regName.trim(),
         email: regEmail.trim().toLowerCase(),
         countryCode: regCountryCode,
@@ -221,8 +238,23 @@ export const AuthModal = () => {
         targetRole: getCareerRoleByTitle(regTargetRole).title,
       });
 
-      // Switch to Verification Step
+      if (regRes?.emailDelivery) {
+        setEmailDeliveryInfo(regRes.emailDelivery);
+        if (regRes.emailDelivery.devCode) {
+          setEmailOtp(regRes.emailDelivery.devCode);
+        }
+      }
+      if (regRes?.phoneDelivery) {
+        setPhoneDeliveryInfo(regRes.phoneDelivery);
+        if (regRes.phoneDelivery.devCode) {
+          setPhoneOtp(regRes.phoneDelivery.devCode);
+        }
+      }
+
+      // Switch to Verification Step & Initialize 45s Cooldown
       setShowVerifyStep(true);
+      setEmailCooldown(45);
+      setPhoneCooldown(45);
       setSuccessMsg('Account created successfully! Verification codes dispatched.');
     } catch (err) {
       setErrorMsg(err.message || 'Registration failed. Email or phone may already be registered.');
@@ -236,9 +268,13 @@ export const AuthModal = () => {
     setIsVerifyingEmail(true);
     setErrorMsg('');
     try {
-      const res = await api.auth.verifyEmail({ code: emailOtp.trim() });
+      const res = await api.auth.verifyEmail({
+        code: emailOtp.trim(),
+        email: regEmail.trim().toLowerCase(),
+      });
       setEmailVerifiedDone(true);
       if (res.user && setUser) setUser(res.user);
+      setSuccessMsg('Email verified successfully!');
     } catch (err) {
       setErrorMsg(err.message || 'Invalid email verification code.');
     } finally {
@@ -251,13 +287,75 @@ export const AuthModal = () => {
     setIsVerifyingPhone(true);
     setErrorMsg('');
     try {
-      const res = await api.auth.verifyPhone({ code: phoneOtp.trim() });
+      const res = await api.auth.verifyPhone({
+        code: phoneOtp.trim(),
+        countryCode: regCountryCode,
+        phone: regPhone.trim(),
+      });
       setPhoneVerifiedDone(true);
       if (res.user && setUser) setUser(res.user);
+      setSuccessMsg('Mobile phone verified successfully!');
     } catch (err) {
       setErrorMsg(err.message || 'Invalid mobile phone OTP.');
     } finally {
       setIsVerifyingPhone(false);
+    }
+  };
+
+  const handleResendEmail = async () => {
+    if (emailCooldown > 0 || isResendingEmail || emailVerifiedDone) return;
+    setIsResendingEmail(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      const res = await api.auth.resendEmailVerification({ email: regEmail.trim().toLowerCase() });
+      if (res.delivery) {
+        setEmailDeliveryInfo(res.delivery);
+        if (res.delivery.devCode) {
+          setEmailOtp(res.delivery.devCode);
+        } else {
+          setEmailOtp('');
+        }
+      }
+      setEmailCooldown(res.cooldownSeconds || 45);
+      setSuccessMsg(res.message || 'New verification code sent. Check your email inbox.');
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to resend email verification code.');
+      if (err.data?.cooldownRemaining) {
+        setEmailCooldown(err.data.cooldownRemaining);
+      }
+    } finally {
+      setIsResendingEmail(false);
+    }
+  };
+
+  const handleResendPhone = async () => {
+    if (phoneCooldown > 0 || isResendingPhone || phoneVerifiedDone) return;
+    setIsResendingPhone(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      const res = await api.auth.sendPhoneOtp({
+        countryCode: regCountryCode,
+        phone: regPhone.trim(),
+      });
+      if (res.delivery) {
+        setPhoneDeliveryInfo(res.delivery);
+        if (res.delivery.devCode) {
+          setPhoneOtp(res.delivery.devCode);
+        } else {
+          setPhoneOtp('');
+        }
+      }
+      setPhoneCooldown(res.cooldownSeconds || 45);
+      setSuccessMsg(res.message || 'New mobile OTP sent. Check your SMS messages.');
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to resend mobile OTP.');
+      if (err.data?.cooldownRemaining) {
+        setPhoneCooldown(err.data.cooldownRemaining);
+      }
+    } finally {
+      setIsResendingPhone(false);
     }
   };
 
@@ -358,12 +456,14 @@ export const AuthModal = () => {
               </p>
             </div>
           </div>
-          <button
-            onClick={closeAuthModal}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {(!showVerifyStep || (emailVerifiedDone && phoneVerifiedDone)) && (
+            <button
+              onClick={closeAuthModal}
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Tab Switcher (hide during verify step or forgot-password) */}
@@ -467,7 +567,7 @@ export const AuthModal = () => {
                   Verify Email & Mobile Phone
                 </h4>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Verification codes (6 digits, valid for 15 mins) have been dispatched. In local mode, check your server terminal logs.
+                  Verification codes (6 digits, valid for 15 mins) have been generated. Enter each code below to activate your candidate profile.
                 </p>
               </div>
 
@@ -486,23 +586,56 @@ export const AuthModal = () => {
                   )}
                 </div>
                 {!emailVerifiedDone ? (
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      maxLength="6"
-                      value={emailOtp}
-                      onChange={(e) => setEmailOtp(e.target.value)}
-                      placeholder="Enter 6-digit code"
-                      className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-brand-500"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleVerifyEmail}
-                      disabled={isVerifyingEmail || emailOtp.length < 6}
-                      className="px-3 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                    >
-                      {isVerifyingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Verify'}
-                    </button>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        maxLength="6"
+                        value={emailOtp}
+                        onChange={(e) => setEmailOtp(e.target.value)}
+                        placeholder="Enter 6-digit code"
+                        className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleVerifyEmail}
+                        disabled={isVerifyingEmail || emailOtp.length < 6}
+                        className="px-3 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                      >
+                        {isVerifyingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Verify'}
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="text-xs text-slate-400 flex items-center gap-1.5">
+                        <span>Didn't receive the code?</span>
+                        {emailCooldown > 0 ? (
+                          <span className="text-slate-500 font-medium">
+                            Resend available in {emailCooldown}s
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleResendEmail}
+                            disabled={isResendingEmail || emailVerifiedDone}
+                            className="text-brand-400 hover:text-brand-300 font-semibold underline underline-offset-2 transition-colors cursor-pointer disabled:opacity-50 inline-flex items-center gap-1"
+                          >
+                            {isResendingEmail ? (
+                              <>
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                <span>Sending...</span>
+                              </>
+                            ) : (
+                              <span>Resend code</span>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                      {emailDeliveryInfo?.devCode && (
+                        <span className="text-[10px] font-mono text-amber-400/90 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                          Dev Code: {emailDeliveryInfo.devCode}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <p className="text-[11px] text-slate-400">Email address {regEmail} has been verified.</p>
@@ -524,23 +657,56 @@ export const AuthModal = () => {
                   )}
                 </div>
                 {!phoneVerifiedDone ? (
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      maxLength="6"
-                      value={phoneOtp}
-                      onChange={(e) => setPhoneOtp(e.target.value)}
-                      placeholder="Enter 6-digit OTP"
-                      className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleVerifyPhone}
-                      disabled={isVerifyingPhone || phoneOtp.length < 6}
-                      className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                    >
-                      {isVerifyingPhone ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Verify'}
-                    </button>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        maxLength="6"
+                        value={phoneOtp}
+                        onChange={(e) => setPhoneOtp(e.target.value)}
+                        placeholder="Enter 6-digit OTP"
+                        className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleVerifyPhone}
+                        disabled={isVerifyingPhone || phoneOtp.length < 6}
+                        className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                      >
+                        {isVerifyingPhone ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Verify'}
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="text-xs text-slate-400 flex items-center gap-1.5">
+                        <span>Didn't receive the code?</span>
+                        {phoneCooldown > 0 ? (
+                          <span className="text-slate-500 font-medium">
+                            Resend available in {phoneCooldown}s
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleResendPhone}
+                            disabled={isResendingPhone || phoneVerifiedDone}
+                            className="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2 transition-colors cursor-pointer disabled:opacity-50 inline-flex items-center gap-1"
+                          >
+                            {isResendingPhone ? (
+                              <>
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                <span>Sending...</span>
+                              </>
+                            ) : (
+                              <span>Resend code</span>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                      {phoneDeliveryInfo?.devCode && (
+                        <span className="text-[10px] font-mono text-amber-400/90 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                          Dev Code: {phoneDeliveryInfo.devCode}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <p className="text-[11px] text-slate-400">Phone {regCountryCode} {regPhone} has been verified.</p>
@@ -550,9 +716,10 @@ export const AuthModal = () => {
               <button
                 type="button"
                 onClick={closeAuthModal}
-                className="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                disabled={!emailVerifiedDone || !phoneVerifiedDone}
+                className="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
-                <span>Enter SkillProof Portal</span>
+                <span>{emailVerifiedDone && phoneVerifiedDone ? 'Enter SkillProof Portal' : 'Verify Email & Phone to Proceed'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

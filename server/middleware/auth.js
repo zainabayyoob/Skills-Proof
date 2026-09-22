@@ -3,7 +3,7 @@ import { db } from '../db.js';
 
 export const JWT_SECRET = process.env.JWT_SECRET || 'skillproof_jwt_secret_sih2026_super_secure_key';
 
-export const requireAuth = (req, res, next) => {
+export const requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized: Authentication token is missing' });
@@ -12,7 +12,7 @@ export const requireAuth = (req, res, next) => {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = db.getUserById(decoded.id);
+    const user = await db.getUserById(decoded.id);
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized: User record no longer exists' });
     }
@@ -24,13 +24,13 @@ export const requireAuth = (req, res, next) => {
   }
 };
 
-export const optionalAuth = (req, res, next) => {
+export const optionalAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1];
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
-      const user = db.getUserById(decoded.id);
+      const user = await db.getUserById(decoded.id);
       if (user) {
         req.user = user;
       }

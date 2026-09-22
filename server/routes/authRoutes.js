@@ -153,8 +153,16 @@ const handleRegister = async (req, res) => {
       message: 'Registration successful. Verification codes have been dispatched.',
       token,
       user: sanitizeUser(newUser),
-      emailDelivery: { providerConfigured: emailDelivery.providerConfigured, provider: emailDelivery.provider },
-      phoneDelivery: { providerConfigured: phoneDelivery.providerConfigured, provider: phoneDelivery.provider }
+      emailDelivery: {
+        providerConfigured: emailDelivery.providerConfigured,
+        provider: emailDelivery.provider,
+        devCode: !emailDelivery.providerConfigured ? emailVerificationRecord.code : undefined
+      },
+      phoneDelivery: {
+        providerConfigured: phoneDelivery.providerConfigured,
+        provider: phoneDelivery.provider,
+        devCode: !phoneDelivery.providerConfigured ? phoneVerificationRecord.code : undefined
+      }
     });
   } catch (err) {
     console.error('Register error:', err);
@@ -276,6 +284,8 @@ router.post('/verify-email', optionalAuth, async (req, res) => {
   }
 });
 
+const RESEND_COOLDOWN_MS = 45 * 1000; // 45 seconds cooldown
+
 // -----------------------------------------------------------
 // POST /api/auth/resend-email-verification
 // -----------------------------------------------------------
@@ -298,6 +308,29 @@ router.post('/resend-email-verification', optionalAuth, async (req, res) => {
       return res.json({ message: 'Email is already verified' });
     }
 
+    // Cooldown check to prevent rapid repeated resend requests
+    let emailRecord = user.emailVerificationCode;
+    if (typeof emailRecord === 'string') {
+      try {
+        emailRecord = JSON.parse(emailRecord);
+      } catch (e) {
+        emailRecord = null;
+      }
+    }
+    if (emailRecord?.createdAt) {
+      const createdTime = new Date(emailRecord.createdAt).getTime();
+      if (!isNaN(createdTime)) {
+        const elapsed = Date.now() - createdTime;
+        if (elapsed < RESEND_COOLDOWN_MS) {
+          const remainingSeconds = Math.ceil((RESEND_COOLDOWN_MS - elapsed) / 1000);
+          return res.status(429).json({
+            error: `Please wait ${remainingSeconds}s before requesting a new email verification code.`,
+            cooldownRemaining: remainingSeconds
+          });
+        }
+      }
+    }
+
     const newCodeRecord = verificationService.createVerificationRecord();
     await db.updateUser(user.id, {
       emailVerificationCode: newCodeRecord
@@ -306,8 +339,13 @@ router.post('/resend-email-verification', optionalAuth, async (req, res) => {
     const delivery = await verificationService.sendEmailVerification(user.email, newCodeRecord.code, user.name);
 
     return res.json({
-      message: 'Verification code resent. Check your email or console logs.',
-      delivery: { providerConfigured: delivery.providerConfigured, provider: delivery.provider }
+      message: 'New verification code sent. Check your email inbox.',
+      delivery: {
+        providerConfigured: delivery.providerConfigured,
+        provider: delivery.provider,
+        devCode: !delivery.providerConfigured ? newCodeRecord.code : undefined
+      },
+      cooldownSeconds: 45
     });
   } catch (err) {
     console.error('Resend email error:', err);
@@ -342,6 +380,29 @@ router.post('/send-phone-otp', optionalAuth, async (req, res) => {
       return res.status(400).json({ error: phoneValidation.error });
     }
 
+    // Cooldown check to prevent rapid repeated resend requests
+    let phoneRecord = user.phoneVerificationCode;
+    if (typeof phoneRecord === 'string') {
+      try {
+        phoneRecord = JSON.parse(phoneRecord);
+      } catch (e) {
+        phoneRecord = null;
+      }
+    }
+    if (phoneRecord?.createdAt) {
+      const createdTime = new Date(phoneRecord.createdAt).getTime();
+      if (!isNaN(createdTime)) {
+        const elapsed = Date.now() - createdTime;
+        if (elapsed < RESEND_COOLDOWN_MS) {
+          const remainingSeconds = Math.ceil((RESEND_COOLDOWN_MS - elapsed) / 1000);
+          return res.status(429).json({
+            error: `Please wait ${remainingSeconds}s before requesting a new mobile OTP.`,
+            cooldownRemaining: remainingSeconds
+          });
+        }
+      }
+    }
+
     const newOtpRecord = verificationService.createVerificationRecord();
     await db.updateUser(user.id, {
       countryCode: targetCountryCode,
@@ -353,8 +414,13 @@ router.post('/send-phone-otp', optionalAuth, async (req, res) => {
     const delivery = await verificationService.sendPhoneOtp(targetCountryCode, phoneValidation.cleanPhone, newOtpRecord.code, user.name);
 
     return res.json({
-      message: 'OTP sent to mobile phone. Check SMS or console logs.',
-      delivery: { providerConfigured: delivery.providerConfigured, provider: delivery.provider }
+      message: 'New verification code sent. Check your mobile SMS messages.',
+      delivery: {
+        providerConfigured: delivery.providerConfigured,
+        provider: delivery.provider,
+        devCode: !delivery.providerConfigured ? newOtpRecord.code : undefined
+      },
+      cooldownSeconds: 45
     });
   } catch (err) {
     console.error('Send phone OTP error:', err);

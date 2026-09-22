@@ -38,7 +38,7 @@ export const verificationService = {
    * or records to console in local/demo mode.
    */
   async sendEmailVerification(email, code, name = 'Candidate') {
-    const fromAddress = process.env.EMAIL_FROM || 'verify@skillproof.org';
+    const fromAddress = process.env.EMAIL_FROM || 'SkillProof <onboarding@resend.dev>';
 
     // 1. Resend API
     if (process.env.RESEND_API_KEY) {
@@ -90,7 +90,7 @@ export const verificationService = {
           },
           body: JSON.stringify({
             personalizations: [{ to: [{ email }] }],
-            from: { email: fromAddress, name: 'SkillProof Verification' },
+            from: { email: process.env.EMAIL_FROM || 'verify@skillproof.org', name: 'SkillProof Verification' },
             subject: 'Your SkillProof Email Verification Code',
             content: [{
               type: 'text/html',
@@ -108,12 +108,53 @@ export const verificationService = {
       }
     }
 
-    // 3. Fallback: Development mode with clear formatted terminal dispatch
+    // 3. Brevo (Sendinblue) REST API
+    const brevoKey = process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
+    if (brevoKey) {
+      try {
+        const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'api-key': brevoKey,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            sender: { email: process.env.EMAIL_FROM || 'verify@skillproof.org', name: 'SkillProof Verification' },
+            to: [{ email, name }],
+            subject: 'Your SkillProof Email Verification Code',
+            htmlContent: `
+              <div style="font-family: Arial, sans-serif; padding: 20px; background: #0f172a; color: #f8fafc; border-radius: 12px;">
+                <h2 style="color: #38bdf8;">SkillProof Verification</h2>
+                <p>Hello <strong>${name}</strong>,</p>
+                <p>Use the following 6-digit verification code to verify your SkillProof account:</p>
+                <div style="font-size: 28px; font-weight: bold; letter-spacing: 4px; padding: 12px; background: #1e293b; color: #10b981; border-radius: 8px; text-align: center; margin: 16px 0;">
+                  ${code}
+                </div>
+                <p style="font-size: 12px; color: #94a3b8;">This code expires in 15 minutes. If you did not request this, please disregard.</p>
+              </div>
+            `
+          })
+        });
+
+        if (res.ok || res.status === 201) {
+          console.log(`[SkillProof Email] Successfully sent verification email to ${email} via Brevo.`);
+          return { delivered: true, provider: 'brevo', providerConfigured: true };
+        } else {
+          const errData = await res.text();
+          console.warn(`[SkillProof Email] Brevo API returned error: ${errData}`);
+        }
+      } catch (err) {
+        console.error('[SkillProof Email] Brevo dispatch error:', err.message);
+      }
+    }
+
+    // 4. Fallback: Local / unconfigured provider dispatch (logged to console)
     console.log('\n===============================================================');
-    console.log('✉️  [SKILLPROOF EMAIL VERIFICATION SERVICE - DEV MODE]');
+    console.log('✉️  [SKILLPROOF EMAIL VERIFICATION SERVICE - SANDBOX/DEV MODE]');
     console.log(`To: ${name} <${email}>`);
     console.log(`Verification Code: >> ${code} << (Expires in 15 minutes)`);
-    console.log(`Status: Real email provider not configured (Missing RESEND_API_KEY or SENDGRID_API_KEY).`);
+    console.log(`Status: External email provider not configured in environment (RESEND_API_KEY, SENDGRID_API_KEY, or BREVO_API_KEY).`);
     console.log('===============================================================\n');
 
     return {
@@ -205,19 +246,32 @@ export const verificationService = {
    * Validates a submitted verification code
    */
   validateCode(storedRecord, submittedCode) {
-    if (!storedRecord || !storedRecord.code) {
+    if (!storedRecord) {
       return { valid: false, error: 'No verification code requested. Please request a new code.' };
     }
 
-    if (storedRecord.used) {
+    let record = storedRecord;
+    if (typeof record === 'string') {
+      try {
+        record = JSON.parse(record);
+      } catch (e) {
+        record = { code: record };
+      }
+    }
+
+    if (!record || !record.code) {
+      return { valid: false, error: 'No verification code requested. Please request a new code.' };
+    }
+
+    if (record.used) {
       return { valid: false, error: 'Verification code has already been used. Please request a new code.' };
     }
 
-    if (Date.now() > storedRecord.expiresAt) {
+    if (record.expiresAt && Date.now() > record.expiresAt) {
       return { valid: false, error: 'Verification code has expired. Codes are valid for 15 minutes.' };
     }
 
-    if (storedRecord.code.toString().trim() !== submittedCode.toString().trim()) {
+    if (record.code.toString().trim() !== (submittedCode || '').toString().trim()) {
       return { valid: false, error: 'Invalid verification code. Please check and try again.' };
     }
 
