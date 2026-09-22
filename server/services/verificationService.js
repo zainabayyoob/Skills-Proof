@@ -38,20 +38,21 @@ export const verificationService = {
    * or records to console in local/demo mode.
    */
   async sendEmailVerification(email, code, name = 'Candidate') {
-    const fromAddress = process.env.EMAIL_FROM || 'SkillProof <onboarding@resend.dev>';
+    const fromAddress = (process.env.EMAIL_FROM || 'SkillProof <onboarding@resend.dev>').trim();
+    const cleanEmail = (email || '').trim().toLowerCase();
 
     // 1. Resend API
-    if (process.env.RESEND_API_KEY) {
+    if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim()) {
       try {
         const res = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY.trim()}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             from: fromAddress,
-            to: email,
+            to: [cleanEmail],
             subject: 'Your SkillProof Email Verification Code',
             html: `
               <div style="font-family: Arial, sans-serif; padding: 20px; background: #0f172a; color: #f8fafc; border-radius: 12px;">
@@ -68,11 +69,11 @@ export const verificationService = {
         });
 
         if (res.ok) {
-          console.log(`[SkillProof Email] Successfully sent verification email to ${email} via Resend.`);
+          console.log(`[SkillProof Email] Successfully sent verification email to ${cleanEmail} via Resend.`);
           return { delivered: true, provider: 'resend', providerConfigured: true };
         } else {
           const errData = await res.text();
-          console.warn(`[SkillProof Email] Resend API returned error: ${errData}`);
+          console.warn(`[SkillProof Email] Resend API returned error (${res.status}): ${errData}`);
         }
       } catch (err) {
         console.error('[SkillProof Email] Resend dispatch error:', err.message);

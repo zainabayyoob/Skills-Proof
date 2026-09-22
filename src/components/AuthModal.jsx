@@ -238,6 +238,13 @@ export const AuthModal = () => {
         targetRole: getCareerRoleByTitle(regTargetRole).title,
       });
 
+      // If verification is bypassed or user is already verified, finish registration immediately
+      if (regRes?.requireVerification === false || (regRes?.user?.emailVerified && regRes?.user?.phoneVerified)) {
+        setSuccessMsg('Account created successfully! Welcome to SkillProof.');
+        closeAuthModal();
+        return;
+      }
+
       if (regRes?.emailDelivery) {
         setEmailDeliveryInfo(regRes.emailDelivery);
         if (regRes.emailDelivery.devCode) {
@@ -251,7 +258,7 @@ export const AuthModal = () => {
         }
       }
 
-      // Switch to Verification Step & Initialize 45s Cooldown
+      // Switch to Verification Step & Initialize 45s Cooldown (when verification is required)
       setShowVerifyStep(true);
       setEmailCooldown(45);
       setPhoneCooldown(45);

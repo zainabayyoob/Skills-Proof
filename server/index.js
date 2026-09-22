@@ -2,7 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
+import dns from 'dns';
 import { fileURLToPath } from 'url';
+
+try {
+  dns.setDefaultResultOrder('verbatim');
+} catch (_) {}
 
 import authRoutes from './routes/authRoutes.js';
 import testRoutes from './routes/testRoutes.js';
@@ -75,10 +80,20 @@ if (fs.existsSync(distPath)) {
 
 export { app };
 
-const isMainModule = process.argv[1] && process.argv[1].replace(/\\/g, '/').endsWith('server/index.js');
+const isMainModule = Boolean(
+  process.argv[1] && (
+    process.argv[1].replace(/\\/g, '/').endsWith('server/index.js') ||
+    process.argv[1].replace(/\\/g, '/').endsWith('server/index') ||
+    process.argv[1].replace(/\\/g, '/').endsWith('/server') ||
+    process.argv[1].replace(/\\/g, '/').endsWith('\\server') ||
+    path.resolve(process.argv[1]) === path.resolve(__filename) ||
+    path.resolve(process.argv[1]) === path.resolve(__dirname)
+  )
+);
+
 if (isMainModule) {
-  app.listen(PORT, () => {
-    console.log(`[SkillProof] Backend server running on http://localhost:${PORT}`);
-    console.log(`[SkillProof] Healthcheck available at http://localhost:${PORT}/api/health`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[SkillProof] Backend server running on http://0.0.0.0:${PORT}`);
+    console.log(`[SkillProof] Healthcheck available at http://0.0.0.0:${PORT}/api/health`);
   });
 }

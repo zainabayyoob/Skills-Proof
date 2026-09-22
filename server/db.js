@@ -2,7 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import pg from 'pg';
+import dns from 'dns';
 import { fileURLToPath } from 'url';
+
+try {
+  dns.setDefaultResultOrder('verbatim');
+} catch (_) {}
 import { initialOpportunities } from '../src/data/opportunitiesData.js';
 import {
   comprehensiveCareerRoles,
@@ -124,7 +129,7 @@ class Database {
     if (this.usePostgres) {
       console.log('[SkillProof Database] Mode: Persistent PostgreSQL (Neon Pooler)');
       this.pool = new pg.Pool({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: process.env.DATABASE_URL.trim(),
         ssl: { rejectUnauthorized: false },
         connectionTimeoutMillis: 10000,
         max: 10

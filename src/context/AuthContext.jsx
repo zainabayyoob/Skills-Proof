@@ -102,8 +102,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('skillproof_jwt_token', data.token);
       setToken(data.token);
       setUser(data.user);
-      // Keep modal open for verification step unless already verified
-      if (data.user.emailVerified && data.user.phoneVerified) {
+      // Close modal immediately if verification is bypassed or user is already verified
+      if (data.requireVerification === false || (data.user.emailVerified && data.user.phoneVerified)) {
         setAuthModalOpen(false);
       }
     }

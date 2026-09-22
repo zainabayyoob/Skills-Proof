@@ -107,6 +107,10 @@ const handleRegister = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // Generate real verification code records (15-min expiration, single-use)
+    // Check feature flag for requiring email/phone OTP verification (defaults to false for development/stability)
+    const requireVerification = process.env.AUTH_REQUIRE_EMAIL_VERIFICATION === 'true';
+
+    // Generate real verification code records (15-min expiration, single-use, preserved for future re-enablement)
     const emailVerificationRecord = verificationService.createVerificationRecord();
     const phoneVerificationRecord = verificationService.createVerificationRecord();
 
@@ -120,9 +124,9 @@ const handleRegister = async (req, res) => {
       role: assignedRole,
       countryCode,
       phone: phoneValidation.cleanPhone,
-      phoneVerified: false,
+      phoneVerified: !requireVerification,
       phoneVerificationCode: phoneVerificationRecord,
-      emailVerified: false,
+      emailVerified: !requireVerification,
       emailVerificationCode: emailVerificationRecord,
       passwordHash,
       college: college ? String(college).trim() : 'ABC Institute of Technology',
@@ -141,18 +145,33 @@ const handleRegister = async (req, res) => {
       location: location ? String(location).trim() : 'India'
     });
 
-    // Dispatch or log email verification code
-    const emailDelivery = await verificationService.sendEmailVerification(cleanEmail, emailVerificationRecord.code, name.trim());
+    let emailDelivery = { providerConfigured: false, bypassed: true };
+    let phoneDelivery = { providerConfigured: false, bypassed: true };
 
-    // Dispatch or log phone OTP
-    const phoneDelivery = await verificationService.sendPhoneOtp(countryCode || '+91', phoneValidation.cleanPhone, phoneVerificationRecord.code, name.trim());
+    if (requireVerification) {
+      // Dispatch or log email verification code
+      emailDelivery = await verificationService.sendEmailVerification(cleanEmail, emailVerificationRecord.code, name.trim());
+
+      // Dispatch or log phone OTP
+      phoneDelivery = await verificationService.sendPhoneOtp(countryCode || '+91', phoneValidation.cleanPhone, phoneVerificationRecord.code, name.trim());
+    }
 
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: '7d' });
+
+    if (!requireVerification) {
+      return res.status(201).json({
+        message: 'Registration successful. Welcome to SkillProof!',
+        token,
+        user: sanitizeUser(newUser),
+        requireVerification: false
+      });
+    }
 
     return res.status(201).json({
       message: 'Registration successful. Verification codes have been dispatched.',
       token,
       user: sanitizeUser(newUser),
+      requireVerification: true,
       emailDelivery: {
         providerConfigured: emailDelivery.providerConfigured,
         provider: emailDelivery.provider,
@@ -267,7 +286,7 @@ router.post('/verify-email', optionalAuth, async (req, res) => {
     const updatedUser = await db.updateUser(user.id, {
       emailVerified: true,
       emailVerificationCode: {
-        ...user.emailVerificationCode,
+        ...(typeof user.emailVerificationCode === 'object' && user.emailVerificationCode !== null ? user.emailVerificationCode : {}),
         used: true,
         verifiedAt: new Date().toISOString()
       }
@@ -466,7 +485,7 @@ router.post('/verify-phone', optionalAuth, async (req, res) => {
     const updatedUser = await db.updateUser(user.id, {
       phoneVerified: true,
       phoneVerificationCode: {
-        ...user.phoneVerificationCode,
+        ...(typeof user.phoneVerificationCode === 'object' && user.phoneVerificationCode !== null ? user.phoneVerificationCode : {}),
         used: true,
         verifiedAt: new Date().toISOString()
       }
