@@ -1,6 +1,6 @@
 // Centralized API Client for SkillProof Full-Stack Architecture
 
-const API_BASE = '/api';
+const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && (import.meta.env.VITE_API_BASE || import.meta.env.VITE_API_URL)) || '/api';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('skillproof_jwt_token');
@@ -12,7 +12,15 @@ const getAuthHeaders = () => {
 };
 
 const handleResponse = async (res) => {
-  const data = await res.json().catch(() => ({}));
+  let data = {};
+  try {
+    const text = await res.text();
+    if (text && text.trim()) {
+      data = JSON.parse(text);
+    }
+  } catch (_) {
+    data = {};
+  }
   if (!res.ok) {
     const errorMsg = data?.error || `Request failed with status ${res.status}`;
     const error = new Error(errorMsg);
@@ -32,7 +40,11 @@ export const api = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
-      return handleResponse(res);
+      const data = await handleResponse(res);
+      if (res.ok && (!data || Object.keys(data).length === 0)) {
+        throw new Error('Backend server did not return a valid registration response. Please ensure the backend API service is running.');
+      }
+      return data;
     },
 
     login: async (credentials) => {
@@ -41,7 +53,11 @@ export const api = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
       });
-      return handleResponse(res);
+      const data = await handleResponse(res);
+      if (res.ok && (!data || Object.keys(data).length === 0)) {
+        throw new Error('Backend server did not return a valid login response. Please ensure the backend API service is running.');
+      }
+      return data;
     },
 
     getMe: async () => {

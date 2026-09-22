@@ -129,6 +129,24 @@ export const AuthModal = () => {
     return () => clearInterval(interval);
   }, [showVerifyStep]);
 
+  // Reset verification state when modal is closed
+  useEffect(() => {
+    if (!authModalOpen) {
+      setShowVerifyStep(false);
+      setEmailOtp('');
+      setPhoneOtp('');
+      setEmailVerifiedDone(false);
+      setPhoneVerifiedDone(false);
+      setErrorMsg('');
+      setSuccessMsg('');
+    }
+  }, [authModalOpen]);
+
+  // Reset verification state when switching tabs (e.g. from register to login)
+  useEffect(() => {
+    setShowVerifyStep(false);
+  }, [authModalTab]);
+
   // Close college dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -238,31 +256,46 @@ export const AuthModal = () => {
         targetRole: getCareerRoleByTitle(regTargetRole).title,
       });
 
-      // If verification is bypassed or user is already verified, finish registration immediately
-      if (regRes?.requireVerification === false || (regRes?.user?.emailVerified && regRes?.user?.phoneVerified)) {
+      // Check if registration resulted in authenticated session
+      const hasSession = Boolean(regRes?.token && regRes?.user);
+      const isVerificationRequired = regRes?.requireVerification === true;
+
+      // When verification is not explicitly required OR session is authenticated, finish registration immediately
+      if (hasSession || regRes?.requireVerification === false) {
         setSuccessMsg('Account created successfully! Welcome to SkillProof.');
         closeAuthModal();
         return;
       }
 
-      if (regRes?.emailDelivery) {
-        setEmailDeliveryInfo(regRes.emailDelivery);
-        if (regRes.emailDelivery.devCode) {
-          setEmailOtp(regRes.emailDelivery.devCode);
+      // ONLY transition to OTP verification if the backend explicitly requires verification
+      if (isVerificationRequired) {
+        if (regRes?.emailDelivery) {
+          setEmailDeliveryInfo(regRes.emailDelivery);
+          if (regRes.emailDelivery.devCode) {
+            setEmailOtp(regRes.emailDelivery.devCode);
+          }
         }
-      }
-      if (regRes?.phoneDelivery) {
-        setPhoneDeliveryInfo(regRes.phoneDelivery);
-        if (regRes.phoneDelivery.devCode) {
-          setPhoneOtp(regRes.phoneDelivery.devCode);
+        if (regRes?.phoneDelivery) {
+          setPhoneDeliveryInfo(regRes.phoneDelivery);
+          if (regRes.phoneDelivery.devCode) {
+            setPhoneOtp(regRes.phoneDelivery.devCode);
+          }
         }
+
+        // Switch to Verification Step & Initialize 45s Cooldown
+        setShowVerifyStep(true);
+        setEmailCooldown(45);
+        setPhoneCooldown(45);
+        setSuccessMsg('Account created successfully! Verification codes dispatched.');
+        return;
       }
 
-      // Switch to Verification Step & Initialize 45s Cooldown (when verification is required)
-      setShowVerifyStep(true);
-      setEmailCooldown(45);
-      setPhoneCooldown(45);
-      setSuccessMsg('Account created successfully! Verification codes dispatched.');
+      // Fallback if response shape was unexpected without error thrown
+      if (regRes?.error) {
+        setErrorMsg(regRes.error);
+      } else {
+        setErrorMsg('Registration response was invalid. Please try again.');
+      }
     } catch (err) {
       setErrorMsg(err.message || 'Registration failed. Email or phone may already be registered.');
     } finally {
@@ -463,14 +496,13 @@ export const AuthModal = () => {
               </p>
             </div>
           </div>
-          {(!showVerifyStep || (emailVerifiedDone && phoneVerifiedDone)) && (
-            <button
-              onClick={closeAuthModal}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
+          <button
+            onClick={closeAuthModal}
+            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            title="Close"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Tab Switcher (hide during verify step or forgot-password) */}
