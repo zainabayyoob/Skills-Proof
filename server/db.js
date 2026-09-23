@@ -6,7 +6,7 @@ import dns from 'dns';
 import { fileURLToPath } from 'url';
 
 try {
-  dns.setDefaultResultOrder('verbatim');
+  dns.setDefaultResultOrder('ipv4first');
 } catch (_) {}
 import { initialOpportunities } from '../src/data/opportunitiesData.js';
 import {

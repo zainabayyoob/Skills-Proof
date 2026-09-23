@@ -198,7 +198,11 @@ export const AuthModal = () => {
     setIsSubmitting(true);
 
     try {
-      await login({ email: loginEmail, password: loginPassword });
+      const logRes = await login({ email: loginEmail, password: loginPassword });
+      if (logRes?.token) {
+        setSuccessMsg('Signed in successfully! Welcome back.');
+        closeAuthModal();
+      }
     } catch (err) {
       setErrorMsg(err.message || 'Login failed. Please check your credentials.');
     } finally {

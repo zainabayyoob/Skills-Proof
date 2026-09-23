@@ -6,7 +6,7 @@ import dns from 'dns';
 import { fileURLToPath } from 'url';
 
 try {
-  dns.setDefaultResultOrder('verbatim');
+  dns.setDefaultResultOrder('ipv4first');
 } catch (_) {}
 
 import authRoutes from './routes/authRoutes.js';
